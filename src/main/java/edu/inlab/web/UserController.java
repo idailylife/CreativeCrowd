@@ -45,6 +45,7 @@ public class UserController {
                 responseBody.setState(401);
                 responseBody.setMessage("Invalid Email: Duplicated.");
             } else {
+                userService.setSaltPassword(user);
                 userService.saveUser(user);
                 responseBody.setState(200);
             }

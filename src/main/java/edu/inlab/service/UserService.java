@@ -14,4 +14,5 @@ public interface UserService {
     void updateUser(User user);
     void deleteUser(int id);
     boolean isUniqueEmail(String email, Integer id);
+    void setSaltPassword(User user);
 }
