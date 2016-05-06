@@ -45,12 +45,23 @@ public class User {
     @Column(name = "accept_rate")
     private Double acceptRate;
 
+    @Column(name = "nickname")
+    private String nickname;
+
+    public User(){
+
+    }
+
     public User(String email, String password){
-        this(email, password, null, null, null, null, null, 0.5);
+        this(email, password, null);
+    }
+
+    public User(String email, String password, String nickname){
+        this(email, password, null, null, null, null, null, 0.5, nickname);
     }
 
     public User(String email, String password, Character gender, Integer age
-            , String phoneNumber, Integer payMethod, String payAccount, Double acceptRate){
+            , String phoneNumber, Integer payMethod, String payAccount, Double acceptRate, String nickname){
         this.id = null;
         this.email = email;
         this.password = EncodeFactory.getEncodedString(password);
@@ -60,6 +71,7 @@ public class User {
         this.payMethod = payMethod;
         this.payAccount = payAccount;
         this.acceptRate = acceptRate;
+        this.nickname = nickname;
     }
 
     public Integer getId() {
@@ -128,6 +140,14 @@ public class User {
 
     public void setAcceptRate(Double acceptRate) {
         this.acceptRate = acceptRate;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     @Override

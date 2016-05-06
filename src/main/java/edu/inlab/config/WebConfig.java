@@ -16,7 +16,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
  */
 @Configuration
 @EnableWebMvc
-@ComponentScan("edu.inlab.web")
+@ComponentScan("edu.inlab")
 public class WebConfig extends WebMvcConfigurerAdapter{
     @Bean
     public ViewResolver viewResolver(){
