@@ -1,7 +1,5 @@
 package edu.inlab.models;
 
-import edu.inlab.utils.EncodeFactory;
-
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -49,6 +47,8 @@ public class User {
     private String nickname;
 
     public User(){
+        //Default constructor for jackson
+        this.acceptRate = 0.5;
 
     }
 
@@ -64,7 +64,7 @@ public class User {
             , String phoneNumber, Integer payMethod, String payAccount, Double acceptRate, String nickname){
         this.id = null;
         this.email = email;
-        this.password = EncodeFactory.getEncodedString(password);
+        this.password = password;
         this.gender = gender;
         this.age = age;
         this.phoneNumber = phoneNumber;
@@ -160,6 +160,9 @@ public class User {
 
     @Override
     public int hashCode() {
+        if(id == null){
+            return -1;
+        }
         return id.intValue();
     }
 }
