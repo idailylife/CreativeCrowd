@@ -1,5 +1,7 @@
 package edu.inlab.models;
 
+import edu.inlab.utils.EncodeFactory;
+
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -46,10 +48,13 @@ public class User {
     @Column(name = "nickname")
     private String nickname;
 
+    @Column(name = "salt")
+    private String salt;
+
+
     public User(){
         //Default constructor for jackson
-        this.acceptRate = 0.5;
-
+        this(null, null, null, null, null, null, null, 0.5, null);
     }
 
     public User(String email, String password){
@@ -72,6 +77,13 @@ public class User {
         this.payAccount = payAccount;
         this.acceptRate = acceptRate;
         this.nickname = nickname;
+        this.salt = null;
+    }
+
+    public void generateSaltPassword(){
+        //MD5(salt + MD5(password))
+        //Assume the password is already encoded at the frontend
+        password = EncodeFactory.getEncodedString(salt + password);
     }
 
     public Integer getId() {
@@ -149,6 +161,19 @@ public class User {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
 
     @Override
     public boolean equals(Object obj) {

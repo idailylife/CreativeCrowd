@@ -2,6 +2,7 @@ package edu.inlab.service;
 
 import edu.inlab.models.User;
 import edu.inlab.repo.UserRepository;
+import edu.inlab.utils.EncodeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -60,5 +61,16 @@ public class UserServiceImpl implements UserService {
         if(id != null && user.getId().equals(id))
             return true;
         return false;
+    }
+
+    /**
+     * 设置加盐后的密码
+     * @param user
+     */
+    public void setSaltPassword(User user) {
+        if(user.getSalt() == null){
+            user.setSalt(EncodeFactory.getSalt());
+        }
+        user.generateSaltPassword();
     }
 }

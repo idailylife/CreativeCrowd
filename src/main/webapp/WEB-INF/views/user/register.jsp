@@ -50,6 +50,7 @@
     <!-- Should be moved to common header -->
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
     <script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="<c:url value="/js/md5.js"/>"></script>
     <script src="<c:url value="/js/register.js"/>"></script>
     <script>
         var homeUrl = ${home};

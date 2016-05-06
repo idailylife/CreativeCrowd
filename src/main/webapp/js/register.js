@@ -13,7 +13,7 @@ jQuery(document).ready(function ($) {
 function postRegForm() {
     var data = {};
     data["email"] = $("#inputEmail").val();
-    data["password"] = $("#inputPassword").val();
+    data["password"] = md5( $("#inputPassword").val() );
     var succFunc = function (data) {
         console.log("SUCCESS:", data);
     };
@@ -23,7 +23,7 @@ function postRegForm() {
 
     $.ajax({
         type: "POST",
-        contentType : "application/json",   //; charset=utf-8
+        contentType : "application/json; charset=utf-8",
         url: homeUrl + "user/register",
         data: JSON.stringify(data),
         dataType: 'json',
