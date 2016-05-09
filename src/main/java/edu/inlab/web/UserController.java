@@ -3,16 +3,20 @@ package edu.inlab.web;
 import edu.inlab.models.AjaxResponseBody;
 import edu.inlab.models.User;
 import edu.inlab.service.UserService;
+import edu.inlab.utils.EncodeFactory;
+import edu.inlab.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**
@@ -22,6 +26,7 @@ import javax.validation.Valid;
 @RequestMapping(value = "/user")
 @ComponentScan(basePackages = "edu.inlab")
 public class UserController {
+
     @Autowired
     UserService userService;
 
@@ -51,5 +56,74 @@ public class UserController {
             }
         }
         return responseBody;
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login( Model model,
+            @RequestParam("next") String nextStr,
+            @RequestParam("state") String stateStr ){
+        //TODO: 如果已经登录，则跳转到主页
+        if(nextStr != null){
+            model.addAttribute("nextUrl", nextStr);
+        } else {
+            model.addAttribute("nextUrl", "/");
+        }
+        if(stateStr != null){
+            model.addAttribute("state", stateStr);
+        }
+        return "user/login";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/login", method = RequestMethod.POST,
+    produces = MediaType.APPLICATION_JSON_VALUE,
+    consumes = MediaType.APPLICATION_JSON_VALUE)
+    public AjaxResponseBody userLogIn(
+            @RequestBody @Valid User user, BindingResult bindingResult,
+            HttpServletResponse response, HttpServletRequest request){
+        AjaxResponseBody responseBody = new AjaxResponseBody();
+        if(bindingResult.hasErrors()){
+            responseBody.setState(400);
+            responseBody.setMessage("Illegal input.");
+        } else {
+            int checkState = userService.verify(user.getEmail(), user.getPassword());
+            switch (checkState){
+                case UserService.ERR_WRONG_PASSWORD:
+                    User currUser = userService.findByEmail(user.getEmail());
+                    currUser.setTokenCookie("");    //Clear token
+                    userService.updateUser(currUser);
+                case UserService.ERR_NO_SUCH_USER:
+                    responseBody.setState(401);
+                    responseBody.setMessage("Wrong email or password.");
+                    break;
+                case UserService.ERR_SALT_UNDEFINED:
+                    responseBody.setState(500);
+                    responseBody.setMessage("Internal error: salt not defined.");
+                    break;
+                case UserService.SUCC_LOGIN:
+                    responseBody.setState(200);
+                    //在cookie及session中写入id及token_cookie
+                    currUser = userService.findByEmail(user.getEmail());
+                    currUser.setTokenCookie(EncodeFactory.getRandomUUID());
+                    userService.updateUser(currUser);
+                    request.getSession().setAttribute(Constants.KEY_USER_UID, currUser.getId());
+                    Cookie uidCookie = new Cookie(Constants.KEY_USER_UID, currUser.getId().toString());
+                    uidCookie.setMaxAge(7 * 24 * 3600); //7days
+                    response.addCookie(uidCookie);
+                    Cookie tokenCookie = new Cookie(Constants.KEY_USER_TOKEN, currUser.getTokenCookie());
+                    tokenCookie.setMaxAge(7 * 24 * 3600);
+                    response.addCookie(tokenCookie);
+                    break;
+                default:
+                    responseBody.setState(501);
+                    responseBody.setMessage("Unknown internal error");
+            }
+        }
+        return responseBody;
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String test(){
+        return "blablabla...";
     }
 }

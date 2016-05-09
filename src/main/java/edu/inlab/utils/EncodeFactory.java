@@ -3,6 +3,7 @@ package edu.inlab.utils;
 import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Created by inlab-dell on 2016/5/4.
@@ -40,5 +41,9 @@ public class EncodeFactory {
             e.printStackTrace();
         }
         return reStr;
+    }
+
+    public static String getRandomUUID(){
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }
