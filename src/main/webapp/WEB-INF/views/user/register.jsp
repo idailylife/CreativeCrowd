@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: inlab-dell
@@ -11,9 +12,9 @@
 <html>
 <head>
     <title>欢迎加入CreativeCrowd</title>
-
     <!-- Should be moved to common header, 需要换成相对协议-->
     <meta charset="UTF-8">
+    <sec:csrfMetaTags/>
     <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -34,7 +35,7 @@
                 </div>
                 <div class="form-group">
                     <label for="inputPassword">密码</label>
-                    <input type="password" class="form-control" id="inputPassword" name="email" placeholder="密码">
+                    <input type="password" class="form-control" id="inputPassword" name="password" placeholder="密码">
                 </div>
                 <div class="checkbox">
                     <label>

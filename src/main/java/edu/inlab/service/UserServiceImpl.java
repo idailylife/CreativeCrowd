@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+
+
     @Autowired
     UserRepository userRepository;
 
@@ -47,6 +49,9 @@ public class UserServiceImpl implements UserService {
             entity.setPayAccount(user.getPayAccount());
             entity.setPayMethod(user.getPayMethod());
             entity.setPhoneNumber(user.getPhoneNumber());
+            entity.setSalt(user.getSalt());
+            entity.setTokenCookie(user.getTokenCookie());
+            entity.setNickname(user.getNickname());
         }
     }
 
@@ -72,5 +77,52 @@ public class UserServiceImpl implements UserService {
             user.setSalt(EncodeFactory.getSalt());
         }
         user.generateSaltPassword();
+    }
+
+    /**
+     * 根据邮箱与密码验证用户
+     * @param email
+     * @param passwordInMD5 32bit MD5 lowercase un-salted
+     * @return -1: Cannot find user with given email,
+     *          -2: Wrong password,
+     *          -3: Salt undefined,
+     *          0:  Pass
+     */
+    public int verify(String email, String passwordInMD5) {
+        User user = findByEmail(email);
+        if(null == user){
+            return ERR_NO_SUCH_USER;
+        }
+        String salt = user.getSalt();
+        if(null == salt){
+            return ERR_SALT_UNDEFINED;
+        }
+        String requestSaltPassword = EncodeFactory.getEncodedString(salt + passwordInMD5);
+        if(requestSaltPassword.equals(user.getPassword())){
+            return SUCC_LOGIN;
+        } else {
+            return ERR_WRONG_PASSWORD;
+        }
+    }
+
+    /**
+     * 根据cookie/session里的uid和token验证用户登录状态
+     * @param uid
+     * @param token
+     * @return
+     */
+    public int verify(int uid, String token) {
+        User user = findById(uid);
+        if(null == user){
+            return ERR_NO_SUCH_USER;
+        }
+        if(null == user.getTokenCookie()){
+            return ERR_TOKEN_UNSET;
+        }
+        if(user.getTokenCookie().equals(token)){
+            return SUCC_LOGIN;
+        } else {
+            return ERR_TOKEN_INVALID;
+        }
     }
 }

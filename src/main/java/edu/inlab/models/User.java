@@ -25,7 +25,7 @@ public class User {
     private String email;
 
     @Column(name = "gender")
-    private Character gender;        //F: Female, M:Male, null:undefined, U:Unknown
+    private String gender;        //F: Female, M:Male, null:undefined, U:Unknown
 
     @Column(name = "age")
     @Min(value = 0)
@@ -51,6 +51,8 @@ public class User {
     @Column(name = "salt")
     private String salt;
 
+    @Column(name = "token_cookie")
+    private String tokenCookie;
 
     public User(){
         //Default constructor for jackson
@@ -65,7 +67,7 @@ public class User {
         this(email, password, null, null, null, null, null, 0.5, nickname);
     }
 
-    public User(String email, String password, Character gender, Integer age
+    public User(String email, String password, String gender, Integer age
             , String phoneNumber, Integer payMethod, String payAccount, Double acceptRate, String nickname){
         this.id = null;
         this.email = email;
@@ -98,7 +100,7 @@ public class User {
         return email;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
@@ -130,7 +132,7 @@ public class User {
         this.email = email;
     }
 
-    public void setGender(Character gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -174,6 +176,13 @@ public class User {
         this.id = id;
     }
 
+    public String getTokenCookie() {
+        return tokenCookie;
+    }
+
+    public void setTokenCookie(String tokenCookie) {
+        this.tokenCookie = tokenCookie;
+    }
 
     @Override
     public boolean equals(Object obj) {
