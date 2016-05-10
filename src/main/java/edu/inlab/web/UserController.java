@@ -60,8 +60,8 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login( Model model,
-            @RequestParam("next") String nextStr,
-            @RequestParam("state") String stateStr ){
+            @RequestParam(value = "next", required = false) String nextStr,
+            @RequestParam(value = "state", required = false) String stateStr ){
         //TODO: 如果已经登录，则跳转到主页
         if(nextStr != null){
             model.addAttribute("nextUrl", nextStr);
@@ -122,7 +122,8 @@ public class UserController {
         return responseBody;
     }
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    @RequestMapping(value = "/test", method = RequestMethod.GET,
+    produces = MediaType.TEXT_PLAIN_VALUE)
     public String test(){
         return "blablabla...";
     }

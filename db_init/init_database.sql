@@ -34,15 +34,6 @@ CREATE TABLE `adminuser` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `adminuser`
---
-
-LOCK TABLES `adminuser` WRITE;
-/*!40000 ALTER TABLE `adminuser` DISABLE KEYS */;
-/*!40000 ALTER TABLE `adminuser` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `microtask`
 --
 
@@ -59,15 +50,6 @@ CREATE TABLE `microtask` (
   CONSTRAINT `microtask_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='	';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `microtask`
---
-
-LOCK TABLES `microtask` WRITE;
-/*!40000 ALTER TABLE `microtask` DISABLE KEYS */;
-/*!40000 ALTER TABLE `microtask` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `task`
@@ -90,15 +72,6 @@ CREATE TABLE `task` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `task`
---
-
-LOCK TABLES `task` WRITE;
-/*!40000 ALTER TABLE `task` DISABLE KEYS */;
-/*!40000 ALTER TABLE `task` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `user`
 --
 
@@ -109,7 +82,7 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `password` varchar(128) NOT NULL,
   `email` varchar(128) NOT NULL,
-  `gender` char(1) DEFAULT NULL,
+  `gender` varchar(10) DEFAULT NULL,
   `age` int(11) DEFAULT NULL,
   `phone_number` varchar(45) DEFAULT NULL,
   `pay_method` int(11) DEFAULT NULL,
@@ -117,20 +90,12 @@ CREATE TABLE `user` (
   `accept_rate` double NOT NULL DEFAULT '0.5',
   `nickname` varchar(45) DEFAULT NULL,
   `salt` varchar(45) DEFAULT NULL,
+  `token_cookie` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `usermicrotask`
@@ -149,15 +114,6 @@ CREATE TABLE `usermicrotask` (
   CONSTRAINT `fk_tid` FOREIGN KEY (`task_id`) REFERENCES `usertask` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `usermicrotask`
---
-
-LOCK TABLES `usermicrotask` WRITE;
-/*!40000 ALTER TABLE `usermicrotask` DISABLE KEYS */;
-/*!40000 ALTER TABLE `usermicrotask` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `usertask`
@@ -180,15 +136,6 @@ CREATE TABLE `usertask` (
   CONSTRAINT `usertask_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `usertask`
---
-
-LOCK TABLES `usertask` WRITE;
-/*!40000 ALTER TABLE `usertask` DISABLE KEYS */;
-/*!40000 ALTER TABLE `usertask` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -199,4 +146,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-06 16:16:58
+-- Dump completed on 2016-05-09 19:19:45

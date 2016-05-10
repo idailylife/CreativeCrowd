@@ -50,6 +50,6 @@ public class WebConfig extends WebMvcConfigurerAdapter{
         super.addInterceptors(registry);
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/user/login", "/user/register", "/");
+                .excludePathPatterns("/user/login", "/user/register", "/task/tid**", "/");
     }
 }
