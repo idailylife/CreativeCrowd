@@ -5,5 +5,5 @@ package edu.inlab.service;
  * 处理验证码相关服务
  */
 public interface VerifyCodeService {
-
+//TODO: TO BE IMPLEMENTED
 }
