@@ -43,7 +43,7 @@ DROP TABLE IF EXISTS `microtask`;
 CREATE TABLE `microtask` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `task_id` int(11) NOT NULL,
-  `template` json NOT NULL,
+  `template` varchar(10240) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `task_id` (`task_id`),
@@ -60,15 +60,17 @@ DROP TABLE IF EXISTS `task`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `task` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(64) DEFAULT NULL,
   `quota` int(11) NOT NULL,
   `finished_count` int(11) NOT NULL DEFAULT '0',
-  `desc_json` json NOT NULL,
+  `desc_json` varchar(4096) NOT NULL,
   `mode` int(11) NOT NULL,
   `start_time` int(11) DEFAULT NULL,
   `end_time` int(11) DEFAULT NULL,
+  `owner_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +109,7 @@ DROP TABLE IF EXISTS `usermicrotask`;
 CREATE TABLE `usermicrotask` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `task_id` int(11) NOT NULL,
-  `results` json DEFAULT NULL,
+  `results` varchar(10240) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_tid_idx` (`task_id`),
@@ -126,8 +128,6 @@ CREATE TABLE `usertask` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `task_id` int(11) NOT NULL,
-  `progress_state` int(11) NOT NULL DEFAULT '0',
-  `progress_count` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `user_id_idx` (`user_id`),
@@ -146,4 +146,4 @@ CREATE TABLE `usertask` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-09 19:19:45
+-- Dump completed on 2016-05-11 19:40:33

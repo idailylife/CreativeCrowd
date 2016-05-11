@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  * Created by inlab-dell on 2016/5/4.
  */
 @Configuration
-@ComponentScan(basePackages = "edu.inlab.models", //TODO: 更新领域类
+@ComponentScan(basePackages = "edu.inlab.models",
         excludeFilters = {
         @ComponentScan.Filter(type = FilterType.ANNOTATION, value = EnableWebMvc.class)
 })
