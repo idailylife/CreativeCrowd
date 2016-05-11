@@ -20,6 +20,9 @@ public class Task {
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "title")
+    private String title;
+
     @Column(name = "quota", nullable = false)
     @Min(value = 0)
     private Integer quota;
@@ -44,25 +47,6 @@ public class Task {
     @Column(name = "owner_id", nullable = false)
     private Integer ownerId;
 
-    public Task(){
-        this(null, null, null);
-    }
-
-    public Task(Integer quota, JSONObject descJson, Integer mode){
-        this(null, quota, 0, descJson, mode, null, null, null);
-    }
-
-    public Task(Integer id, Integer quota, Integer finishedCount, JSONObject descJson, Integer mode,
-                Integer startTime, Integer endTime, Integer ownerId){
-        this.id = id;
-        this.quota = quota;
-        this.finishedCount = finishedCount;
-        this.descJson = descJson;
-        this.mode = mode;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.ownerId = ownerId;
-    }
 
     public Integer getId() {
         return id;
@@ -126,6 +110,14 @@ public class Task {
 
     public void setOwnerId(Integer ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override

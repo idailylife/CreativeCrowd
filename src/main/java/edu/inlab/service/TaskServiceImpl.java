@@ -42,6 +42,7 @@ public class TaskServiceImpl implements TaskService {
         Task entity = taskRepository.getTaskById(task.getId());
         if(entity != null){
             entity.setDescJson(task.getDescJson());
+            entity.setTitle(task.getTitle());
             entity.setEndTime(task.getEndTime());
             entity.setFinishedCount(task.getFinishedCount());
             entity.setMode(task.getMode());

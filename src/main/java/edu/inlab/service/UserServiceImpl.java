@@ -2,11 +2,17 @@ package edu.inlab.service;
 
 import edu.inlab.models.User;
 import edu.inlab.repo.UserRepository;
+import edu.inlab.utils.Constants;
 import edu.inlab.utils.EncodeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Created by inlab-dell on 2016/5/5.
@@ -14,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("userService")
 @Transactional
 public class UserServiceImpl implements UserService {
-
-
 
     @Autowired
     UserRepository userRepository;
@@ -124,5 +128,53 @@ public class UserServiceImpl implements UserService {
         } else {
             return ERR_TOKEN_INVALID;
         }
+    }
+
+    /**
+     * 维护用户登录状态并返回状态码
+     * @param request
+     * @param response
+     * @return
+     */
+    public int maintainLoginState(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
+        //String errorCode = "";
+        int retCode = NOT_LOGIN;
+        if(uid != null){
+            User user = findById(uid);
+            if(null != user)
+                return SUCC_LOGIN;
+            //errorCode += "userNotFound ";
+            retCode = ERR_NO_SUCH_USER;
+        } else {
+            Cookie[] cookies = request.getCookies();
+            String token = null;
+            for(Cookie cookie: cookies){
+                if(cookie.getName().equals(Constants.KEY_USER_UID)){
+                    uid = Integer.valueOf(cookie.getValue());
+                    if(uid != null && findById(uid) != null){
+                        continue;
+                    } else {
+                        cookie.setMaxAge(0);
+                        response.addCookie(cookie);
+                        //errorCode += "cookieInvalid ";
+                        retCode = ERR_COOKIE_INVALID;
+                    }
+                } else if(cookie.getName().equals(Constants.KEY_USER_TOKEN)){
+                    token = cookie.getValue();
+                }
+            }
+            if(uid != null && token != null){
+                int verifyState = verify(uid, token);
+                if(verifyState == UserService.SUCC_LOGIN){
+                    request.getSession().setAttribute(Constants.KEY_USER_UID, uid);
+                    return SUCC_LOGIN;
+                }
+                //errorCode += "loginExpired ";
+                retCode = ERR_TOKEN_EXPIRED;
+            }
+        }
+        //response.sendRedirect("/user/login?next=" + request.getRequestURI() + "&state=" + errorCode);
+        return retCode;
     }
 }
