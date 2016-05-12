@@ -1,6 +1,7 @@
 package edu.inlab.models;
 
 import edu.inlab.utils.EncodeFactory;
+import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -21,6 +22,7 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Email
     @Column(name = "email", nullable = false)
     private String email;
 

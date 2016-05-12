@@ -1,4 +1,4 @@
-package edu.inlab.repo;
+package edu.inlab.repo.usertype;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -15,7 +15,7 @@ import java.sql.Types;
  * Created by inlab-dell on 2016/5/10.
  * Defines customized JSON usertype for Hibernate
  */
-public class JSONUserType implements UserType {
+public class JSONObjectUserType implements UserType {
     public int[] sqlTypes() {
         return new int[] {Types.VARCHAR};
     }
