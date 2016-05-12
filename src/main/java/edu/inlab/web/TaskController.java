@@ -5,7 +5,6 @@ import edu.inlab.service.TaskService;
 import edu.inlab.service.UserService;
 import edu.inlab.utils.Constants;
 import edu.inlab.utils.JSON2Map;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -64,6 +64,10 @@ public class TaskController {
         model.addAttribute("startEndTime",
                 parseTaskDurationStr(task.getStartTime(), task.getEndTime()));
 
+        //Judge if current task has expired
+        boolean isExpiredOrFull = task.isExpired() || task.isFull();
+        model.addAttribute("isExpiredOrFull", isExpiredOrFull);
+
         if(jsonDesc.has(Constants.KEY_TASK_EST_TIME)){
             String estTime = jsonDesc.getString(Constants.KEY_TASK_EST_TIME);
             model.addAttribute("estTime", estTime);
@@ -74,6 +78,8 @@ public class TaskController {
             Map<String, String> infoMap = JSON2Map.convertJSONObjectToMap(infoObj);
             model.addAttribute("infoMap", infoMap);
         }
+
+
 
         model.addAttribute("task", taskService.findById(taskId));
         int loginState = -400;
@@ -98,14 +104,33 @@ public class TaskController {
             return "不限";
         }
         String retStr = "";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Calendar calendar = Calendar.getInstance();
+        Date currDate = new Date();
+        calendar.setTime(currDate);
+        int year = calendar.get(Calendar.YEAR);
+
+
         if(null != startTime){
             Date date = new Date((long)startTime*1000);
-            retStr += dateFormat.format(date);
+            calendar.setTime(date);
+            int startYear = calendar.get(Calendar.YEAR);
+            if(startYear == year){
+                retStr += new SimpleDateFormat("MM/dd").format(date);
+            } else {
+                retStr += dateFormat.format(date);
+            }
         }
         if(null != endTime){
             Date date = new Date((long)endTime*1000);
-            retStr += " - " + dateFormat.format(date);
+            calendar.setTime(date);
+            int endYear = calendar.get(Calendar.YEAR);
+            retStr += " - ";
+            if(endYear == year){
+                retStr += new SimpleDateFormat("MM/dd").format(date);
+            } else {
+                retStr += dateFormat.format(date);
+            }
         }
         return retStr;
     }

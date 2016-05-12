@@ -30,6 +30,9 @@
                 </c:if>
                 <p>${descDetail}</p>
                 <c:choose>
+                    <c:when test="${isExpiredOrFull}">
+                        <button class="btn btn-default" disabled="disabled" type="button">已结束</button>
+                    </c:when>
                     <c:when test="${loginState == 0}">
                         <button class="btn btn-info" type="button">参与</button>
                     </c:when>

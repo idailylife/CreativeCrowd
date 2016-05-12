@@ -1,19 +1,20 @@
 package edu.inlab.models;
 
-import edu.inlab.repo.JSONUserType;
+import edu.inlab.repo.usertype.JSONObjectUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.json.JSONObject;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import java.util.Date;
 
 /**
  * Created by inlab-dell on 2016/5/4.
  */
 @Entity
 @Table(name = "task")
-@TypeDef(name = "customJsonObject", typeClass = JSONUserType.class)
+@TypeDef(name = "customJsonObject", typeClass = JSONObjectUserType.class)
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +27,10 @@ public class Task {
     @Column(name = "quota", nullable = false)
     @Min(value = 0)
     private Integer quota;
+
+    @Column(name = "claimed_count", nullable = false)
+    @Min(value = 0)
+    private Integer claimedCount;
 
     @Column(name = "finished_count", nullable = false)
     @Min(value = 0)
@@ -120,6 +125,14 @@ public class Task {
         this.title = title;
     }
 
+    public Integer getClaimedCount() {
+        return claimedCount;
+    }
+
+    public void setClaimedCount(Integer claimedCount) {
+        this.claimedCount = claimedCount;
+    }
+
     @Override
     public int hashCode() {
         if(this.id != null){
@@ -134,5 +147,18 @@ public class Task {
             return this.id.equals(((Task) obj).getId());
         }
         return super.equals(obj);
+    }
+
+    public boolean isExpired(){
+        if(this.endTime == null){
+            return false;
+        }
+        Date currDate = new Date();
+        Date endDate = new Date((long)this.endTime*1000);
+        return currDate.after(endDate);
+    }
+
+    public boolean isFull(){
+        return claimedCount >= quota;
     }
 }
