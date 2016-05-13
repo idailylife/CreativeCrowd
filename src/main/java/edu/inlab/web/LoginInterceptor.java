@@ -25,7 +25,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         int state = userService.maintainLoginState(request, response);
-        if(state == 0)
+        if(state >= 0)
             return true;
         else{
             response.sendRedirect("/user/login?next=" + request.getRequestURI() + "&state=" + state);
