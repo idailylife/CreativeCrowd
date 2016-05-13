@@ -30,15 +30,21 @@
                 </c:if>
                 <p>${descDetail}</p>
                 <c:choose>
-                    <c:when test="${isExpiredOrFull}">
-                        <button class="btn btn-default" disabled="disabled" type="button">已结束</button>
+                    <c:when test="${taskState eq 'EXPIRED'}">
+                        <button class="btn btn-default" disabled="disabled" type="button" data-state="expired">已结束</button>
                     </c:when>
-                    <c:when test="${loginState == 0}">
-                        <button class="btn btn-info" type="button">参与</button>
+                    <c:when test="${taskState eq 'FINISHED'}">
+                        <button class="btn btn-default" disabled="disabled" type="button" data-state="finished">已参与</button>
                     </c:when>
-                    <c:otherwise>
-                        <button class="btn btn-warning" type="button">请先登录</button>
-                    </c:otherwise>
+                    <c:when test="${taskState eq 'CLAIMED'}">
+                        <button class="btn btn-info" type="button" data-state="claimed">继续先前任务</button>
+                    </c:when>
+                    <c:when test="${taskState eq 'JOINABLE'}">
+                        <button class="btn btn-info" type="button" data-state="joinable">参与</button>
+                    </c:when>
+                    <c:when test="${taskState eq 'NEED_LOGIN'}">
+                        <button class="btn btn-warning" type="button" data-state="need_login">请先登录</button>
+                    </c:when>
                 </c:choose>
             </div>
             <div class="col-md-4">

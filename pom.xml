@@ -69,6 +69,11 @@
             <artifactId>hibernate-core</artifactId>
             <version>4.3.10.Final</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-testing</artifactId>
+            <version>4.3.10.Final</version>
+        </dependency>
 
         <!-- MySql -->
         <dependency>

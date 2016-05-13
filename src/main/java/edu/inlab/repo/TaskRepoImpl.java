@@ -18,7 +18,7 @@ public class TaskRepoImpl extends AbstractDao<Integer, Task> implements TaskRepo
 
     public List<Task> getByOwnerId(int ownerId) {
         List<Task> tasks = getSession().createCriteria(Task.class)
-                .add(Restrictions.eq("owner_id", ownerId))
+                .add(Restrictions.eq("ownerId", ownerId))
                 .list();
         return tasks;
     }

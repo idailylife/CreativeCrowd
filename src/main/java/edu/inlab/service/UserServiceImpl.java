@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 维护用户登录状态并返回状态码
+     * 维护用户登录状态并返回 错误状态码 或 合法的用户ID
      * @param request
      * @param response
      * @return
@@ -143,7 +143,8 @@ public class UserServiceImpl implements UserService {
         if(uid != null){
             User user = findById(uid);
             if(null != user)
-                return SUCC_LOGIN;
+                return uid;
+                //return SUCC_LOGIN;
             //errorCode += "userNotFound ";
             retCode = ERR_NO_SUCH_USER;
         } else {
@@ -168,7 +169,8 @@ public class UserServiceImpl implements UserService {
                 int verifyState = verify(uid, token);
                 if(verifyState == UserService.SUCC_LOGIN){
                     request.getSession().setAttribute(Constants.KEY_USER_UID, uid);
-                    return SUCC_LOGIN;
+                    return uid;
+                    //return SUCC_LOGIN;
                 }
                 //errorCode += "loginExpired ";
                 retCode = ERR_TOKEN_EXPIRED;

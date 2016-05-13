@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 /**
  * Created by inlab-dell on 2016/5/4.
@@ -16,14 +17,14 @@ import javax.validation.constraints.Size;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", unique = true)
     private Integer id;
 
     @Column(name = "password", nullable = false)
     private String password;
 
     @Email
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "gender")
@@ -55,6 +56,14 @@ public class User {
 
     @Column(name = "token_cookie")
     private String tokenCookie;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "usertask",
+            joinColumns = {
+                @JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+                @JoinColumn(name = "task_id", referencedColumnName = "id") })
+    private Set<Task> claimedTasks;
 
     public User(){
         //Default constructor for jackson
@@ -184,6 +193,14 @@ public class User {
 
     public void setTokenCookie(String tokenCookie) {
         this.tokenCookie = tokenCookie;
+    }
+
+    public Set<Task> getClaimedTasks() {
+        return claimedTasks;
+    }
+
+    public void setClaimedTasks(Set<Task> claimedTasks) {
+        this.claimedTasks = claimedTasks;
     }
 
     @Override

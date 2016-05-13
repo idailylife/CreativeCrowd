@@ -1,14 +1,20 @@
 package edu.inlab.web;
 
+import edu.inlab.models.AjaxResponseBody;
 import edu.inlab.models.Task;
+import edu.inlab.models.User;
+import edu.inlab.models.UserTask;
 import edu.inlab.service.TaskService;
 import edu.inlab.service.UserService;
+import edu.inlab.service.UserTaskService;
 import edu.inlab.utils.Constants;
 import edu.inlab.utils.JSON2Map;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by inlab-dell on 2016/5/10.
@@ -29,6 +33,7 @@ import java.util.Map;
 @RequestMapping("/task")
 @ComponentScan(basePackages = "edu.inlab")
 public class TaskController {
+    public enum TaskJoinState {NEED_LOGIN, JOINABLE, CLAIMED, FINISHED, EXPIRED };
 
     @Autowired
     TaskService taskService;
@@ -36,6 +41,10 @@ public class TaskController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    UserTaskService userTaskService;
+
+    @Transactional  //Avoids lazy-load problem
     @RequestMapping(value = "/tid{taskId}", method = RequestMethod.GET)
     public String showTask(
             @PathVariable("taskId") int taskId, Model model,
@@ -65,8 +74,8 @@ public class TaskController {
                 parseTaskDurationStr(task.getStartTime(), task.getEndTime()));
 
         //Judge if current task has expired
-        boolean isExpiredOrFull = task.isExpired() || task.isFull();
-        model.addAttribute("isExpiredOrFull", isExpiredOrFull);
+
+        //model.addAttribute("isExpiredOrFull", isExpiredOrFull);
 
         if(jsonDesc.has(Constants.KEY_TASK_EST_TIME)){
             String estTime = jsonDesc.getString(Constants.KEY_TASK_EST_TIME);
@@ -82,15 +91,75 @@ public class TaskController {
 
 
         model.addAttribute("task", taskService.findById(taskId));
+
+        TaskJoinState taskJoinState = getTaskJoinState(task, request, response);
+        model.addAttribute("taskState", taskJoinState);
+
+        return "task/show";
+    }
+
+    private TaskJoinState getTaskJoinState(Task task,
+                                           HttpServletRequest request, HttpServletResponse response){
+        TaskJoinState taskJoinState = null;
+        boolean isExpiredOrFull = task.isExpired() || task.isFull();
+
         int loginState = -400;
         try{
             loginState = userService.maintainLoginState(request, response);
         } catch (IOException e){
             e.printStackTrace();
         }
-        model.addAttribute("loginState", loginState);
 
-        return "task/show";
+        if(loginState < 0){
+            if(isExpiredOrFull){
+                taskJoinState = TaskJoinState.EXPIRED;
+            } else {
+                taskJoinState =  TaskJoinState.NEED_LOGIN;
+            }
+        } else {
+            //处理用户是否参与过/正在参与这个任务
+            //User user = userService.findById(loginState);
+            //Set<Task> tasks = user.getClaimedTasks();
+            List<UserTask> userTasks = userTaskService.getByUserId(loginState, 1000);
+            boolean claimedThisTask = false;
+            for(UserTask userTask : userTasks){
+                if(userTask.getTaskId().equals(task.getId())){
+                    claimedThisTask = true;
+                    if(userTask.getState() == UserTask.TYPE_FINISHED){
+                    //该任务已经完成过了
+                        taskJoinState = TaskJoinState.FINISHED;
+                    } else {
+                        taskJoinState = TaskJoinState.CLAIMED;
+                    }
+                    break;
+                }
+            }
+
+            if(!claimedThisTask){
+                taskJoinState = TaskJoinState.JOINABLE;
+            }
+
+//            if(tasks.contains(task)){
+//                UserTask userTask = userTaskService.getByUserAndTaskId(user.getId(), task.getId());
+//                if(userTask.getState() == UserTask.TYPE_FINISHED){
+//                    //该任务已经完成过了
+//                    taskJoinState = TaskJoinState.FINISHED;
+//                } else {
+//                    taskJoinState = TaskJoinState.CLAIMED;
+//                }
+//            } else {
+//                taskJoinState = TaskJoinState.JOINABLE;
+//            }
+        }
+
+        return taskJoinState;
+    }
+
+    @RequestMapping(value = "/claim", method = RequestMethod.POST,
+    produces = MediaType.APPLICATION_JSON_VALUE,
+    consumes = MediaType.APPLICATION_JSON_VALUE)
+    public AjaxResponseBody claimTask(){
+
     }
 
     /**
