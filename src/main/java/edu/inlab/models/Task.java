@@ -8,6 +8,8 @@ import org.json.JSONObject;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by inlab-dell on 2016/5/4.
@@ -51,6 +53,10 @@ public class Task {
 
     @Column(name = "owner_id", nullable = false)
     private Integer ownerId;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id")
+    private List<Microtask> relatedMictorasks;
 
 
     public Integer getId() {
@@ -131,6 +137,14 @@ public class Task {
 
     public void setClaimedCount(Integer claimedCount) {
         this.claimedCount = claimedCount;
+    }
+
+    public List<Microtask> getRelatedMictorasks() {
+        return relatedMictorasks;
+    }
+
+    public void setRelatedMictorasks(List<Microtask> relatedMictorasks) {
+        this.relatedMictorasks = relatedMictorasks;
     }
 
     @Override

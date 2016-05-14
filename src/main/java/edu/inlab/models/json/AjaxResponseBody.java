@@ -1,4 +1,4 @@
-package edu.inlab.models;
+package edu.inlab.models.json;
 import com.fasterxml.jackson.annotation.JsonView;
 
 

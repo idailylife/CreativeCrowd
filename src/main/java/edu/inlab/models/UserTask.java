@@ -13,6 +13,16 @@ public class UserTask {
     public static int TYPE_FINISHED = 1;
     public static int TYPE_EXPIRED = 2;
 
+    public UserTask(){
+
+    };
+
+    public UserTask(int userId, int taskId){
+        this.userId = userId;
+        this.taskId = taskId;
+        this.state = TYPE_CLAIMED;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
