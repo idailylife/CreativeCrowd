@@ -1,6 +1,6 @@
 package edu.inlab.web;
 
-import edu.inlab.models.AjaxResponseBody;
+import edu.inlab.models.json.AjaxResponseBody;
 import edu.inlab.models.User;
 import edu.inlab.service.UserService;
 import edu.inlab.utils.EncodeFactory;
@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

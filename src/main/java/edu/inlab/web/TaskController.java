@@ -1,10 +1,10 @@
 package edu.inlab.web;
 
-import edu.inlab.models.AjaxResponseBody;
-import edu.inlab.models.Task;
-import edu.inlab.models.User;
-import edu.inlab.models.UserTask;
+import edu.inlab.models.*;
+import edu.inlab.models.json.AjaxResponseBody;
+import edu.inlab.models.json.TaskClaimRequestBody;
 import edu.inlab.service.TaskService;
+import edu.inlab.service.UserMicrotaskService;
 import edu.inlab.service.UserService;
 import edu.inlab.service.UserTaskService;
 import edu.inlab.utils.Constants;
@@ -16,9 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,6 +41,9 @@ public class TaskController {
 
     @Autowired
     UserTaskService userTaskService;
+
+    @Autowired
+    UserMicrotaskService userMicrotaskService;
 
     @Transactional  //Avoids lazy-load problem
     @RequestMapping(value = "/tid{taskId}", method = RequestMethod.GET)
@@ -92,25 +93,25 @@ public class TaskController {
 
         model.addAttribute("task", taskService.findById(taskId));
 
-        TaskJoinState taskJoinState = getTaskJoinState(task, request, response);
-        model.addAttribute("taskState", taskJoinState);
-
-        return "task/show";
-    }
-
-    private TaskJoinState getTaskJoinState(Task task,
-                                           HttpServletRequest request, HttpServletResponse response){
-        TaskJoinState taskJoinState = null;
-        boolean isExpiredOrFull = task.isExpired() || task.isFull();
-
         int loginState = -400;
         try{
             loginState = userService.maintainLoginState(request, response);
         } catch (IOException e){
             e.printStackTrace();
         }
+        TaskJoinState taskJoinState = getTaskJoinState(task, loginState);
+        model.addAttribute("taskState", taskJoinState);
 
-        if(loginState < 0){
+        return "task/show";
+    }
+
+    private TaskJoinState getTaskJoinState(Task task, int loginStateOrUserId){
+        TaskJoinState taskJoinState = null;
+        boolean isExpiredOrFull = task.isExpired() || task.isFull();
+
+
+
+        if(loginStateOrUserId < 0){
             if(isExpiredOrFull){
                 taskJoinState = TaskJoinState.EXPIRED;
             } else {
@@ -120,7 +121,7 @@ public class TaskController {
             //处理用户是否参与过/正在参与这个任务
             //User user = userService.findById(loginState);
             //Set<Task> tasks = user.getClaimedTasks();
-            List<UserTask> userTasks = userTaskService.getByUserId(loginState, 1000);
+            List<UserTask> userTasks = userTaskService.getByUserId(loginStateOrUserId, 1000);
             boolean claimedThisTask = false;
             for(UserTask userTask : userTasks){
                 if(userTask.getTaskId().equals(task.getId())){
@@ -155,11 +156,41 @@ public class TaskController {
         return taskJoinState;
     }
 
+    @ResponseBody
+    @Transactional
     @RequestMapping(value = "/claim", method = RequestMethod.POST,
     produces = MediaType.APPLICATION_JSON_VALUE,
     consumes = MediaType.APPLICATION_JSON_VALUE)
-    public AjaxResponseBody claimTask(){
-
+    public AjaxResponseBody claimTask(
+            @RequestBody TaskClaimRequestBody taskClaimRequestBody,
+            HttpServletRequest request){
+        Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
+        User user = userService.findById(uid);
+        AjaxResponseBody responseBody = new AjaxResponseBody();
+        if(uid == null || user == null){
+            responseBody.setState(500);
+            responseBody.setMessage("User or id is null");
+        } else {
+            Task task = taskService.findById(taskClaimRequestBody.getTaskId());
+            TaskJoinState taskJoinState = getTaskJoinState(task, uid);
+            if(taskJoinState.equals(TaskJoinState.JOINABLE)){
+                //Create UserTask
+                UserTask userTask = new UserTask(uid, task.getId());
+                userTaskService.saveUserTask(userTask);
+                //Create UserMicroTasks
+                for(Microtask microtask: task.getRelatedMictorasks()){
+                    UserMicroTask userMicroTask = new UserMicroTask();
+                    userMicroTask.setMicrotaskId(microtask.getId());
+                    userMicroTask.setUsertaskId(userTask.getId());
+                    userMicrotaskService.save(userMicroTask);
+                }
+                responseBody.setState(200);
+            } else {
+                responseBody.setState(400);
+                responseBody.setMessage("Wrong task state.");
+            }
+        }
+        return responseBody;
     }
 
     /**
