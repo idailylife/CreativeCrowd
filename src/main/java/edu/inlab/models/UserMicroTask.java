@@ -1,5 +1,6 @@
 package edu.inlab.models;
 
+import edu.inlab.repo.usertype.JSONObjectUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.json.JSONObject;
@@ -11,7 +12,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "usermicrotask")
-@TypeDef(name = "customJsonObject", typeClass = JSONObject.class)
+@TypeDef(name = "customJsonObject", typeClass = JSONObjectUserType.class)
 public class UserMicroTask {
     @Id
     @Column(name = "id")

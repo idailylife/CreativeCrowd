@@ -18,7 +18,7 @@
     <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<c:url value="/css/login_styles.css"/>">
+    <link rel="stylesheet" href="<c:url value="/static/css/login_styles.css"/>">
 </head>
 <body>
 <div class="container">
@@ -46,8 +46,8 @@
 <!-- Should be moved to common header -->
 <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
 <script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script src="<c:url value="/js/md5.js"/>"></script>
-<script src="<c:url value="/js/login.js"/>"></script>
+<script src="<c:url value="/static/js/md5.js"/>"></script>
+<script src="<c:url value="/static/js/login.js"/>"></script>
 <script>
     var homeUrl = ${home};
 </script>
