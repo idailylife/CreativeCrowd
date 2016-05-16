@@ -47,7 +47,11 @@ public class JSONObjectUserType implements UserType {
      * @throws SQLException
      */
     public Object nullSafeGet(ResultSet resultSet, String[] names, SessionImplementor sessionImplementor, Object o) throws HibernateException, SQLException {
-        JSONObject jsonObject = new JSONObject(resultSet.getString(names[0]));
+        String resultStr = resultSet.getString(names[0]);
+        JSONObject jsonObject = null;
+        if(resultStr != null){
+            jsonObject = new JSONObject(resultSet.getString(names[0]));
+        }
         return jsonObject;
     }
 

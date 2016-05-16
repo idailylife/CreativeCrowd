@@ -70,7 +70,7 @@ public class UserController {
         if(stateStr != null){
             model.addAttribute("state", stateStr);
         }
-        return "user/login";
+        return "pages/user/login";
     }
 
     @ResponseBody

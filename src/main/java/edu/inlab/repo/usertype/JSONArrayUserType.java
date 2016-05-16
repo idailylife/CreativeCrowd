@@ -35,7 +35,10 @@ public class JSONArrayUserType implements UserType {
     }
 
     public Object nullSafeGet(ResultSet resultSet, String[] names, SessionImplementor sessionImplementor, Object o) throws HibernateException, SQLException {
-        JSONArray jsonArray = new JSONArray(resultSet.getString(names[0]));
+        String resultStr = resultSet.getString(names[0]);
+        JSONArray jsonArray = null;
+        if(null != resultStr)
+            jsonArray = new JSONArray(resultSet.getString(names[0]));
         return jsonArray;
     }
 

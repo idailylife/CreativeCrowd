@@ -1,12 +1,11 @@
 package edu.inlab.web;
 
 import edu.inlab.models.*;
+import edu.inlab.models.handler.MicroTaskHandler;
+import edu.inlab.models.handler.TaskHandlerFactory;
 import edu.inlab.models.json.AjaxResponseBody;
 import edu.inlab.models.json.TaskClaimRequestBody;
-import edu.inlab.service.TaskService;
-import edu.inlab.service.UserMicrotaskService;
-import edu.inlab.service.UserService;
-import edu.inlab.service.UserTaskService;
+import edu.inlab.service.*;
 import edu.inlab.utils.Constants;
 import edu.inlab.utils.JSON2Map;
 import org.json.JSONObject;
@@ -18,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -35,6 +35,9 @@ public class TaskController {
 
     @Autowired
     TaskService taskService;
+
+    @Autowired
+    MicroTaskService microTaskService;
 
     @Autowired
     UserService userService;
@@ -183,9 +186,19 @@ public class TaskController {
                     userMicroTask.setMicrotaskId(microtask.getId());
                     userMicroTask.setUsertaskId(userTask.getId());
                     userMicrotaskService.save(userMicroTask);
+                    if(microtask.getPrevId() == null){
+                        //First microtask to this task
+                        userTask.setCurrUserMicrotaskId(userMicroTask.getId());
+                    }
                 }
+                userTaskService.updateUserTask(userTask);
                 responseBody.setState(200);
-            } else {
+                responseBody.setMessage("userTask created");
+                responseBody.setContent(userTask.getId().toString());
+            }else if(taskJoinState.equals(TaskJoinState.CLAIMED)){
+                responseBody.setState(300);
+                responseBody.setMessage("userTask already claimed");
+            }else {
                 responseBody.setState(400);
                 responseBody.setMessage("Wrong task state.");
             }
@@ -233,5 +246,29 @@ public class TaskController {
             }
         }
         return retStr;
+    }
+
+    @Transactional
+    @RequestMapping(value = "/do/{taskId}", method = RequestMethod.GET)
+    public String doTask(@PathVariable int taskId, Model model,
+                         HttpServletRequest request){
+        Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
+        UserTask userTask = userTaskService.getByUserAndTaskId(uid, taskId);
+        if(null == userTask){
+            throw new ResourceNotFoundException();
+        }
+        if(userTask.getCurrUserMicrotaskId() == null){
+            //没有正在进行中的microtask
+            throw new ResourceNotFoundException();
+        }
+        UserMicroTask userMicroTask = userMicrotaskService.getById(userTask.getCurrUserMicrotaskId());
+        Microtask microtask = microTaskService.getById(userMicroTask.getMicrotaskId());
+        MicroTaskHandler microTaskHandler = TaskHandlerFactory.getHandler(microtask.getHandlerType(),
+                request.getContextPath()+"/img/upload/");
+        String htmlStr = microTaskHandler.parseMicrotaskToHtml(microtask.getTemplate().toString());
+        model.addAttribute("htmlStr", htmlStr);
+        Task task = taskService.findById(userTask.getTaskId());
+        model.addAttribute("title", task.getTitle());
+        return "task/do";
     }
 }

@@ -1,7 +1,9 @@
 package edu.inlab.models;
 
+import edu.inlab.repo.usertype.JSONArrayUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -11,23 +13,31 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "microtask")
-@TypeDef(name = "customJsonObject", typeClass = JSONObject.class)
+@TypeDef(name = "customJsonArray", typeClass = JSONArrayUserType.class)
 public class Microtask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
+//    @Column(name = "task_id", nullable = false)
+//    private Integer taskId;
+
     @ManyToOne
-    @Column(name = "task_id", nullable = false)
-    private Integer taskId;
+    private Task task;
 
     @Column(name = "template", nullable = false)
-    @Type(type = "customJsonObject")
-    private JSONObject template;
+    @Type(type = "customJsonArray")
+    private JSONArray template;
 
     @Column(name = "handler")
     private String handlerType;
+
+    @Column(name = "prev_id")
+    private Integer prevId;
+
+    @Column(name = "next_id")
+    private Integer nextId;
 
     public Integer getId() {
         return id;
@@ -37,19 +47,19 @@ public class Microtask {
         this.id = id;
     }
 
-    public Integer getTaskId() {
-        return taskId;
-    }
+//    public Integer getTaskId() {
+//        return taskId;
+//    }
+//
+//    public void setTaskId(Integer taskId) {
+//        this.taskId = taskId;
+//    }
 
-    public void setTaskId(Integer taskId) {
-        this.taskId = taskId;
-    }
-
-    public JSONObject getTemplate() {
+    public JSONArray getTemplate() {
         return template;
     }
 
-    public void setTemplate(JSONObject template) {
+    public void setTemplate(JSONArray template) {
         this.template = template;
     }
 
@@ -59,6 +69,30 @@ public class Microtask {
 
     public void setHandlerType(String handlerType) {
         this.handlerType = handlerType;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
+    public Integer getPrevId() {
+        return prevId;
+    }
+
+    public void setPrevId(Integer prevId) {
+        this.prevId = prevId;
+    }
+
+    public Integer getNextId() {
+        return nextId;
+    }
+
+    public void setNextId(Integer nextId) {
+        this.nextId = nextId;
     }
 
     @Override

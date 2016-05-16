@@ -14,7 +14,7 @@ import java.util.Iterator;
  *     each jsonObject has a key indicates its type, which can be a (lower-cased, * means optional):
  *     [
  *      {label,     {id: ID, text: CONTENT, *for: FOR_ID}} :=> labels (for some input FOR_ID)
- *      {text,      {id: ID, desc: DESCRIPTION, *multiline: true/false, *placeholder: TEXT}}           :=> text input
+ *      {text,      {id: ID, *multiline: true/false, *placeholder: TEXT}}           :=> text input
  *      {choice,    {id: ID, *type: single/multiple, items:[ITEM_1, ITEM_2, ...]}
  *              :=> single(default)/multiple choice box
  *      {image,     {src: internal_url}}    :=> image
@@ -153,9 +153,9 @@ public class SimpleMicroTaskHandler implements MicroTaskHandler {
             //TODO: TO BE SUPPORTED
             stringBuilder.append("id=\"ud_")
                     .append(buttonObj.getString("id"))
-                    .append(">")
+                    .append(" value=\"")
                     .append(buttonObj.getString("text"))
-                    .append("</button>");
+                    .append("\"/>");
         } else if(buttonObj.getString("type").equals("int")){
             //Internal link
             stringBuilder.append("id=\"btn_")
@@ -163,16 +163,16 @@ public class SimpleMicroTaskHandler implements MicroTaskHandler {
                     .append("\" ");
             String target = buttonObj.getString("target");
             if(target.equals("prev")){
-                stringBuilder.append("class=\"btn btn-default\">")
+                stringBuilder.append("class=\"btn btn-default\" value=\"")
                         .append("上一项");
             } else if(target.equals("next")){
-                stringBuilder.append("class=\"btn btn-default\">")
+                stringBuilder.append("class=\"btn btn-default\" value=\"")
                         .append("下一项");
             } else if(target.equals("submit")){
-                stringBuilder.append("class=\"btn btn-primary\">")
+                stringBuilder.append("class=\"btn btn-primary\" value=\"")
                         .append("提交");
             }
-            stringBuilder.append("</button>");
+            stringBuilder.append("\"/>");
         }
         return stringBuilder.toString();
     }
