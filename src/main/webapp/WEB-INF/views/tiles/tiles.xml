@@ -4,6 +4,7 @@
     <!--base definition-->
     <definition name="base-definition" template="/WEB-INF/views/tiles/layouts/defaultLayout.jsp">
         <put-attribute name="title" value="创意众包平台"/>
+        <put-attribute name="head" value=""/>
         <put-attribute name="header" value="/WEB-INF/views/tiles/layouts/defaultHeader.jsp"/>
         <put-attribute name="body" value="" />
         <put-attribute name="footer" value="/WEB-INF/views/tiles/layouts/defaultFooter.jsp"/>
@@ -14,6 +15,24 @@
         <put-attribute name="body" value="/WEB-INF/views/pages/home.jsp"/>
     </definition>
 
-    <!--User Register-->
+    <!--Agreement-->
+    <definition name="agreement" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/views/pages/agreement.jsp"/>
+    </definition>
 
+    <!--User Register-->
+    <definition name="user/register" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/views/pages/user/register.jsp"/>
+    </definition>
+
+    <!--User Login-->
+    <definition name="user/login" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/views/pages/user/login.jsp"/>
+    </definition>
+
+    <!-- Task Show-->
+    <definition name="task/show" extends="base-definition">
+        <put-attribute name="head" value="/WEB-INF/views/pages/task/show_head.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/views/pages/task/show.jsp"/>
+    </definition>
 </tiles-definitions>

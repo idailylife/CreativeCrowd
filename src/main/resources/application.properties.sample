@@ -5,3 +5,7 @@ jdbc.password = YOUR_PASSWORD
 hibernate.dialect = org.hibernate.dialect.MySQLDialect
 hibernate.show_sql = true
 hibernate.format_sql = true
+kaptcha.image.width = 200
+kaptcha.image.height = 50
+kaptcha.textproducer.char.string = 1234567890
+kaptcha.textproducer.char.length = 6

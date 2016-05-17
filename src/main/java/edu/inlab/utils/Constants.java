@@ -11,4 +11,5 @@ public class Constants {
     public static final String KEY_TASK_DESC_DETAIL = "desc_detail";
     public static final String KEY_TASK_EST_TIME = "est_time";
     public static final String KEY_TASK_REL_INFO = "info";
+    public static final String KEY_CAPTCHA_SESSION ="_captcha";
 }

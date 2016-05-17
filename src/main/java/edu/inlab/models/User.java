@@ -14,7 +14,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "user")
-public class User {
+public class User extends CaptchaCapableModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true)
@@ -56,6 +56,7 @@ public class User {
 
     @Column(name = "token_cookie")
     private String tokenCookie;
+
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "usertask",
@@ -202,6 +203,7 @@ public class User {
     public void setClaimedTasks(Set<Task> claimedTasks) {
         this.claimedTasks = claimedTasks;
     }
+
 
     @Override
     public boolean equals(Object obj) {
