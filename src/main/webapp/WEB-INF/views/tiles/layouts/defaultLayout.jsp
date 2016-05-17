@@ -18,18 +18,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="<c:url value="/static/css/defaultHeader-styles.css"/> ">
+    <tiles:insertAttribute name="head"/>
 </head>
 <body>
     <header id="header">
         <tiles:insertAttribute name="header"/>
     </header>
-    <section id="site-content">
+    <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <section id="site-content" class="container">
         <tiles:insertAttribute name="body"/>
     </section>
     <footer id="footer" class="footer">
         <tiles:insertAttribute name="footer"/>
     </footer>
-    <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
-    <script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
 </body>
 </html>

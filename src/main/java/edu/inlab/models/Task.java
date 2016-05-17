@@ -54,6 +54,9 @@ public class Task {
     @Column(name = "owner_id", nullable = false)
     private Integer ownerId;
 
+    @Column(name = "image")
+    private String image;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "id")
     private List<Microtask> relatedMictorasks;
@@ -145,6 +148,14 @@ public class Task {
 
     public void setRelatedMictorasks(List<Microtask> relatedMictorasks) {
         this.relatedMictorasks = relatedMictorasks;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override

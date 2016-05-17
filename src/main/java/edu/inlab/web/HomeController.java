@@ -38,8 +38,13 @@ public class HomeController {
         return "home";
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public String register(){
-        return "redirect:/user/register";
+    @RequestMapping(value = "agreement")
+    public String agreement(){
+        return "agreement";
     }
+
+//    @RequestMapping(value = "/register", method = RequestMethod.GET)
+//    public String register(){
+//        return "redirect:/user/register";
+//    }
 }

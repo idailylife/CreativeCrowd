@@ -61,15 +61,18 @@ public class TaskController {
         String title = task.getTitle();
         model.addAttribute("title", title);
 
+        String imageUrl = task.getImage();
+        model.addAttribute("image", imageUrl);
+
         JSONObject jsonDesc = task.getDescJson();
 
         String descText = jsonDesc.getString(Constants.KEY_TASK_DESC);
         model.addAttribute("desc", descText);
 
-        if(jsonDesc.has(Constants.KEY_TASK_IMG_URL)){
-            String imageUrl = jsonDesc.getString(Constants.KEY_TASK_IMG_URL);
-            model.addAttribute("image", imageUrl);
-        }
+//        if(jsonDesc.has(Constants.KEY_TASK_IMG_URL)){
+//            String imageUrl = jsonDesc.getString(Constants.KEY_TASK_IMG_URL);
+//            model.addAttribute("image", imageUrl);
+//        }
 
         String descDetail = jsonDesc.getString(Constants.KEY_TASK_DESC_DETAIL);
         model.addAttribute("descDetail", descDetail);

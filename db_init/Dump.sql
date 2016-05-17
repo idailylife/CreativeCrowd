@@ -89,6 +89,7 @@ CREATE TABLE `task` (
   `end_time` int(11) DEFAULT NULL,
   `owner_id` int(11) NOT NULL,
   `claimed_count` int(11) NOT NULL DEFAULT '0',
+  `image` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
@@ -100,7 +101,7 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (1,'创意众包平台',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"img\":\"no-img.png\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0),(2,'创意众包平台2',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"img\":\"no-img.png\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0);
+INSERT INTO `task` VALUES (1,'创意众包平台',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"img\":\"no-img.png\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0,'no-img.png'),(2,'创意众包平台2',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"img\":\"no-img.png\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0,'no-img.png');
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -127,7 +128,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,7 +137,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (5,'039195f42325681193bd7090c26eafa4','iorange@126.com',NULL,NULL,NULL,NULL,NULL,0.5,NULL,'whoknows1462772249954543251291','1b137775a54b4ffcb25724eb09ea1e23');
+INSERT INTO `user` VALUES (5,'039195f42325681193bd7090c26eafa4','iorange@126.com',NULL,NULL,NULL,NULL,NULL,0.5,NULL,'whoknows1462772249954543251291','0c92553fea0440c6a6af351b3e486430'),(6,'6236165990ab5ccf67bf03f790219c6d','test@test.com',NULL,NULL,NULL,NULL,NULL,0.5,NULL,'whoknows14634684397591628717812','fe15877e8bd04421bf1f90a688cd51e1');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -208,4 +209,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-16 17:02:22
+-- Dump completed on 2016-05-17 17:15:11

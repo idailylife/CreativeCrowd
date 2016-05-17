@@ -17,6 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 /**
  * Created by inlab-dell on 2016/5/5.
@@ -30,7 +31,10 @@ public class UserController {
     UserService userService;
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public String newUser(){
+    public String newUser(HttpServletRequest request){
+        if(request.getSession().getAttribute(Constants.KEY_USER_UID) != null){
+            return "redirect:/";
+        }
         return "user/register";
     }
 
@@ -39,13 +43,17 @@ public class UserController {
     produces = MediaType.APPLICATION_JSON_VALUE,
     consumes = MediaType.APPLICATION_JSON_VALUE)
     public AjaxResponseBody  submitNewUser(
-            @RequestBody @Valid User user, BindingResult bindingResult){
+            @RequestBody @Valid User user, BindingResult bindingResult, HttpServletRequest request){
         AjaxResponseBody responseBody = new AjaxResponseBody();
         if(bindingResult.hasErrors()){
             responseBody.setState(400);
             responseBody.setMessage("Illegal input.");
         } else {
-            if(!userService.isUniqueEmail(user.getEmail(), null)){
+            String expectedCaptcha = (String)request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION);
+            if(expectedCaptcha==null || !expectedCaptcha.equals(user.getCaptcha())){
+                responseBody.setState(403);
+                responseBody.setMessage("Wrong captcha.");
+            } else if(!userService.isUniqueEmail(user.getEmail(), null)){
                 responseBody.setState(401);
                 responseBody.setMessage("Invalid Email: Duplicated.");
             } else {
@@ -60,17 +68,21 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login( Model model,
             @RequestParam(value = "next", required = false) String nextStr,
-            @RequestParam(value = "state", required = false) String stateStr ){
-        //TODO: 如果已经登录，则跳转到主页
+            @RequestParam(value = "state", required = false) String stateStr,
+                         HttpServletRequest request){
+        if(request.getSession().getAttribute(Constants.KEY_USER_UID) != null){
+            return "redirect:/";
+        }
+
         if(nextStr != null){
             model.addAttribute("nextUrl", nextStr);
         } else {
-            model.addAttribute("nextUrl", "/");
+            model.addAttribute("nextUrl", request.getContextPath());
         }
         if(stateStr != null){
             model.addAttribute("state", stateStr);
         }
-        return "pages/user/login";
+        return "user/login";
     }
 
     @ResponseBody
@@ -85,40 +97,58 @@ public class UserController {
             responseBody.setState(400);
             responseBody.setMessage("Illegal input.");
         } else {
-            int checkState = userService.verify(user.getEmail(), user.getPassword());
-            switch (checkState){
-                case UserService.ERR_WRONG_PASSWORD:
-                    User currUser = userService.findByEmail(user.getEmail());
-                    currUser.setTokenCookie("");    //Clear token
-                    userService.updateUser(currUser);
-                case UserService.ERR_NO_SUCH_USER:
-                    responseBody.setState(401);
-                    responseBody.setMessage("Wrong email or password.");
-                    break;
-                case UserService.ERR_SALT_UNDEFINED:
-                    responseBody.setState(500);
-                    responseBody.setMessage("Internal error: salt not defined.");
-                    break;
-                case UserService.SUCC_LOGIN:
-                    responseBody.setState(200);
-                    //在cookie及session中写入id及token_cookie
-                    currUser = userService.findByEmail(user.getEmail());
-                    currUser.setTokenCookie(EncodeFactory.getRandomUUID());
-                    userService.updateUser(currUser);
-                    request.getSession().setAttribute(Constants.KEY_USER_UID, currUser.getId());
-                    Cookie uidCookie = new Cookie(Constants.KEY_USER_UID, currUser.getId().toString());
-                    uidCookie.setMaxAge(7 * 24 * 3600); //7days
-                    response.addCookie(uidCookie);
-                    Cookie tokenCookie = new Cookie(Constants.KEY_USER_TOKEN, currUser.getTokenCookie());
-                    tokenCookie.setMaxAge(7 * 24 * 3600);
-                    response.addCookie(tokenCookie);
-                    break;
-                default:
-                    responseBody.setState(501);
-                    responseBody.setMessage("Unknown internal error");
+            String expectedCaptcha = (String)request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION);
+            if(expectedCaptcha==null || !expectedCaptcha.equals(user.getCaptcha())) {
+                responseBody.setState(403);
+                responseBody.setMessage("Wrong captcha.");
+            } else {
+                int checkState = userService.verify(user.getEmail(), user.getPassword());
+                switch (checkState){
+                    case UserService.ERR_WRONG_PASSWORD:
+                        User currUser = userService.findByEmail(user.getEmail());
+                        currUser.setTokenCookie("");    //Clear token
+                        userService.updateUser(currUser);
+                    case UserService.ERR_NO_SUCH_USER:
+                        responseBody.setState(401);
+                        responseBody.setMessage("Wrong email or password.");
+                        break;
+                    case UserService.ERR_SALT_UNDEFINED:
+                        responseBody.setState(500);
+                        responseBody.setMessage("Internal error: salt not defined.");
+                        break;
+                    case UserService.SUCC_LOGIN:
+                        responseBody.setState(200);
+                        //在cookie及session中写入id及token_cookie
+                        currUser = userService.findByEmail(user.getEmail());
+                        currUser.setTokenCookie(EncodeFactory.getRandomUUID());
+                        userService.updateUser(currUser);
+                        request.getSession().setAttribute(Constants.KEY_USER_UID, currUser.getId());
+                        Cookie uidCookie = new Cookie(Constants.KEY_USER_UID, currUser.getId().toString());
+                        uidCookie.setMaxAge(7 * 24 * 3600); //7days
+                        response.addCookie(uidCookie);
+                        Cookie tokenCookie = new Cookie(Constants.KEY_USER_TOKEN, currUser.getTokenCookie());
+                        tokenCookie.setMaxAge(7 * 24 * 3600);
+                        response.addCookie(tokenCookie);
+                        break;
+                    default:
+                        responseBody.setState(501);
+                        responseBody.setMessage("Unknown internal error");
+                }
             }
         }
         return responseBody;
+    }
+
+    @RequestMapping(value = "/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        request.getSession().removeAttribute(Constants.KEY_USER_UID);
+        Cookie uidCookie = new Cookie(Constants.KEY_USER_UID, null);
+        uidCookie.setMaxAge(0);
+        Cookie tokenCookie = new Cookie(Constants.KEY_USER_TOKEN, null);
+        tokenCookie.setMaxAge(0);
+        response.addCookie(uidCookie);
+        response.addCookie(tokenCookie);
+        return "home";
     }
 
     @RequestMapping(value = "/test", method = RequestMethod.GET,
