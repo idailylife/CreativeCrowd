@@ -26,7 +26,7 @@
     </header>
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
     <script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <section id="site-content" class="container">
+    <section id="site-content">
         <tiles:insertAttribute name="body"/>
     </section>
     <footer id="footer" class="footer">

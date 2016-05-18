@@ -12,6 +12,7 @@
 
     <!--Home Page-->
     <definition name="home" extends="base-definition">
+        <put-attribute name="head" value="/WEB-INF/views/pages/home-head.jsp"/>
         <put-attribute name="body" value="/WEB-INF/views/pages/home.jsp"/>
     </definition>
 

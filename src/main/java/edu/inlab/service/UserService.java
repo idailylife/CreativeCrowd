@@ -1,6 +1,7 @@
 package edu.inlab.service;
 
 import edu.inlab.models.User;
+import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,4 +33,5 @@ public interface UserService {
     int verify(String email, String passwordInMD5);
     int verify(int uid, String token);
     int maintainLoginState(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    void loginStateParse(Model model, Integer uid);
 }

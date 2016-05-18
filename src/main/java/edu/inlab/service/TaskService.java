@@ -12,6 +12,7 @@ public interface TaskService {
     List<Task> findByOwnerId(int ownerId);
     List<Task> getOpenTasks(int startId, int count);
     List<Task> getOpenTasks(int count);
+    List<Task> getPagedTasks(int pageNo, int pageSize);
     void saveTask(Task task);
     void updateTask(Task task);
     void deleteTaskById(int id);

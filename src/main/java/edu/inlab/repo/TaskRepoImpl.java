@@ -2,6 +2,7 @@ package edu.inlab.repo;
 
 import edu.inlab.models.Task;
 import org.hibernate.Query;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -27,6 +28,15 @@ public class TaskRepoImpl extends AbstractDao<Integer, Task> implements TaskRepo
         List<Task> tasks = getSession().createCriteria(Task.class)
                 .add(Restrictions.ge("id", startId))
                 .setMaxResults(count)
+                .list();
+        return tasks;
+    }
+
+    public List<Task> getPagedTasks(int pageNo, int pageSize){
+        List<Task> tasks = getSession().createCriteria(Task.class)
+                .addOrder(Order.desc("id"))
+                .setFirstResult((pageNo-1) * pageSize)
+                .setMaxResults(pageSize)
                 .list();
         return tasks;
     }

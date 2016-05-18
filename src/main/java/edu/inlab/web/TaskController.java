@@ -53,6 +53,9 @@ public class TaskController {
     public String showTask(
             @PathVariable("taskId") int taskId, Model model,
             HttpServletRequest request, HttpServletResponse response){
+        Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
+        userService.loginStateParse(model, uid);
+
         Task task = taskService.findById(taskId);
         if(null == task || null == task.getId()){
             throw new ResourceNotFoundException();
@@ -77,8 +80,7 @@ public class TaskController {
         String descDetail = jsonDesc.getString(Constants.KEY_TASK_DESC_DETAIL);
         model.addAttribute("descDetail", descDetail);
 
-        model.addAttribute("startEndTime",
-                parseTaskDurationStr(task.getStartTime(), task.getEndTime()));
+        model.addAttribute("startEndTime", task.getDurationStr());
 
         //Judge if current task has expired
 
@@ -146,17 +148,6 @@ public class TaskController {
                 taskJoinState = TaskJoinState.JOINABLE;
             }
 
-//            if(tasks.contains(task)){
-//                UserTask userTask = userTaskService.getByUserAndTaskId(user.getId(), task.getId());
-//                if(userTask.getState() == UserTask.TYPE_FINISHED){
-//                    //该任务已经完成过了
-//                    taskJoinState = TaskJoinState.FINISHED;
-//                } else {
-//                    taskJoinState = TaskJoinState.CLAIMED;
-//                }
-//            } else {
-//                taskJoinState = TaskJoinState.JOINABLE;
-//            }
         }
 
         return taskJoinState;
@@ -195,6 +186,10 @@ public class TaskController {
                     }
                 }
                 userTaskService.updateUserTask(userTask);
+                //Set task claimed count
+                task.setClaimedCount(task.getClaimedCount()+1);
+                taskService.updateTask(task);
+
                 responseBody.setState(200);
                 responseBody.setMessage("userTask created");
                 responseBody.setContent(userTask.getId().toString());
@@ -209,53 +204,55 @@ public class TaskController {
         return responseBody;
     }
 
-    /**
-     * 转换任务起止时间戳信息到文字
-     * @param startTime unix时间戳
-     * @param endTime   unix时间戳
-     * @return
-     */
-    public String parseTaskDurationStr(Integer startTime, Integer endTime){
-        if(null == startTime && null == endTime){
-            return "不限";
-        }
-        String retStr = "";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        Calendar calendar = Calendar.getInstance();
-        Date currDate = new Date();
-        calendar.setTime(currDate);
-        int year = calendar.get(Calendar.YEAR);
-
-
-        if(null != startTime){
-            Date date = new Date((long)startTime*1000);
-            calendar.setTime(date);
-            int startYear = calendar.get(Calendar.YEAR);
-            if(startYear == year){
-                retStr += new SimpleDateFormat("MM/dd").format(date);
-            } else {
-                retStr += dateFormat.format(date);
-            }
-        }
-        if(null != endTime){
-            Date date = new Date((long)endTime*1000);
-            calendar.setTime(date);
-            int endYear = calendar.get(Calendar.YEAR);
-            retStr += " - ";
-            if(endYear == year){
-                retStr += new SimpleDateFormat("MM/dd").format(date);
-            } else {
-                retStr += dateFormat.format(date);
-            }
-        }
-        return retStr;
-    }
+//    /**
+//     * 转换任务起止时间戳信息到文字
+//     * @param startTime unix时间戳
+//     * @param endTime   unix时间戳
+//     * @return
+//     */
+//    public String parseTaskDurationStr(Integer startTime, Integer endTime){
+//        if(null == startTime && null == endTime){
+//            return "不限";
+//        }
+//        String retStr = "";
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+//        Calendar calendar = Calendar.getInstance();
+//        Date currDate = new Date();
+//        calendar.setTime(currDate);
+//        int year = calendar.get(Calendar.YEAR);
+//
+//
+//        if(null != startTime){
+//            Date date = new Date((long)startTime*1000);
+//            calendar.setTime(date);
+//            int startYear = calendar.get(Calendar.YEAR);
+//            if(startYear == year){
+//                retStr += new SimpleDateFormat("MM/dd").format(date);
+//            } else {
+//                retStr += dateFormat.format(date);
+//            }
+//        }
+//        if(null != endTime){
+//            Date date = new Date((long)endTime*1000);
+//            calendar.setTime(date);
+//            int endYear = calendar.get(Calendar.YEAR);
+//            retStr += " - ";
+//            if(endYear == year){
+//                retStr += new SimpleDateFormat("MM/dd").format(date);
+//            } else {
+//                retStr += dateFormat.format(date);
+//            }
+//        }
+//        return retStr;
+//    }
 
     @Transactional
     @RequestMapping(value = "/do/{taskId}", method = RequestMethod.GET)
     public String doTask(@PathVariable int taskId, Model model,
                          HttpServletRequest request){
         Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
+        userService.loginStateParse(model, uid);
+
         UserTask userTask = userTaskService.getByUserAndTaskId(uid, taskId);
         if(null == userTask){
             throw new ResourceNotFoundException();
@@ -274,4 +271,6 @@ public class TaskController {
         model.addAttribute("title", task.getTitle());
         return "task/do";
     }
+
+
 }

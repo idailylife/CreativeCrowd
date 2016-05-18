@@ -7,6 +7,8 @@ import org.json.JSONObject;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -56,6 +58,9 @@ public class Task {
 
     @Column(name = "image")
     private String image;
+
+    @Column(name = "tag")
+    private String tag;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "id")
@@ -158,6 +163,14 @@ public class Task {
         this.image = image;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
     @Override
     public int hashCode() {
         if(this.id != null){
@@ -185,5 +198,50 @@ public class Task {
 
     public boolean isFull(){
         return claimedCount >= quota;
+    }
+
+    public boolean getTaskInvalid(){
+        boolean state = isExpired() || isFull();
+        return state;
+    }
+
+    /**
+     * 转换任务起止时间戳信息到文字
+     * @return
+     */
+    public String getDurationStr(){
+        if(null == startTime && null == endTime){
+            return "不限";
+        }
+        String retStr = "";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Calendar calendar = Calendar.getInstance();
+        Date currDate = new Date();
+        calendar.setTime(currDate);
+        int year = calendar.get(Calendar.YEAR);
+
+
+        if(null != startTime){
+            Date date = new Date((long)startTime*1000);
+            calendar.setTime(date);
+            int startYear = calendar.get(Calendar.YEAR);
+            if(startYear == year){
+                retStr += new SimpleDateFormat("MM/dd").format(date);
+            } else {
+                retStr += dateFormat.format(date);
+            }
+        }
+        if(null != endTime){
+            Date date = new Date((long)endTime*1000);
+            calendar.setTime(date);
+            int endYear = calendar.get(Calendar.YEAR);
+            retStr += " - ";
+            if(endYear == year){
+                retStr += new SimpleDateFormat("MM/dd").format(date);
+            } else {
+                retStr += dateFormat.format(date);
+            }
+        }
+        return retStr;
     }
 }
