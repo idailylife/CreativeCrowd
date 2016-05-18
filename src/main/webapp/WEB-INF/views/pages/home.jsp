@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: inlab-dell
@@ -42,54 +43,42 @@
     </div>
 </header>
 
-<main class="container">
+<main class="container" id="task-container">
+    <div class="row" id="task-row">
+        <c:forEach items="${tasks}" var="task">
+            <a class="col-md-3 btn-task <c:if test="${task.taskInvalid}">task-invalid</c:if>"
+               href="<c:url value="/task/tid${task.id}"/>" target="_blank" role="button">
+                <div class="thumbnail thumbnail-task">
+                    <c:choose>
+                        <c:when test="${not empty task.image}">
+                            <img src="<c:url value="/static/img/upload/${task.image}"/> " alt="${task.title}">
+                        </c:when>
+                        <c:otherwise>
+                            <!-- TODO:Replace -->
+                            <img src="http://www.baidu.com/img/bd_logo1.png" alt="yet another baidu logo">
+                        </c:otherwise>
+                    </c:choose>
+                    <div class="caption">
+                        <h4>${task.title}</h4>
+                        <p>有效时间: <span class="valid-time">${task.durationStr}</span></p>
+                        <p>参与人数: <span class="joined">${task.claimedCount}</span>/<span class="total_joined">${task.quota}</span> </p>
+                        <p class="text-right task-type">${task.tag}</p>
+                    </div>
+                </div>
+            </a>
+        </c:forEach>
+    </div>
     <div class="row">
-        <a class="col-md-3 btn-task" href="#blabla" role="button">
-            <div class="thumbnail thumbnail-task">
-                <img src="http://www.baidu.com/img/bd_logo1.png" alt="yet another baidu logo">
-                <div class="caption">
-                    <h4>灯具的创意设计</h4>
-                    <p>有效时间: <span class="valid-time">4/20-4/25</span></p>
-                    <p>参与人数: <span class="joined">20</span>/<span class="total_joined">80</span> </p>
-                    <p class="text-right task-type">创意任务</p>
-                </div>
-            </div>
-        </a>
+        <div class="col-md-12">
+            <a class="btn btn-default btn-full" id="more-tasks" href="#" role="button">
+                <span id="btn-more-icon" class="glyphicon glyphicon-chevron-down"></span>
+            </a>
+        </div>
 
-        <a class="col-md-3 btn-task" href="#blabla" role="button">
-            <div class="thumbnail thumbnail-task">
-                <img src="http://www.baidu.com/img/bd_logo1.png" alt="yet another baidu logo">
-                <div class="caption">
-                    <h4>灯具的创意设计</h4>
-                    <p>有效时间: <span class="valid-time">4/20-4/25</span></p>
-                    <p>参与人数: <span class="joined">20</span>/<span class="total_joined">80</span> </p>
-                    <p class="text-right task-type">创意任务</p>
-                </div>
-            </div>
-        </a>
-
-        <a class="col-md-3 btn-task" href="#blabla" role="button">
-            <div class="thumbnail thumbnail-task">
-                <img src="http://www.baidu.com/img/bd_logo1.png" alt="yet another baidu logo">
-                <div class="caption">
-                    <h4>灯具的创意设计</h4>
-                    <p>有效时间: <span class="valid-time">4/20-4/25</span></p>
-                    <p>参与人数: <span class="joined">20</span>/<span class="total_joined">80</span> </p>
-                    <p class="text-right task-type">创意任务</p>
-                </div>
-            </div>
-        </a>
-
-        <a class="col-md-3 btn-task task-invalid" href="#blabla" role="button">
-            <div class="thumbnail thumbnail-task">
-                <img src="http://www.baidu.com/img/bd_logo1.png" alt="yet another baidu logo">
-                <div class="caption">
-                    <h4>灯具的创意设计</h4>
-                    <p>有效时间: <span class="valid-time">4/20-4/25</span></p>
-                    <p>参与人数: <span class="joined">20</span>/<span class="total_joined">80</span> </p>
-                    <p class="text-right task-type">创意任务</p>
-                </div>
-            </div>
-        </a>
     </div>
 </main>
+
+<script>
+    var homeUrl = "<c:url value="/"/>";
+</script>
+<script src="<c:url value="/static/js/home.js"/> "></script>

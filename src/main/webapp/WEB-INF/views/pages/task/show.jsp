@@ -39,7 +39,7 @@
         </div>
         <div class="col-md-4">
             <div id="info-container">
-                <p>任务相关信息</p>
+                <h4>任务相关信息</h4>
                 <ul>
                     <li>任务时限: ${startEndTime}</li>
                     <li>已参与人数: ${task.finishedCount}/${task.quota}</li>

@@ -1,0 +1,10 @@
+.caption > h4{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    white-space: nowrap;
+}
+
+.btn-full{
+    width:100%;
+}

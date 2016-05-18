@@ -49,7 +49,13 @@ public class WebConfig extends WebMvcConfigurerAdapter{
         super.addInterceptors(registry);
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/agreement**","/captcha**", "/user/login**", "/user/register**", "/task/tid**", "/");
+                .excludePathPatterns("/agreement**",
+                        "/more**",
+                        "/captcha**",
+                        "/user/login**",
+                        "/user/register**",
+                        "/task/tid**",
+                        "/");
     }
 
     //Apache Tiles Support

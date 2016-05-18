@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -178,5 +179,18 @@ public class UserServiceImpl implements UserService {
         }
         //response.sendRedirect("/user/login?next=" + request.getRequestURI() + "&state=" + errorCode);
         return retCode;
+    }
+
+    public void loginStateParse(Model model, Integer uid) {
+        if(null != uid){
+            User user = findById(uid);
+            String displayName = user.getEmail();
+            if(user.getNickname() != null)
+                displayName = user.getNickname();
+            model.addAttribute("loginState", true);
+            model.addAttribute("displayName", displayName);
+        } else {
+            model.addAttribute("loginState", false);
+        }
     }
 }

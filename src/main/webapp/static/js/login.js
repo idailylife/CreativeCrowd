@@ -28,6 +28,9 @@ function postLoginForm() {
         $("#inputCaptcha").val("");
         switch (stateCode){
             case 200:
+                if(nextUrl.search("logout") != -1){
+                    nextUrl = homeUrl;
+                }
                 location.href = nextUrl;
                 break;
             case 400: case 401:

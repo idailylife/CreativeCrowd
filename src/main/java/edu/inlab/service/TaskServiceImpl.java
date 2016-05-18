@@ -34,6 +34,10 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.getOpenTasks(0, count);
     }
 
+    public List<Task> getPagedTasks(int pageNo, int pageSize) {
+        return taskRepository.getPagedTasks(pageNo, pageSize);
+    }
+
     public void saveTask(Task task) {
         taskRepository.saveTask(task);
     }

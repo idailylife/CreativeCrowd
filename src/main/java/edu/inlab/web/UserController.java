@@ -125,9 +125,11 @@ public class UserController {
                         request.getSession().setAttribute(Constants.KEY_USER_UID, currUser.getId());
                         Cookie uidCookie = new Cookie(Constants.KEY_USER_UID, currUser.getId().toString());
                         uidCookie.setMaxAge(7 * 24 * 3600); //7days
+                        uidCookie.setPath(request.getContextPath());
                         response.addCookie(uidCookie);
                         Cookie tokenCookie = new Cookie(Constants.KEY_USER_TOKEN, currUser.getTokenCookie());
                         tokenCookie.setMaxAge(7 * 24 * 3600);
+                        tokenCookie.setPath(request.getContextPath());
                         response.addCookie(tokenCookie);
                         break;
                     default:
@@ -140,20 +142,17 @@ public class UserController {
     }
 
     @RequestMapping(value = "/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) throws IOException{
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException{
         request.getSession().removeAttribute(Constants.KEY_USER_UID);
         Cookie uidCookie = new Cookie(Constants.KEY_USER_UID, null);
+        uidCookie.setPath(request.getContextPath());
         uidCookie.setMaxAge(0);
         Cookie tokenCookie = new Cookie(Constants.KEY_USER_TOKEN, null);
         tokenCookie.setMaxAge(0);
+        tokenCookie.setPath(request.getContextPath());
         response.addCookie(uidCookie);
         response.addCookie(tokenCookie);
-        return "home";
+        response.sendRedirect(request.getContextPath());
     }
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET,
-    produces = MediaType.TEXT_PLAIN_VALUE)
-    public String test(){
-        return "blablabla...";
-    }
 }
