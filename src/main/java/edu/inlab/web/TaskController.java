@@ -61,6 +61,8 @@ public class TaskController {
             throw new ResourceNotFoundException();
         }
 
+        model.addAttribute("tid", taskId);
+
         String title = task.getTitle();
         model.addAttribute("title", title);
 
@@ -204,47 +206,6 @@ public class TaskController {
         return responseBody;
     }
 
-//    /**
-//     * 转换任务起止时间戳信息到文字
-//     * @param startTime unix时间戳
-//     * @param endTime   unix时间戳
-//     * @return
-//     */
-//    public String parseTaskDurationStr(Integer startTime, Integer endTime){
-//        if(null == startTime && null == endTime){
-//            return "不限";
-//        }
-//        String retStr = "";
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-//        Calendar calendar = Calendar.getInstance();
-//        Date currDate = new Date();
-//        calendar.setTime(currDate);
-//        int year = calendar.get(Calendar.YEAR);
-//
-//
-//        if(null != startTime){
-//            Date date = new Date((long)startTime*1000);
-//            calendar.setTime(date);
-//            int startYear = calendar.get(Calendar.YEAR);
-//            if(startYear == year){
-//                retStr += new SimpleDateFormat("MM/dd").format(date);
-//            } else {
-//                retStr += dateFormat.format(date);
-//            }
-//        }
-//        if(null != endTime){
-//            Date date = new Date((long)endTime*1000);
-//            calendar.setTime(date);
-//            int endYear = calendar.get(Calendar.YEAR);
-//            retStr += " - ";
-//            if(endYear == year){
-//                retStr += new SimpleDateFormat("MM/dd").format(date);
-//            } else {
-//                retStr += dateFormat.format(date);
-//            }
-//        }
-//        return retStr;
-//    }
 
     @Transactional
     @RequestMapping(value = "/do/{taskId}", method = RequestMethod.GET)
@@ -255,22 +216,31 @@ public class TaskController {
 
         UserTask userTask = userTaskService.getByUserAndTaskId(uid, taskId);
         if(null == userTask){
-            throw new ResourceNotFoundException();
+            //TODO: 跳转到任务页?
+            throw new ResourceNotFoundException("usertask not found");
         }
         if(userTask.getCurrUserMicrotaskId() == null){
             //没有正在进行中的microtask
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException("currUserMicrotaskId is null");
         }
         UserMicroTask userMicroTask = userMicrotaskService.getById(userTask.getCurrUserMicrotaskId());
         Microtask microtask = microTaskService.getById(userMicroTask.getMicrotaskId());
         MicroTaskHandler microTaskHandler = TaskHandlerFactory.getHandler(microtask.getHandlerType(),
-                request.getContextPath()+"/img/upload/");
+                request.getContextPath()+"/static/img/upload/");
         String htmlStr = microTaskHandler.parseMicrotaskToHtml(microtask.getTemplate().toString());
         model.addAttribute("htmlStr", htmlStr);
         Task task = taskService.findById(userTask.getTaskId());
-        model.addAttribute("title", task.getTitle());
+        model.addAttribute("task", task);
         return "task/do";
     }
 
+    @Transactional
+    @RequestMapping(value = "/do", method = RequestMethod.POST,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public AjaxResponseBody submitTask(){
+        AjaxResponseBody responseBody = new AjaxResponseBody();
+        //
 
+        return responseBody;
+    }
 }

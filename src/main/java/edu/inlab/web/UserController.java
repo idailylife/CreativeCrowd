@@ -50,7 +50,7 @@ public class UserController {
             responseBody.setMessage("Illegal input.");
         } else {
             String expectedCaptcha = (String)request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION);
-            if(expectedCaptcha==null || !expectedCaptcha.equals(user.getCaptcha())){
+            if(!Constants.DEBUG && (expectedCaptcha==null || !expectedCaptcha.equals(user.getCaptcha()))){
                 responseBody.setState(403);
                 responseBody.setMessage("Wrong captcha.");
             } else if(!userService.isUniqueEmail(user.getEmail(), null)){
@@ -98,7 +98,7 @@ public class UserController {
             responseBody.setMessage("Illegal input.");
         } else {
             String expectedCaptcha = (String)request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION);
-            if(expectedCaptcha==null || !expectedCaptcha.equals(user.getCaptcha())) {
+            if(!Constants.DEBUG && (expectedCaptcha==null || !expectedCaptcha.equals(user.getCaptcha()))){
                 responseBody.setState(403);
                 responseBody.setMessage("Wrong captcha.");
             } else {

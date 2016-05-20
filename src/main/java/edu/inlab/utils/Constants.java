@@ -4,8 +4,17 @@ package edu.inlab.utils;
  * Created by inlab-dell on 2016/5/9.
  */
 public class Constants {
+    public static final boolean DEBUG = false;
+
+    public static final String UPLOAD_FILE_STORE_LOCATION = "D:/Code/Java/CreativeCrowd/src/main/webapp/static/img/upload/";
+    public static final long MAX_FILE_SIZE = 5242880;  //5MB
+    public static final long MAX_REQUEST_SIZE = 20971520;  //20MB
+    public static final int FILE_SIZE_THRESHOLD = 0; // Size threshold after which files will be written to disk
+
     public static final String KEY_USER_UID = "_uid";
     public static final String KEY_USER_TOKEN = "_utoken";
+    public static final String KEY_FILE_UPLOAD = "_fupload";
+
     public static final String KEY_TASK_DESC = "desc";
     //public static final String KEY_TASK_IMG_URL = "img";
     public static final String KEY_TASK_DESC_DETAIL = "desc_detail";
