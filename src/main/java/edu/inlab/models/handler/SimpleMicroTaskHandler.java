@@ -3,6 +3,7 @@ package edu.inlab.models.handler;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.ServletContext;
 import java.util.Iterator;
@@ -22,7 +23,7 @@ import java.util.Iterator;
  *                  :=> buttons
  *                  internal buttons will have specified ids: btn_prev, btn_submit or btn_next
  *                  external buttons can have customized id
- *      {file,      {accept: ALLOWED_TYPES}}      :=> file
+ *      {file,      {accept: ALLOWED_TYPES, *text: TEXT_DESCRIPTION}}      :=> file
  *     ]
  * Output:
  */
@@ -54,12 +55,19 @@ public class SimpleMicroTaskHandler implements MicroTaskHandler {
         JSONArray inputJsonAry = new JSONArray(templateStr);
         StringBuilder retStr = new StringBuilder();
         int length = inputJsonAry.length();
+        retStr.append("<form id=\"form-mtask\" enctype=\"multipart/form-data\">");
         for(int i=0; i<length; i++){
+            retStr.append("<div class=\"row row-with-gap\"><div class=\"col-md-12");
             JSONObject rowObject = inputJsonAry.getJSONObject(i);
             Iterator<String> keys = rowObject.keys();
             if(keys.hasNext()){
                 String keyType = keys.next();
                 JSONObject itemObj = rowObject.getJSONObject(keyType);
+                if(keyType.equals(KEY_BUTTON)){
+                    retStr.append(" text-right");
+                }
+                retStr.append("\">");
+
                 if(keyType.equals(KEY_LABEL)){
                     retStr.append(parseLabel(itemObj));
                 } else if(keyType.equals(KEY_TEXT)){
@@ -74,8 +82,10 @@ public class SimpleMicroTaskHandler implements MicroTaskHandler {
                     retStr.append(parseFile(itemObj));
                 }
             }
+            retStr.append("</div></div>");
             retStr.append("\n");
         }
+        retStr.append("</form>");
         return retStr.toString();
     }
 
@@ -139,7 +149,7 @@ public class SimpleMicroTaskHandler implements MicroTaskHandler {
         retStrBuilder.append("<img id=\"ud_")
                     .append(imageObj.getString("id"))
                     .append("\" ");
-        retStrBuilder.append("class=\"img-responsive\" ");
+        retStrBuilder.append("class=\"img-responsive center-block img-thumbnail\" ");
         retStrBuilder.append("src=\"").append(baseUrl).append(imageObj.getString("src")).append("\" ");
         retStrBuilder.append(">");
         return retStrBuilder.toString();
@@ -178,11 +188,20 @@ public class SimpleMicroTaskHandler implements MicroTaskHandler {
     }
 
     private String parseFile(JSONObject fileObj){
-        String retStr = "<input type=\"file\" id=\"btn_file\" class=\"btn btn-default\" ";
-        if(fileObj.has("accept")){
-            retStr += "accept=\"" + fileObj.getString("accept") + "\" ";
+
+        StringBuilder stringBuilder = new StringBuilder();
+        if(fileObj.has("text")){
+            stringBuilder.append("<label for=\"btn_file\" class=\"control-label\">");
+            stringBuilder.append(fileObj.getString("text"));
+            stringBuilder.append("</label>");
         }
-        retStr += ">";
-        return retStr;
+        stringBuilder.append("<input type=\"file\" id=\"btn_file\" class=\"btn btn-default\" ");
+        if(fileObj.has("accept")){
+            stringBuilder.append("accept=\"" + fileObj.getString("accept") + "\" ");
+        }
+        stringBuilder.append(">");
+
+        return stringBuilder.toString();
     }
 }
+

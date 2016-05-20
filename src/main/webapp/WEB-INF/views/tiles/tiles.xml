@@ -36,4 +36,10 @@
         <put-attribute name="head" value="/WEB-INF/views/pages/task/show_head.jsp"/>
         <put-attribute name="body" value="/WEB-INF/views/pages/task/show.jsp"/>
     </definition>
+
+    <!-- Task do-->
+    <definition name="task/do" extends="base-definition">
+        <put-attribute name="head" value="/WEB-INF/views/pages/task/do_head.jsp"/>
+        <put-attribute name="body" value="/WEB-INF/views/pages/task/do.jsp"/>
+    </definition>
 </tiles-definitions>

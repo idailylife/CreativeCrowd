@@ -21,21 +21,23 @@
             <p>${descDetail}</p>
             <c:choose>
                 <c:when test="${taskState eq 'EXPIRED'}">
-                    <button class="btn btn-default" disabled="disabled" type="button" data-state="expired">已结束</button>
+                    <button class="btn btn-default" id="btn-join" disabled="disabled" type="button" data-state="expired">已结束</button>
                 </c:when>
                 <c:when test="${taskState eq 'FINISHED'}">
-                    <button class="btn btn-default" disabled="disabled" type="button" data-state="finished">已参与</button>
+                    <button class="btn btn-default" id="btn-join" disabled="disabled" type="button" data-state="finished">已参与</button>
                 </c:when>
                 <c:when test="${taskState eq 'CLAIMED'}">
-                    <button class="btn btn-info" type="button" data-state="claimed">继续先前任务</button>
+                    <button class="btn btn-info" id="btn-join" type="button" data-state="claimed">继续先前任务</button>
                 </c:when>
                 <c:when test="${taskState eq 'JOINABLE'}">
-                    <button class="btn btn-info" type="button" data-state="joinable">参与</button>
+                    <button class="btn btn-info" id="btn-join" type="button" data-state="joinable">参与</button>
                 </c:when>
                 <c:when test="${taskState eq 'NEED_LOGIN'}">
-                    <button class="btn btn-warning" type="button" data-state="need_login">请先登录</button>
+                    <button class="btn btn-warning" id="btn-join" type="button" data-state="need_login">请先登录</button>
                 </c:when>
+
             </c:choose>
+            <input type="hidden" id="val-tid" value="${tid}"/>
         </div>
         <div class="col-md-4">
             <div id="info-container">
@@ -56,3 +58,7 @@
         </div>
     </div>
 </div>
+<script>
+    var homeUrl = "<c:url value="/"/>";
+</script>
+<script src="<c:url value="/static/js/show.js"/> "></script>

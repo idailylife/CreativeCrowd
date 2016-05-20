@@ -63,7 +63,7 @@ public class Task {
     private String tag;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "task_id")
     private List<Microtask> relatedMictorasks;
 
 
