@@ -58,7 +58,7 @@ CREATE TABLE `microtask` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `task_id` (`task_id`),
   CONSTRAINT `microtask_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='	';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='	';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,7 +67,7 @@ CREATE TABLE `microtask` (
 
 LOCK TABLES `microtask` WRITE;
 /*!40000 ALTER TABLE `microtask` DISABLE KEYS */;
-INSERT INTO `microtask` VALUES (1,1,'[{\"label\":{\"id\":\"desc0\",\"text\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\"}},{\"image\":{\"id\":\"img\",\"src\":\"no-img.png\"}},{\"label\":{\"id\":\"desc1\",\"text\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后画出相关草图，产出设计方案\"}},{\"label\":{\"id\":\"q1\",\"for\":\"ans1\",\"text\":\"专业背景相关知识\"}},{\"text\":{\"id\":\"ans1\",\"multiline\":\"false\"}},{\"label\":{\"id\":\"q2\",\"for\":\"ans2\",\"text\":\"需求定义\"}},{\"text\":{\"id\":\"ans2\",\"multiline\":\"true\"}},{\"label\":{\"id\":\"q3\",\"for\":\"ans3\",\"text\":\"设计方案\"}},{\"text\":{\"id\":\"ans3\",\"multiline\":\"true\"}},{\"button\":{\"type\":\"int\",\"target\":\"submit\",\"text\":\"提交\"}}]','simple',NULL,NULL),(2,2,'[{\"label\":{\"id\":\"desc0\",\"text\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\"}},{\"image\":{\"id\":\"img\",\"src\":\"no-img.png\"}},{\"label\":{\"id\":\"desc1\",\"text\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后画出相关草图，产出设计方案\"}},{\"label\":{\"id\":\"q1\",\"for\":\"ans1\",\"text\":\"专业背景相关知识\"}},{\"text\":{\"id\":\"ans1\",\"multiline\":\"false\"}},{\"label\":{\"id\":\"q2\",\"for\":\"ans2\",\"text\":\"需求定义\"}},{\"text\":{\"id\":\"ans2\",\"multiline\":\"true\"}},{\"label\":{\"id\":\"q3\",\"for\":\"ans3\",\"text\":\"设计方案\"}},{\"text\":{\"id\":\"ans3\",\"multiline\":\"true\"}},{\"button\":{\"type\":\"int\",\"target\":\"submit\",\"text\":\"提交\"}}]','simple',NULL,NULL);
+INSERT INTO `microtask` VALUES (1,1,'[{\"label\":{\"id\":\"desc0\",\"text\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\"}},{\"image\":{\"id\":\"img\",\"src\":\"no-img.png\"}},{\"label\":{\"id\":\"desc1\",\"text\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后画出相关草图，产出设计方案\"}},{\"label\":{\"id\":\"q1\",\"for\":\"ans1\",\"text\":\"专业背景相关知识\"}},{\"text\":{\"id\":\"ans1\",\"multiline\":\"false\"}},{\"label\":{\"id\":\"q2\",\"for\":\"ans2\",\"text\":\"需求定义\"}},{\"text\":{\"id\":\"ans2\",\"multiline\":\"true\"}},{\"label\":{\"id\":\"q3\",\"for\":\"ans3\",\"text\":\"设计方案\"}},{\"text\":{\"id\":\"ans3\",\"multiline\":\"true\"}},{\"button\":{\"type\":\"int\",\"target\":\"submit\",\"text\":\"提交\"}}]','simple',NULL,NULL),(2,2,'[{\"label\":{\"id\":\"desc0\",\"text\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\"}},{\"image\":{\"id\":\"img\",\"src\":\"no-img.png\"}},{\"label\":{\"id\":\"desc1\",\"text\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后画出相关草图，产出设计方案\"}},{\"label\":{\"id\":\"q1\",\"for\":\"ans1\",\"text\":\"专业背景相关知识\"}},{\"text\":{\"id\":\"ans1\",\"multiline\":\"false\"}},{\"label\":{\"id\":\"q2\",\"for\":\"ans2\",\"text\":\"需求定义\"}},{\"text\":{\"id\":\"ans2\",\"multiline\":\"true\"}},{\"label\":{\"id\":\"q3\",\"for\":\"ans3\",\"text\":\"设计方案\"}},{\"text\":{\"id\":\"ans3\",\"multiline\":\"true\"}},{\"button\":{\"type\":\"int\",\"target\":\"submit\",\"text\":\"提交\"}}]','simple',NULL,NULL),(3,11,'[{\"label\":{\"id\":\"desc0\",\"text\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\"}},{\"image\":{\"id\":\"img\",\"src\":\"no-img.png\"}},{\"label\":{\"id\":\"desc1\",\"text\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后画出相关草图，产出设计方案\"}},{\"label\":{\"id\":\"q1\",\"for\":\"ans1\",\"text\":\"专业背景相关知识\"}},{\"text\":{\"id\":\"ans1\",\"multiline\":\"false\"}},{\"label\":{\"id\":\"q2\",\"for\":\"ans2\",\"text\":\"需求定义\"}},{\"text\":{\"id\":\"ans2\",\"multiline\":\"true\"}},{\"label\":{\"id\":\"q3\",\"for\":\"ans3\",\"text\":\"设计方案\"}},{\"text\":{\"id\":\"ans3\",\"multiline\":\"true\"}},{\"file\":{\"text\":\"草图上传\",\"accept\":\"image/gif, image/jpeg, image/png\"}},{\"button\":{\"type\":\"int\",\"target\":\"submit\",\"text\":\"提交\"}}]','simple',NULL,NULL);
 /*!40000 ALTER TABLE `microtask` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -90,9 +90,10 @@ CREATE TABLE `task` (
   `owner_id` int(11) NOT NULL,
   `claimed_count` int(11) NOT NULL DEFAULT '0',
   `image` varchar(512) DEFAULT NULL,
+  `tag` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -101,8 +102,34 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (1,'创意众包平台',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"img\":\"no-img.png\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0,'no-img.png'),(2,'创意众包平台2',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"img\":\"no-img.png\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0,'no-img.png');
+INSERT INTO `task` VALUES (1,'创意众包平台',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,100,'no-img.png','创意任务'),(2,'d',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0,'no-img.png','创意任务'),(3,'创意众包平台3',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0,'no-img.png','创意任务'),(4,'灯具的资料分析与标注1',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0,'no-img.png','标注任务'),(5,'创意众包平台5',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0,'no-img.png','创意任务'),(6,'创意众包平台6',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,100,'no-img.png','创意任务'),(7,'创意众包平台7',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0,'no-img.png','创意任务'),(8,'创意众包平台8',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0,'no-img.png','创意任务'),(9,'创意众包平台9',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0,'no-img.png','创意任务'),(10,'灯具的创意分析',100,0,'{\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"info\":{\"预期任务形式\":\"文字+草图\",\"任务报酬\":\"5元\"},\"est_time\":\"10分钟\"}',0,1462896000,1463889600,5,0,'no-img.png','创意任务'),(11,'灯具的创意设计',100,0,'{\"est_time\":\"10分钟\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"info\":{\"任务报酬\":\"5元\",\"预期任务形式\":\"文字+草图\"}}',0,1462896000,1463889600,5,3,'no-img.png','创意任务'),(12,'灯具的资料分析与标注',100,0,'{\"est_time\":\"10分钟\",\"desc_detail\":\"在本任务中，您需要首先提交专业背景中相关信息，然后提出需求，最后产出设计方案\",\"desc\":\"灯在生活中无处不在，具有各式各样的形态，功能，操作与交互方式。如日常的台灯、小夜灯、信号灯、聚光灯等。请以灯为主题，为日常中使用的某个灯具，设计一个新的概念方案。\",\"info\":{\"任务报酬\":\"5元\",\"预期任务形式\":\"文字+草图\"}}',0,1462896000,1463889600,5,1,'no-img.png','标注任务');
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tempfile`
+--
+
+DROP TABLE IF EXISTS `tempfile`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tempfile` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `usermicrotask_id` int(11) NOT NULL,
+  `filename` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tempfile`
+--
+
+LOCK TABLES `tempfile` WRITE;
+/*!40000 ALTER TABLE `tempfile` DISABLE KEYS */;
+INSERT INTO `tempfile` VALUES (2,-1,'-1c0b9cd11-24fd-3d41-8235-d865e3d4dff9.jpg');
+/*!40000 ALTER TABLE `tempfile` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -137,7 +164,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (5,'039195f42325681193bd7090c26eafa4','iorange@126.com',NULL,NULL,NULL,NULL,NULL,0.5,NULL,'whoknows1462772249954543251291','0c92553fea0440c6a6af351b3e486430'),(6,'6236165990ab5ccf67bf03f790219c6d','test@test.com',NULL,NULL,NULL,NULL,NULL,0.5,NULL,'whoknows14634684397591628717812','fe15877e8bd04421bf1f90a688cd51e1');
+INSERT INTO `user` VALUES (5,'039195f42325681193bd7090c26eafa4','iorange@126.com',NULL,NULL,NULL,NULL,NULL,0.5,NULL,'whoknows1462772249954543251291','0861fd54b0924eddb7b40db356a8f727'),(6,'6236165990ab5ccf67bf03f790219c6d','test@test.com',NULL,NULL,NULL,NULL,NULL,0.5,NULL,'whoknows14634684397591628717812','fe15877e8bd04421bf1f90a688cd51e1');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -155,7 +182,7 @@ CREATE TABLE `usermicrotask` (
   `results` varchar(10240) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,7 +191,7 @@ CREATE TABLE `usermicrotask` (
 
 LOCK TABLES `usermicrotask` WRITE;
 /*!40000 ALTER TABLE `usermicrotask` DISABLE KEYS */;
-INSERT INTO `usermicrotask` VALUES (3,2,6,NULL);
+INSERT INTO `usermicrotask` VALUES (3,2,6,NULL),(4,3,10,NULL);
 /*!40000 ALTER TABLE `usermicrotask` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -187,7 +214,7 @@ CREATE TABLE `usertask` (
   KEY `fk_tid` (`task_id`),
   CONSTRAINT `fk_uid` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `usertask_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -196,7 +223,7 @@ CREATE TABLE `usertask` (
 
 LOCK TABLES `usertask` WRITE;
 /*!40000 ALTER TABLE `usertask` DISABLE KEYS */;
-INSERT INTO `usertask` VALUES (1,5,1,NULL,0),(6,5,2,3,0);
+INSERT INTO `usertask` VALUES (1,5,1,NULL,0),(6,5,2,3,0),(7,5,12,NULL,0),(10,5,11,4,0);
 /*!40000 ALTER TABLE `usertask` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -209,4 +236,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-17 17:15:11
+-- Dump completed on 2016-05-20 17:06:57
