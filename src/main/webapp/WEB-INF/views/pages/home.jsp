@@ -81,4 +81,3 @@
 <script>
     var homeUrl = "<c:url value="/"/>";
 </script>
-<script src="<c:url value="/static/js/home.js"/> "></script>

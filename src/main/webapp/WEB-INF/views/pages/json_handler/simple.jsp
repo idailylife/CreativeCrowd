@@ -57,6 +57,8 @@
                     <c:if test="${item.contents.containsKey('accept')}">
                            accept="${item.contents['accept']}"
                     </c:if> >
+                    <a class="btn btn-default" href="#" role="button">上传</a>
+                    <label id="label_upload_state"></label>
                 </c:when>
                 <c:when test="${item.tag eq 'button'}">
                     <c:choose>
@@ -83,4 +85,4 @@
     </div>
 </c:forEach>
 </form>
-<script src="/static/js/do_task.js"></script>
+<script src="<c:url value="/static/js/handler/simple.js"/>"></script>

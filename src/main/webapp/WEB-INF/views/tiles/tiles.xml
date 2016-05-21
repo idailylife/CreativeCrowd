@@ -8,12 +8,21 @@
         <put-attribute name="header" value="/WEB-INF/views/tiles/layouts/defaultHeader.jsp"/>
         <put-attribute name="body" value="" />
         <put-attribute name="footer" value="/WEB-INF/views/tiles/layouts/defaultFooter.jsp"/>
+        <put-list-attribute name="stylesheets">
+            <add-attribute value="/static/css/defaultHeader-styles.css"/>
+        </put-list-attribute>
     </definition>
 
     <!--Home Page-->
     <definition name="home" extends="base-definition">
-        <put-attribute name="head" value="/WEB-INF/views/pages/home-head.jsp"/>
+        <!--<put-attribute name="head" value="/WEB-INF/views/pages/home-head.jsp"/>-->
         <put-attribute name="body" value="/WEB-INF/views/pages/home.jsp"/>
+        <put-list-attribute name="stylesheets" inherit="true">
+            <add-attribute value="/static/css/home_styles.css"/>
+        </put-list-attribute>
+        <put-list-attribute name="javascripts">
+            <add-attribute value="/static/js/home.js"/>
+        </put-list-attribute>
     </definition>
 
     <!--Agreement-->
@@ -33,13 +42,24 @@
 
     <!-- Task Show-->
     <definition name="task/show" extends="base-definition">
-        <put-attribute name="head" value="/WEB-INF/views/pages/task/show_head.jsp"/>
+        <!--<put-attribute name="head" value="/WEB-INF/views/pages/task/show_head.jsp"/>-->
         <put-attribute name="body" value="/WEB-INF/views/pages/task/show.jsp"/>
+        <put-list-attribute name="stylesheets" inherit="true">
+            <add-attribute value="/static/css/task_show_styles.css"/>
+        </put-list-attribute>
+        <put-list-attribute name="javascripts" inherit="true">
+            <add-attribute value="/static/js/show.js"/>
+        </put-list-attribute>
     </definition>
 
     <!-- Task do-->
     <definition name="task/do" extends="base-definition">
-        <put-attribute name="head" value="/WEB-INF/views/pages/task/do_head.jsp"/>
         <put-attribute name="body" value="/WEB-INF/views/pages/task/do.jsp"/>
+        <put-list-attribute name="stylesheets" inherit="true">
+            <add-attribute value="/static/css/task_do_styles.css"/>
+        </put-list-attribute>
+        <put-list-attribute name="javascripts" inherit="true">
+            <add-attribute value="/static/js/task_do.js"/>
+        </put-list-attribute>
     </definition>
 </tiles-definitions>

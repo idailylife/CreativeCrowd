@@ -231,7 +231,7 @@ public class TaskController {
         String handlerType = microtask.getHandlerType();
         JSONArray handlerContent = microtask.getTemplate();
         model.addAttribute("handlerType", handlerType);
-        model.addAttribute("handlerContent", SimpleMicroTaskHandler.parseMicrotaskToItemLists(handlerContent));
+        model.addAttribute("handlerContent", TaskHandlerFactory.parseMicrotaskToItemLists(handlerContent));
 
 //        MicroTaskHandler microTaskHandler = TaskHandlerFactory.getHandler(microtask.getHandlerType(),
 //                request.getContextPath()+"/static/img/upload/");
