@@ -1,12 +1,15 @@
 package edu.inlab.models.handler;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.ServletContext;
-import java.util.Iterator;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Created by inlab-dell on 2016/5/12.
@@ -15,7 +18,7 @@ import java.util.Iterator;
  *     each jsonObject has a key indicates its type, which can be a (lower-cased, * means optional):
  *     [
  *      {label,     {id: ID, text: CONTENT, *for: FOR_ID}} :=> labels (for some input FOR_ID)
- *      {text,      {id: ID, *multiline: true/false, *placeholder: TEXT}}           :=> text input
+ *      {text,      {id: ID, multiline: true/false, *placeholder: TEXT}}           :=> text input
  *      {choice,    {id: ID, *type: single/multiple, items:[ITEM_1, ITEM_2, ...]}
  *              :=> single(default)/multiple choice box
  *      {image,     {src: internal_url}}    :=> image
@@ -51,6 +54,32 @@ public class SimpleMicroTaskHandler implements MicroTaskHandler {
         this.baseUrl = baseUrl;
     }
 
+
+    //TODO: move to some proper package
+    public static List<JstlCompatibleModel> parseMicrotaskToItemLists(JSONArray jsonArray){
+        List<JstlCompatibleModel> compatibleModels = new ArrayList<JstlCompatibleModel>();
+        int length = jsonArray.length();
+        for(int i=0; i<length; i++){
+            JSONObject rowObj = jsonArray.getJSONObject(i);
+            if(rowObj.keys().hasNext()){
+                JstlCompatibleModel model = new JstlCompatibleModel();
+                model.setTag(rowObj.keys().next());
+                String itemObjStr = rowObj.getJSONObject(model.getTag()).toString();
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map<String, Object> resultMap = new HashMap<String, Object>();
+                try{
+                    resultMap = objectMapper.readValue(itemObjStr, new TypeReference<Map<String, String>>(){});
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+                model.setContents(resultMap);
+                compatibleModels.add(model);
+            }
+        }
+        return compatibleModels;
+    }
+
+    @Deprecated
     public String parseMicrotaskToHtml(String templateStr) {
         JSONArray inputJsonAry = new JSONArray(templateStr);
         StringBuilder retStr = new StringBuilder();
