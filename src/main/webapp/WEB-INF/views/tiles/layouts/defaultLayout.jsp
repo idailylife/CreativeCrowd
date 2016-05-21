@@ -9,6 +9,10 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<tiles:importAttribute name="javascripts" ignore="true"/>
+<tiles:importAttribute name="stylesheets" ignore="true"/>
+
 <html>
 <head>
     <title><tiles:getAsString name="title"/></title>
@@ -17,8 +21,12 @@
     <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<c:url value="/static/css/defaultHeader-styles.css"/> ">
-    <tiles:insertAttribute name="head"/>
+    <%--<link rel="stylesheet" href="<c:url value="/static/css/defaultHeader-styles.css"/> ">--%>
+    <!-- Auto appended stylesheets -->
+    <c:forEach var="css" items="${stylesheets}">
+        <link rel="stylesheet" type="text/css" href="<c:url value="${css}"/>">
+    </c:forEach>
+    <!-- End of stylesheets -->
 </head>
 <body>
     <header id="header">
@@ -32,6 +40,12 @@
     <footer id="footer" class="footer">
         <tiles:insertAttribute name="footer"/>
     </footer>
+
+    <!-- scripts -->
+    <c:forEach var="script" items="${javascripts}">
+        <script src="<c:url value="${script}"/> "></script>
+    </c:forEach>
+    <!-- end of scripts -->
 
 </body>
 </html>

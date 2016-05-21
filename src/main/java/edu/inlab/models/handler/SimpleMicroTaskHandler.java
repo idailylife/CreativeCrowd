@@ -30,6 +30,8 @@ import java.util.*;
  *     ]
  * Output:
  */
+
+@Deprecated
 public class SimpleMicroTaskHandler implements MicroTaskHandler {
     //TODO: [IMPORTANT]Filter illegal scripts inside the text (XSS)
 
@@ -55,31 +57,6 @@ public class SimpleMicroTaskHandler implements MicroTaskHandler {
     }
 
 
-    //TODO: move to some proper package
-    public static List<JstlCompatibleModel> parseMicrotaskToItemLists(JSONArray jsonArray){
-        List<JstlCompatibleModel> compatibleModels = new ArrayList<JstlCompatibleModel>();
-        int length = jsonArray.length();
-        for(int i=0; i<length; i++){
-            JSONObject rowObj = jsonArray.getJSONObject(i);
-            if(rowObj.keys().hasNext()){
-                JstlCompatibleModel model = new JstlCompatibleModel();
-                model.setTag(rowObj.keys().next());
-                String itemObjStr = rowObj.getJSONObject(model.getTag()).toString();
-                ObjectMapper objectMapper = new ObjectMapper();
-                Map<String, Object> resultMap = new HashMap<String, Object>();
-                try{
-                    resultMap = objectMapper.readValue(itemObjStr, new TypeReference<Map<String, String>>(){});
-                } catch (IOException e){
-                    e.printStackTrace();
-                }
-                model.setContents(resultMap);
-                compatibleModels.add(model);
-            }
-        }
-        return compatibleModels;
-    }
-
-    @Deprecated
     public String parseMicrotaskToHtml(String templateStr) {
         JSONArray inputJsonAry = new JSONArray(templateStr);
         StringBuilder retStr = new StringBuilder();
