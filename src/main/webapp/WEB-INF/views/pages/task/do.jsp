@@ -1,6 +1,7 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%--
   Created by IntelliJ IDEA.
   User: inlab-dell
@@ -18,10 +19,12 @@
     </div>
     <div class="row">
         <div class="col-md-8">
-            ${htmlStr}
+            <%--${htmlStr}--%>
+            <!-- Dispatch to specified view -->
+            <tiles:insertTemplate template="/WEB-INF/views/pages/json_handler/${handlerType}.jsp"/>
         </div>
         <div class="col-md-4">
-
+            <!-- TODO: Task properties here -->
         </div>
     </div>
 

@@ -2,12 +2,15 @@ package edu.inlab.web;
 
 import edu.inlab.models.*;
 import edu.inlab.models.handler.MicroTaskHandler;
+import edu.inlab.models.handler.SimpleMicroTaskHandler;
 import edu.inlab.models.handler.TaskHandlerFactory;
 import edu.inlab.models.json.AjaxResponseBody;
 import edu.inlab.models.json.TaskClaimRequestBody;
+import edu.inlab.repo.usertype.JSONArrayUserType;
 import edu.inlab.service.*;
 import edu.inlab.utils.Constants;
 import edu.inlab.utils.JSON2Map;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -225,12 +228,19 @@ public class TaskController {
         }
         UserMicroTask userMicroTask = userMicrotaskService.getById(userTask.getCurrUserMicrotaskId());
         Microtask microtask = microTaskService.getById(userMicroTask.getMicrotaskId());
-        MicroTaskHandler microTaskHandler = TaskHandlerFactory.getHandler(microtask.getHandlerType(),
-                request.getContextPath()+"/static/img/upload/");
-        String htmlStr = microTaskHandler.parseMicrotaskToHtml(microtask.getTemplate().toString());
-        model.addAttribute("htmlStr", htmlStr);
+        String handlerType = microtask.getHandlerType();
+        JSONArray handlerContent = microtask.getTemplate();
+        model.addAttribute("handlerType", handlerType);
+        model.addAttribute("handlerContent", SimpleMicroTaskHandler.parseMicrotaskToItemLists(handlerContent));
+
+//        MicroTaskHandler microTaskHandler = TaskHandlerFactory.getHandler(microtask.getHandlerType(),
+//                request.getContextPath()+"/static/img/upload/");
+//        String htmlStr = microTaskHandler.parseMicrotaskToHtml(microtask.getTemplate().toString());
+//        model.addAttribute("htmlStr", htmlStr);
+
         Task task = taskService.findById(userTask.getTaskId());
         model.addAttribute("task", task);
+
         return "task/do";
     }
 
