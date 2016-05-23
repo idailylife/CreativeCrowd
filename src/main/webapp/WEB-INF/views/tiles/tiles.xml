@@ -62,4 +62,9 @@
             <add-attribute value="/static/js/task_do.js"/>
         </put-list-attribute>
     </definition>
+
+    <!-- Task Done-->
+    <definition name="task/done" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/views/pages/task/done.jsp"/>
+    </definition>
 </tiles-definitions>

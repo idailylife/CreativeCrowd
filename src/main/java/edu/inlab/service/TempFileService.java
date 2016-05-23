@@ -10,4 +10,5 @@ public interface TempFileService {
     void save(TempFile tempFile);
     void update(TempFile tempFile);
     TempFile getByUsermicrotaskId(int usermicrotaskId);
+    void delete(TempFile tempFile);
 }

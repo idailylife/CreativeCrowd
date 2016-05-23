@@ -1,9 +1,12 @@
 package edu.inlab.web;
 
+import edu.inlab.models.User;
 import edu.inlab.service.UserService;
+import edu.inlab.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,4 +34,21 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         }
     }
 
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
+        if(uid != null){
+            User user = userService.findById(uid);
+            String displayName = user.getEmail();
+            if(user.getNickname() != null)
+                displayName = user.getNickname();
+            modelAndView.getModel().put("loginState", true);
+            //model.addAttribute("loginState", true);
+            modelAndView.getModel().put("displayName", displayName);
+            //model.addAttribute("displayName", displayName);
+        } else {
+            modelAndView.getModel().put("loginState", false);
+        }
+        super.postHandle(request, response, handler, modelAndView);
+    }
 }

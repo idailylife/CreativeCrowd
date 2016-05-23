@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,6 +51,9 @@ public class TaskController {
 
     @Autowired
     UserMicrotaskService userMicrotaskService;
+
+    @Autowired
+    TempFileService tempFileService;
 
     @Transactional  //Avoids lazy-load problem
     @RequestMapping(value = "/tid{taskId}", method = RequestMethod.GET)
@@ -119,37 +123,44 @@ public class TaskController {
     }
 
     private TaskJoinState getTaskJoinState(Task task, int loginStateOrUserId){
-        TaskJoinState taskJoinState = null;
+        TaskJoinState taskJoinState = TaskJoinState.EXPIRED;
         boolean isExpiredOrFull = task.isExpired() || task.isFull();
 
 
-
         if(loginStateOrUserId < 0){
-            if(isExpiredOrFull){
-                taskJoinState = TaskJoinState.EXPIRED;
-            } else {
-                taskJoinState =  TaskJoinState.NEED_LOGIN;
+            if(!isExpiredOrFull){
+                taskJoinState = TaskJoinState.NEED_LOGIN;
             }
         } else {
             //处理用户是否参与过/正在参与这个任务
             //User user = userService.findById(loginState);
             //Set<Task> tasks = user.getClaimedTasks();
-            List<UserTask> userTasks = userTaskService.getByUserId(loginStateOrUserId, 1000);
+//            List<UserTask> userTasks = userTaskService.getByUserId(loginStateOrUserId, 1000);
+//            boolean claimedThisTask = false;
+//            for(UserTask userTask : userTasks){
+//                if(userTask.getTaskId().equals(task.getId())){
+//                    claimedThisTask = true;
+//                    if(userTask.getState() == UserTask.TYPE_FINISHED){
+//                    //该任务已经完成过了
+//                        taskJoinState = TaskJoinState.FINISHED;
+//                    } else {
+//                        taskJoinState = TaskJoinState.CLAIMED;
+//                    }
+//                    break;
+//                }
+//            }
+            UserTask userTask = userTaskService.getByUserAndTaskId(loginStateOrUserId, task.getId());
             boolean claimedThisTask = false;
-            for(UserTask userTask : userTasks){
-                if(userTask.getTaskId().equals(task.getId())){
-                    claimedThisTask = true;
-                    if(userTask.getState() == UserTask.TYPE_FINISHED){
-                    //该任务已经完成过了
-                        taskJoinState = TaskJoinState.FINISHED;
-                    } else {
-                        taskJoinState = TaskJoinState.CLAIMED;
-                    }
-                    break;
+            if(userTask != null){
+                claimedThisTask = true;
+                if(userTask.getState() == UserTask.TYPE_FINISHED){
+                    taskJoinState = TaskJoinState.FINISHED;
+                } else {
+                    taskJoinState = TaskJoinState.CLAIMED;
                 }
             }
 
-            if(!claimedThisTask){
+            if(!claimedThisTask && !isExpiredOrFull){
                 taskJoinState = TaskJoinState.JOINABLE;
             }
 
@@ -215,16 +226,16 @@ public class TaskController {
     public String doTask(@PathVariable int taskId, Model model,
                          HttpServletRequest request){
         Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
-        userService.loginStateParse(model, uid);
+        //userService.loginStateParse(model, uid);
 
         UserTask userTask = userTaskService.getByUserAndTaskId(uid, taskId);
         if(null == userTask){
             //TODO: 跳转到任务页?
-            throw new ResourceNotFoundException("usertask not found");
+            return "redirect:/task/tid" + taskId;
         }
         if(userTask.getCurrUserMicrotaskId() == null){
             //没有正在进行中的microtask
-            throw new ResourceNotFoundException("currUserMicrotaskId is null");
+            return "redirect:/task/tid" + taskId;
         }
         UserMicroTask userMicroTask = userMicrotaskService.getById(userTask.getCurrUserMicrotaskId());
         Microtask microtask = microTaskService.getById(userMicroTask.getMicrotaskId());
@@ -233,13 +244,31 @@ public class TaskController {
         model.addAttribute("handlerType", handlerType);
         model.addAttribute("handlerContent", TaskHandlerFactory.parseMicrotaskToItemLists(handlerContent));
 
-//        MicroTaskHandler microTaskHandler = TaskHandlerFactory.getHandler(microtask.getHandlerType(),
-//                request.getContextPath()+"/static/img/upload/");
-//        String htmlStr = microTaskHandler.parseMicrotaskToHtml(microtask.getTemplate().toString());
-//        model.addAttribute("htmlStr", htmlStr);
+        //Find related file that was uploaded by user
+        TempFile oldFile = tempFileService.getByUsermicrotaskId(userMicroTask.getId());
+        if(oldFile != null){
+            model.addAttribute("file", oldFile.getFilename());
+        }
+        //Pass saved data records
+        JSONObject savedResults = userMicroTask.getResults();
+        Map<String, String> resultMap = new HashMap<String, String>();
+        if(savedResults != null){
+            Iterator<String> keys = savedResults.keys();
+            while(keys.hasNext()){
+                String key = keys.next();
+                if(!key.equals("file"))
+                    resultMap.put(key, savedResults.getString(key));
+                else
+                    model.addAttribute("file", savedResults.getString(key));
+            }
+        }
+        model.addAttribute("savedResults", resultMap);
 
         Task task = taskService.findById(userTask.getTaskId());
         model.addAttribute("task", task);
+
+        model.addAttribute("prev", microtask.getPrevId());
+        model.addAttribute("next", microtask.getNextId());
 
         //Add session to authorize file upload
         request.getSession().setMaxInactiveInterval(60*60);
@@ -249,12 +278,78 @@ public class TaskController {
     }
 
     @Transactional
+    @ResponseBody
     @RequestMapping(value = "/do", method = RequestMethod.POST,
-    produces = MediaType.APPLICATION_JSON_VALUE)
-    public AjaxResponseBody submitTask(){
+    produces = MediaType.APPLICATION_JSON_VALUE,
+    consumes = MediaType.APPLICATION_JSON_VALUE)
+    public AjaxResponseBody saveTask(@RequestBody String jsonStr,
+                                       HttpServletRequest request){
         AjaxResponseBody responseBody = new AjaxResponseBody();
-        //
+        Integer umtId = (Integer) request.getSession().getAttribute(Constants.KEY_FILE_UPLOAD);
+        if(umtId == null){
+            responseBody.setState(401);
+            responseBody.setMessage("Auth failure. Session does not exist");
+        } else if(userMicrotaskService.getById(umtId) == null){
+            responseBody.setState(402);
+            responseBody.setMessage("Auth failure. umt_id is not valid.");
+        } else {
+            JSONObject rcvJsonObj = new JSONObject(jsonStr);    //For safety
+            TempFile tempFile = tempFileService.getByUsermicrotaskId(umtId);
+            UserMicroTask userMicroTask = userMicrotaskService.getById(umtId);
+            if(userMicroTask.getResults() != null && userMicroTask.getResults().has("file")){
+                rcvJsonObj.put("file", userMicroTask.getResults().getString("file"));
+            }
+            if(tempFile!= null){
+                rcvJsonObj.put("file", tempFile.getFilename());
+            }
+
+            userMicroTask.setResults(rcvJsonObj);
+            userMicrotaskService.update(userMicroTask);
+
+            //Remove temp file db record
+            if(tempFile != null){
+                tempFileService.delete(tempFile);
+            }
+
+            responseBody.setState(200);
+        }
 
         return responseBody;
+    }
+
+    @Transactional
+    @ResponseBody
+    @RequestMapping(value = "/submit", method = RequestMethod.POST,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public AjaxResponseBody submitTask(HttpServletRequest request){
+        AjaxResponseBody responseBody = new AjaxResponseBody();
+        Integer umtId = (Integer) request.getSession().getAttribute(Constants.KEY_FILE_UPLOAD);
+        if(umtId == null || userMicrotaskService.getById(umtId)==null){
+            responseBody.setState(401);
+            responseBody.setMessage("Auth check failure");
+        } else {
+            UserMicroTask userMicroTask = userMicrotaskService.getById(umtId);
+            UserTask userTask = userTaskService.getById(userMicroTask.getUsertaskId());
+            userTask.setState(1);
+            if(userMicroTask.getId().equals(userTask.getCurrUserMicrotaskId())){
+                userTask.setState(UserTask.TYPE_FINISHED);
+                userTask.setCurrUserMicrotaskId(null);
+                userTaskService.updateUserTask(userTask);
+                Task task = taskService.findById(userTask.getTaskId());
+                task.setFinishedCount(task.getFinishedCount() + 1);
+                taskService.updateTask(task);
+                responseBody.setState(200);
+            } else {
+                responseBody.setState(405);
+                responseBody.setMessage("Task not finished");
+            }
+
+        }
+        return responseBody;
+    }
+
+    @RequestMapping(value = "/done", method = RequestMethod.GET)
+    public String taskDone(){
+        return "task/done";
     }
 }
