@@ -10,14 +10,14 @@
 
 <c:forEach items="${handlerContent}" var="item">
     <div class="row row-with-gap">
-        <c:choose>
-            <c:when test="${item.tag eq 'button'}">
-        <div class="col-md-12 text-right">
-            </c:when>
-            <c:otherwise>
+        <%--<c:choose>--%>
+            <%--<c:when test="${item.tag eq 'button'}">--%>
+        <%--<div class="col-md-12 text-right">--%>
+            <%--</c:when>--%>
+            <%--<c:otherwise>--%>
         <div class="col-md-12">
-            </c:otherwise>
-        </c:choose>
+            <%--</c:otherwise>--%>
+        <%--</c:choose>--%>
 
             <c:choose>
                 <c:when test="${item.tag eq 'label'}">
@@ -35,17 +35,20 @@
                 <c:when test="${item.tag eq 'text'}">
                     <c:choose>
                         <c:when test="${item.contents['multiline'] eq 'true'}">
-                    <textarea class="form-control" id="ud_${item.contents['id']}" rows="5"
+                    <textarea class="form-control form-ud-input" id="ud_${item.contents['id']}" name="${item.contents['id']}" rows="5"
                             <c:if test="${item.contents.containsKey('placeholder')}">
                                 placeholder="${item.contents['placeholder']}"
-                            </c:if> >
-                    </textarea>
+                            </c:if> ><c:if test="${savedResults.containsKey(item.contents['id'])}">${savedResults[item.contents['id']]}</c:if></textarea>
                         </c:when>
                         <c:otherwise>
-                            <input type="text" class="form-control" id="ud_${item.contents['id']}"
+                            <input type="text" class="form-control form-ud-input" id="ud_${item.contents['id']}" name="${item.contents['id']}"
                             <c:if test="${item.contents.containsKey('placeholder')}">
                                    placeholder="${item.contents['placeholder']}"
-                            </c:if> >
+                            </c:if>
+                            <c:if test="${savedResults.containsKey(item.contents['id'])}">
+                                value="${savedResults[item.contents['id']]}"
+                            </c:if>
+                            >
                         </c:otherwise>
                     </c:choose>
                 </c:when>
@@ -65,34 +68,63 @@
                                        accept="${item.contents['accept']}"
                                 </c:if> >
                             </div>
-                            <div class="col-md-3">
-                                <a class="btn btn-default" id="btn_upload" href="#" role="button" disabled="disabled">上传</a>
-                                <label id="label_upload_state"></label>
+                            <div class="col-md-6">
+                                <a class="btn btn-default" id="btn_upload" href="#" role="button" disabled="disabled">
+                                    <c:choose>
+                                        <c:when test="${not empty file}">
+                                            替换
+                                        </c:when>
+                                        <c:otherwise>
+                                            上传
+                                        </c:otherwise>
+                                    </c:choose>
+                                </a>
+                                <label id="label_upload_state">
+                                    <c:if test="${not empty file}">
+                                        <a href="<c:url value="/static/img/upload/${file}"/>" target="_blank">曾经传过一张图</a>
+                                    </c:if>
+                                </label>
                             </div>
                         </form>
                     </div>
                 </c:when>
-                <c:when test="${item.tag eq 'button'}">
-                    <c:choose>
-                        <c:when test="${item.contents['type'] eq 'int'}">
-                            <input type="button" id="btn_${item.contents['target']}"
-                            <c:choose>
-                            <c:when test="${item.contents['target'] eq 'submit'}">
-                                   class="btn btn-primary" value="提交"
-                            </c:when>
-                            <c:when test="${item.contents['target'] eq 'prev'}">
-                                   class="btn btn-default" value="上一项"
-                            </c:when>
-                            <c:when test="${item.contents['target'] eq 'next'}">
-                                   class="btn btn-default" value="下一项"
-                            </c:when>
-                            </c:choose>
-                            >
-                        </c:when>
-                    </c:choose>
-                </c:when>
-
+                <%--<c:when test="${item.tag eq 'button'}">--%>
+                    <%--<c:choose>--%>
+                        <%--<c:when test="${item.contents['type'] eq 'int'}">--%>
+                            <%--<input type="button" id="btn_${item.contents['target']}"--%>
+                            <%--<c:choose>--%>
+                            <%--<c:when test="${item.contents['target'] eq 'submit'}">--%>
+                                   <%--class="btn btn-primary" value="提交"--%>
+                            <%--</c:when>--%>
+                            <%--<c:when test="${item.contents['target'] eq 'prev'}">--%>
+                                   <%--class="btn btn-default" value="上一项"--%>
+                            <%--</c:when>--%>
+                            <%--<c:when test="${item.contents['target'] eq 'next'}">--%>
+                                   <%--class="btn btn-default" value="下一项"--%>
+                            <%--</c:when>--%>
+                            <%--</c:choose>--%>
+                            <%-->--%>
+                        <%--</c:when>--%>
+                    <%--</c:choose>--%>
+                <%--</c:when>--%>
             </c:choose>
         </div>
     </div>
 </c:forEach>
+<!-- Control buttons -->
+<div class="row row-with-gap">
+    <div class="col-md-12 text-right">
+        <c:if test="${not empty prev}">
+            <input type="button" class="btn btn-default" id="btn_prev" value="上一题">
+        </c:if>
+        <input type="button" class="btn btn-default" id="btn_save" value="保存">
+        <c:choose>
+            <c:when test="${empty next}">
+                <input type="button" class="btn btn-primary" id="btn_submit" value="提交">
+            </c:when>
+            <c:otherwise>
+                <input type="button" class="btn btn-default" id="btn_next" value="下一题">
+            </c:otherwise>
+        </c:choose>
+    </div>
+</div>

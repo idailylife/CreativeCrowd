@@ -32,4 +32,8 @@ public class TempFileServiceImpl implements TempFileService {
             entity.setUsermicrotaskId(tempFile.getUsermicrotaskId());
         }
     }
+
+    public void delete(TempFile tempFile) {
+        tempFileRepository.deleteRecord(tempFile);
+    }
 }

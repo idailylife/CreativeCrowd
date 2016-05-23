@@ -9,4 +9,5 @@ public interface TempFileRepository {
     TempFile getbyId(int id);
     TempFile getByUserMicrotaskId(int userMicrotaskId);
     void save(TempFile tempFile);
+    void deleteRecord(TempFile tempFile);
 }
