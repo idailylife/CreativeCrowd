@@ -12,6 +12,10 @@ import java.util.List;
 @Repository("tempFileRepository")
 public class TempFileRepoImpl extends AbstractDao<Integer, TempFile>
     implements TempFileRepository{
+    public TempFile getbyId(int id){
+        return getByKey(id);
+    }
+
     public TempFile getByUserMicrotaskId(int userMicrotaskId) {
         List<TempFile> tempFiles = getSession().createCriteria(TempFile.class)
                 .add(Restrictions.eq("usermicrotaskId", userMicrotaskId))

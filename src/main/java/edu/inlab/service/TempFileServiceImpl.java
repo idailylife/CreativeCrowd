@@ -25,4 +25,11 @@ public class TempFileServiceImpl implements TempFileService {
         return tempFileRepository.getByUserMicrotaskId(usermicrotaskId);
     }
 
+    public void update(TempFile tempFile) {
+        TempFile entity = tempFileRepository.getbyId(tempFile.getId());
+        if(null != entity){
+            entity.setFilename(tempFile.getFilename());
+            entity.setUsermicrotaskId(tempFile.getUsermicrotaskId());
+        }
+    }
 }

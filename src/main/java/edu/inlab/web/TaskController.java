@@ -241,6 +241,10 @@ public class TaskController {
         Task task = taskService.findById(userTask.getTaskId());
         model.addAttribute("task", task);
 
+        //Add session to authorize file upload
+        request.getSession().setMaxInactiveInterval(60*60);
+        request.getSession().setAttribute(Constants.KEY_FILE_UPLOAD, userMicroTask.getId());
+
         return "task/do";
     }
 
