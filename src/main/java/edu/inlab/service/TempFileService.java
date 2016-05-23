@@ -8,5 +8,6 @@ import edu.inlab.models.TempFile;
  */
 public interface TempFileService {
     void save(TempFile tempFile);
+    void update(TempFile tempFile);
     TempFile getByUsermicrotaskId(int usermicrotaskId);
 }

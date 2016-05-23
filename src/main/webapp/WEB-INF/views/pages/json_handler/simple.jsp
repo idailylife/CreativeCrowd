@@ -7,7 +7,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<form id="form-mtask" enctype="multipart/form-data">
+
 <c:forEach items="${handlerContent}" var="item">
     <div class="row row-with-gap">
         <c:choose>
@@ -51,14 +51,26 @@
                 </c:when>
                 <c:when test="${item.tag eq 'file'}">
                     <c:if test="${item.contents.containsKey('text')}">
-                        <label for="btn_file" class="ontrol-label">${item.contents['text']}</label>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="btn_file" class="ontrol-label">${item.contents['text']}</label>
+                            </div>
+                        </div>
                     </c:if>
-                    <input type="file" id="btn_file" class="btn btn-default"
-                    <c:if test="${item.contents.containsKey('accept')}">
-                           accept="${item.contents['accept']}"
-                    </c:if> >
-                    <a class="btn btn-default" href="#" role="button">上传</a>
-                    <label id="label_upload_state"></label>
+                    <div class="row">
+                        <form enctype="multipart/form-data" method="post" name="fileinfo" id="fileinfo">
+                            <div class="col-md-6">
+                                <input type="file" id="btn_file" class="btn btn-default" name="file" required
+                                <c:if test="${item.contents.containsKey('accept')}">
+                                       accept="${item.contents['accept']}"
+                                </c:if> >
+                            </div>
+                            <div class="col-md-3">
+                                <a class="btn btn-default" id="btn_upload" href="#" role="button" disabled="disabled">上传</a>
+                                <label id="label_upload_state"></label>
+                            </div>
+                        </form>
+                    </div>
                 </c:when>
                 <c:when test="${item.tag eq 'button'}">
                     <c:choose>
@@ -84,5 +96,3 @@
         </div>
     </div>
 </c:forEach>
-</form>
-<script src="<c:url value="/static/js/handler/simple.js"/>"></script>

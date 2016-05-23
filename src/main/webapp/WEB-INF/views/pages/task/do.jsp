@@ -19,8 +19,7 @@
     </div>
     <div class="row">
         <div class="col-md-8">
-            <%--${htmlStr}--%>
-            <!-- Dispatch to specified view -->
+            <!-- Specified view -->
             <tiles:insertTemplate template="/WEB-INF/views/pages/json_handler/${handlerType}.jsp"/>
         </div>
         <div class="col-md-4">
