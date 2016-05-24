@@ -39,8 +39,9 @@ function dispatchJoinBtnClick() {
                 }
                 $("#btn-join").removeAttr("disabled");
             },
-            error: function () {
+            error: function (error) {
                 alert("网络异常，请重试一下~");
+                console.log(error);
             }
         });
     }
