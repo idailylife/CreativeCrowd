@@ -60,7 +60,16 @@ public class TaskController {
     public String showTask(
             @PathVariable("taskId") int taskId, Model model,
             HttpServletRequest request, HttpServletResponse response){
+
         Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
+        if(uid == null){
+            try{
+                uid = userService.maintainLoginState(request, response);
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+
+        }
         userService.loginStateParse(model, uid);
 
         Task task = taskService.findById(taskId);
@@ -81,10 +90,6 @@ public class TaskController {
         String descText = jsonDesc.getString(Constants.KEY_TASK_DESC);
         model.addAttribute("desc", descText);
 
-//        if(jsonDesc.has(Constants.KEY_TASK_IMG_URL)){
-//            String imageUrl = jsonDesc.getString(Constants.KEY_TASK_IMG_URL);
-//            model.addAttribute("image", imageUrl);
-//        }
 
         String descDetail = jsonDesc.getString(Constants.KEY_TASK_DESC_DETAIL);
         model.addAttribute("descDetail", descDetail);

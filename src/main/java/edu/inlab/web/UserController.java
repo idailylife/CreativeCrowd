@@ -1,16 +1,19 @@
 package edu.inlab.web;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import edu.inlab.models.json.AjaxResponseBody;
 import edu.inlab.models.User;
 import edu.inlab.service.UserService;
 import edu.inlab.utils.EncodeFactory;
 import edu.inlab.utils.Constants;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -18,6 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by inlab-dell on 2016/5/5.
@@ -153,6 +159,42 @@ public class UserController {
         response.addCookie(uidCookie);
         response.addCookie(tokenCookie);
         response.sendRedirect(request.getContextPath());
+    }
+
+
+    @RequestMapping(value = "/edit/info", method = RequestMethod.GET)
+    public String edit(HttpServletRequest request, Model model){
+        Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
+        User user = userService.findById(uid);
+        model.addAttribute("user", user);
+        return "user/edit/info";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/edit/info", method = RequestMethod.POST,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public AjaxResponseBody editInfo(@Valid @RequestBody User user, BindingResult bindingResult,
+                                     HttpServletRequest request){
+        AjaxResponseBody responseBody = new AjaxResponseBody();
+        if(bindingResult.hasErrors()){
+            JSONArray jsonArray = new JSONArray();
+            for(ObjectError error: bindingResult.getAllErrors()){
+                jsonArray.put(error.getObjectName());
+            }
+            responseBody.setState(400);
+            responseBody.setMessage("Request user contains errors.");
+            responseBody.setContent(jsonArray.toString());
+        } else {
+            Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
+            User currUser = userService.findById(uid);
+            currUser.setNickname(user.getNickname());
+            currUser.setGender(user.getGender());
+            currUser.setPhoneNumber(user.getPhoneNumber());
+            currUser.setAge(user.getAge());
+            userService.updateUser(currUser);
+            responseBody.setState(200);
+        }
+        return responseBody;
     }
 
 }

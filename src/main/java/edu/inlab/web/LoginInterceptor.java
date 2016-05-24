@@ -36,18 +36,20 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
-        if(uid != null){
-            User user = userService.findById(uid);
-            String displayName = user.getEmail();
-            if(user.getNickname() != null)
-                displayName = user.getNickname();
-            modelAndView.getModel().put("loginState", true);
-            //model.addAttribute("loginState", true);
-            modelAndView.getModel().put("displayName", displayName);
-            //model.addAttribute("displayName", displayName);
-        } else {
-            modelAndView.getModel().put("loginState", false);
+        if(modelAndView != null){ //防止渲染json对象出错
+            Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
+            if(uid != null){
+                User user = userService.findById(uid);
+                String displayName = user.getEmail();
+                if(user.getNickname() != null)
+                    displayName = user.getNickname();
+                modelAndView.getModel().put("loginState", true);
+                //model.addAttribute("loginState", true);
+                modelAndView.getModel().put("displayName", displayName);
+                //model.addAttribute("displayName", displayName);
+            } else {
+                modelAndView.getModel().put("loginState", false);
+            }
         }
         super.postHandle(request, response, handler, modelAndView);
     }

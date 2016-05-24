@@ -241,6 +241,8 @@ public class Task {
             } else {
                 retStr += dateFormat.format(date);
             }
+        } else {
+            retStr += " - 不限";
         }
         return retStr;
     }
