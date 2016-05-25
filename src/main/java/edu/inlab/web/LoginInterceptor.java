@@ -24,6 +24,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        //request.setCharacterEncoding("UTF-8");
         int state = userService.maintainLoginState(request, response);
         if(state >= 0) {
             return true;

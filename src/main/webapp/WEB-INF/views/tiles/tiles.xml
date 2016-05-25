@@ -45,6 +45,26 @@
         <put-attribute name="body" value="/WEB-INF/views/tiles/layouts/twoColsBody.jsp"/>
         <put-attribute name="left" value="/WEB-INF/views/pages/user/left_menu.jsp" cascade="true"/>
         <put-attribute name="content" value="/WEB-INF/views/pages/user/edit_info.jsp" cascade="true"/>
+        <put-list-attribute name="javascripts" inherit="true">
+            <add-attribute value="/static/js/user_edit.js"/>
+        </put-list-attribute>
+    </definition>
+
+    <!-- User payment info -->
+    <definition name="user/edit/payment" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/views/tiles/layouts/twoColsBody.jsp"/>
+        <put-attribute name="left" value="/WEB-INF/views/pages/user/left_menu.jsp" cascade="true"/>
+        <put-attribute name="content" value="/WEB-INF/views/pages/user/edit_payment.jsp" cascade="true"/>
+        <put-list-attribute name="javascripts" inherit="true">
+            <add-attribute value="/static/js/payment_edit.js"/>
+        </put-list-attribute>
+    </definition>
+
+    <!-- User center -->
+    <definition name="user" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/views/tiles/layouts/twoColsBody.jsp"/>
+        <put-attribute name="left" value="/WEB-INF/views/pages/user/left_menu.jsp" cascade="true"/>
+        <put-attribute name="content" value="/WEB-INF/views/pages/user/main.jsp" cascade="true"/>
     </definition>
 
     <!-- Task Show-->

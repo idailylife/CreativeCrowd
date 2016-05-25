@@ -46,4 +46,12 @@ public class UserTaskServiceImpl implements UserTaskService {
     public UserTask getByUserAndTaskId(int userId, int taskId) {
         return userTaskRepository.getByUserAndTaskId(userId, taskId);
     }
+
+    public Long getFinishedCount(int userId) {
+        return (Long)userTaskRepository.getUserFinishedCount(userId);
+    }
+
+    public Long getClaimedCount(int userId) {
+        return (Long)userTaskRepository.getUserClaimedCount(userId);
+    }
 }

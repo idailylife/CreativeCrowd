@@ -1,5 +1,5 @@
 .navbar-inverse {
-    background-color: #cf4646;
+    background-color: #337ab7;
     border-color: transparent;
     border-radius: 0;
     margin-bottom: 0;
@@ -18,7 +18,7 @@
 }
 .navbar-inverse .navbar-collapse,
 .navbar-inverse .navbar-form {
-    border-color: #CA3131;
+    border-color: #337ab7;
 }
 .navbar-inverse .navbar-toggle {
     border-color: #fff;
@@ -34,7 +34,7 @@
 
 .jumbotron{
     text-align: center;
-    background-color: #cf4646;
+    background-color: #337ab7;
     color: #fff;
 }
 
@@ -52,7 +52,7 @@
 }
 
 .thumbnail-task:hover{
-    border-color: #a62c2c;
+    border-color: #204d74;
 }
 
 .task-invalid > .thumbnail >.caption {
