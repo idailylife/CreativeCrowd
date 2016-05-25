@@ -1,5 +1,6 @@
 package edu.inlab.service;
 
+import edu.inlab.models.User;
 import edu.inlab.models.UserTask;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface UserTaskService {
     List<UserTask> getByUserId(int userId, int size);
     List<UserTask> getByUserId(int userId, int startTaskId, int size);
     UserTask getByUserAndTaskId(int userId, int taskId);
+    Long getFinishedCount(int userId);
+    Long getClaimedCount(int userId);
 }

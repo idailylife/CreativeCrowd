@@ -1,6 +1,8 @@
 package edu.inlab.repo;
 
 import edu.inlab.models.UserTask;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -37,5 +39,22 @@ public class UserTaskRepoImpl extends AbstractDao<Integer, UserTask> implements 
             return userTasks.get(0);
         }
         return null;
+    }
+
+    public Number getUserClaimedCount(int userId) {
+        Number cnt = (Number) getSession().createCriteria(UserTask.class)
+                .add(Restrictions.eq("userId", userId))
+                .setProjection(Projections.rowCount())
+                .uniqueResult();
+        return cnt;
+    }
+
+    public Number getUserFinishedCount(int userId) {
+        Number cnt = (Number) getSession().createCriteria(UserTask.class)
+                .add(Restrictions.eq("userId", userId))
+                .add(Restrictions.eq("state", UserTask.TYPE_FINISHED))
+                .setProjection(Projections.rowCount())
+                .uniqueResult();
+        return cnt;
     }
 }

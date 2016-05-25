@@ -2,11 +2,13 @@ package edu.inlab.models;
 
 import edu.inlab.utils.EncodeFactory;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -36,7 +38,7 @@ public class User extends CaptchaCapableModel {
     private Integer age;
 
     @Column(name = "phone_number")
-    @Size(min = 11)
+    @Size(max = 30)
     private String phoneNumber;
 
     @Column(name = "pay_method")
@@ -49,6 +51,7 @@ public class User extends CaptchaCapableModel {
     private Double acceptRate;
 
     @Column(name = "nickname")
+    @Length(max = 10)
     private String nickname;
 
     @Column(name = "salt")
@@ -64,7 +67,7 @@ public class User extends CaptchaCapableModel {
                 @JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {
                 @JoinColumn(name = "task_id", referencedColumnName = "id") })
-    private Set<Task> claimedTasks;
+    private List<Task> claimedTasks;
 
     public User(){
         //Default constructor for jackson
@@ -173,7 +176,11 @@ public class User extends CaptchaCapableModel {
     }
 
     public void setNickname(String nickname) {
-        this.nickname = nickname;
+        if(nickname!= null && nickname.length()==0){
+            this.nickname = null;
+        } else {
+            this.nickname = nickname;
+        }
     }
 
     public String getSalt() {
@@ -196,11 +203,11 @@ public class User extends CaptchaCapableModel {
         this.tokenCookie = tokenCookie;
     }
 
-    public Set<Task> getClaimedTasks() {
+    public List<Task> getClaimedTasks() {
         return claimedTasks;
     }
 
-    public void setClaimedTasks(Set<Task> claimedTasks) {
+    public void setClaimedTasks(List<Task> claimedTasks) {
         this.claimedTasks = claimedTasks;
     }
 

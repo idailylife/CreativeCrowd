@@ -1,9 +1,13 @@
 package edu.inlab.web;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+import edu.inlab.models.Task;
+import edu.inlab.models.UserTask;
 import edu.inlab.models.json.AjaxResponseBody;
 import edu.inlab.models.User;
 import edu.inlab.service.UserService;
+import edu.inlab.service.UserTaskService;
 import edu.inlab.utils.EncodeFactory;
 import edu.inlab.utils.Constants;
 import org.json.JSONArray;
@@ -13,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +40,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserTaskService userTaskService;
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String newUser(HttpServletRequest request){
@@ -167,19 +175,24 @@ public class UserController {
         Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
         User user = userService.findById(uid);
         model.addAttribute("user", user);
+        model.addAttribute("sel_info", true);
         return "user/edit/info";
     }
 
     @ResponseBody
     @RequestMapping(value = "/edit/info", method = RequestMethod.POST,
     produces = MediaType.APPLICATION_JSON_VALUE)
-    public AjaxResponseBody editInfo(@Valid @RequestBody User user, BindingResult bindingResult,
+    public AjaxResponseBody editInfo(@Valid User user, BindingResult bindingResult,
                                      HttpServletRequest request){
         AjaxResponseBody responseBody = new AjaxResponseBody();
         if(bindingResult.hasErrors()){
             JSONArray jsonArray = new JSONArray();
             for(ObjectError error: bindingResult.getAllErrors()){
-                jsonArray.put(error.getObjectName());
+                if(error instanceof FieldError){
+                    jsonArray.put(((FieldError) error).getField());
+                } else {
+                    jsonArray.put(error.getObjectName());
+                }
             }
             responseBody.setState(400);
             responseBody.setMessage("Request user contains errors.");
@@ -197,4 +210,25 @@ public class UserController {
         return responseBody;
     }
 
+
+    @RequestMapping(value = "/edit/payment", method = RequestMethod.GET)
+    public String paymentInfo(HttpServletRequest request, Model model){
+        Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
+        User user = userService.findById(uid);
+        model.addAttribute("user", user);
+        model.addAttribute("sel_pay", true);
+        return "user/edit/payment";
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public String userCenter(HttpServletRequest request, Model model){
+        Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
+        User user = userService.findById(uid);
+        model.addAttribute("user", user);
+        model.addAttribute("claimedCount", userTaskService.getClaimedCount(uid));
+        model.addAttribute("finishedCount", userTaskService.getFinishedCount(uid));
+
+        model.addAttribute("sel_main", true);
+        return "user";
+    }
 }
