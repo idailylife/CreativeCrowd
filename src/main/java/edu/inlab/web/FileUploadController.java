@@ -3,10 +3,11 @@ package edu.inlab.web;
 
 import edu.inlab.models.FileBucket;
 import edu.inlab.models.TempFile;
-import edu.inlab.models.UserMicroTask;
+import edu.inlab.models.UserTask;
 import edu.inlab.models.json.AjaxResponseBody;
 import edu.inlab.service.FileValidator;
 import edu.inlab.service.TempFileService;
+import edu.inlab.service.UserTaskService;
 import edu.inlab.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -38,25 +39,30 @@ public class FileUploadController {
     @Autowired
     TempFileService tempFileService;
 
+    @Autowired
+    UserTaskService userTaskService;
+
     @InitBinder("fileBucket")
     protected void initBinderFileBucket(WebDataBinder binder){
         binder.setValidator(fileValidator);
     }
 
-    /**
-     * 会检查userMicrotaskId的Session避免恶意传文件
-     * 文件上传成功后删除Session
-     * @param fileBucket
-     * @param bindingResult
-     * @return JSONObject: {state: STATE; content: TEMP_FILE_ID}
-     */
+
     @ResponseBody
     @RequestMapping(value = "/upload", method = RequestMethod.POST,
     produces = MediaType.APPLICATION_JSON_VALUE)
     public AjaxResponseBody singleFileUpload(@Valid FileBucket fileBucket,
                                              BindingResult bindingResult,
                                              HttpServletRequest request) throws IOException{
-        Integer umtId = (Integer) request.getSession().getAttribute(Constants.KEY_FILE_UPLOAD);
+        //Integer umtId = (Integer) request.getSession().getAttribute(Constants.KEY_FILE_UPLOAD);
+        Integer taskId = fileBucket.getTaskId();
+        Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
+        UserTask userTask = null;
+        Integer umtId = null;
+        if(taskId != null && uid != null){
+            userTask = userTaskService.getUnfinishedByUserIdAndTaskId(uid, taskId);
+            umtId = userTask.getCurrUserMicrotaskId();
+        }
         if(Constants.DEBUG)
             umtId = -1;
         AjaxResponseBody ajaxResponseBody = new AjaxResponseBody();

@@ -87,8 +87,8 @@
     </div>
 </c:forEach>
 <!-- Control buttons -->
-<div class="row row-with-gap">
-    <div class="col-md-12 text-right">
+<div class="row row-with-gap col-md-12">
+    <div class="text-right">
         <c:if test="${not empty prev}">
             <input type="button" class="btn btn-default" id="btn_prev" value="上一题">
         </c:if>

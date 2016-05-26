@@ -291,15 +291,26 @@ public class TaskController {
     public AjaxResponseBody saveTask(@RequestBody String jsonStr,
                                        HttpServletRequest request){
         AjaxResponseBody responseBody = new AjaxResponseBody();
-        Integer umtId = (Integer) request.getSession().getAttribute(Constants.KEY_FILE_UPLOAD);
+        //Integer umtId = (Integer) request.getSession().getAttribute(Constants.KEY_FILE_UPLOAD);
+        JSONObject rcvJsonObj = new JSONObject(jsonStr);    //For safety
+        Integer taskId = rcvJsonObj.getInt("tid");
+        Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
+        UserTask userTask = null;
+        Integer umtId = null;
+        if(taskId != null && uid != null){
+            userTask = userTaskService.getUnfinishedByUserIdAndTaskId(uid, taskId);
+            umtId = userTask.getCurrUserMicrotaskId();
+        }
+
+
         if(umtId == null){
             responseBody.setState(401);
-            responseBody.setMessage("Auth failure. Session does not exist");
+            responseBody.setMessage("Auth failure. umt_id does not exist");
         } else if(userMicrotaskService.getById(umtId) == null){
             responseBody.setState(402);
             responseBody.setMessage("Auth failure. umt_id is not valid.");
         } else {
-            JSONObject rcvJsonObj = new JSONObject(jsonStr);    //For safety
+
             TempFile tempFile = tempFileService.getByUsermicrotaskId(umtId);
             UserMicroTask userMicroTask = userMicrotaskService.getById(umtId);
             if(userMicroTask.getResults() != null && userMicroTask.getResults().has("file")){

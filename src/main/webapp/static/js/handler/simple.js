@@ -57,7 +57,9 @@ function submitClick() {
 
 
 function saveClick() {
-    var data = {};
+    var data = {
+        tid: $("#tid").val()
+    };
     //TODO: validity check
     var inputs = $(".form-ud-input");
     var i, errCount=0;
@@ -130,6 +132,7 @@ function setSaveButtonState(state){
 function uploadClick() {
     $("#file_upd_state").val(0);
     var formData = new FormData(document.getElementById("fileinfo"));
+    formData.append("taskId", $("#tid").val());
     $.ajax({
         url: homeUrl + "file/upload",
         type: "POST",
