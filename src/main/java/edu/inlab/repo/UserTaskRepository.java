@@ -11,7 +11,9 @@ public interface UserTaskRepository {
     void save(UserTask userTask);
     UserTask getById(int id);
     List<UserTask> getByUserId(int userId, int startTaskId, int size);
-    UserTask getByUserAndTaskId(int userId, int taskId);
+    List<UserTask> getByUserAndTaskId(int userId, int taskId);
     Number getUserClaimedCount(int userId);
     Number getUserFinishedCount(int userId);
+    List<UserTask> getUserUnfinishedTasks(int userId);
+    UserTask getUnfinished(int userId, int taskId);
 }

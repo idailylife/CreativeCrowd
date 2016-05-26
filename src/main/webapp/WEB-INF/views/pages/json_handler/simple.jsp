@@ -9,15 +9,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <c:forEach items="${handlerContent}" var="item">
-    <div class="row row-with-gap">
-        <%--<c:choose>--%>
-            <%--<c:when test="${item.tag eq 'button'}">--%>
-        <%--<div class="col-md-12 text-right">--%>
-            <%--</c:when>--%>
-            <%--<c:otherwise>--%>
-        <div class="col-md-12">
-            <%--</c:otherwise>--%>
-        <%--</c:choose>--%>
+    <div class="row row-with-gap col-md-12">
+
 
             <c:choose>
                 <c:when test="${item.tag eq 'label'}">
@@ -84,31 +77,13 @@
                                         <a href="<c:url value="/static/img/upload/${file}"/>" target="_blank">曾经传过一张图</a>
                                     </c:if>
                                 </label>
+                                <input type="hidden" id="file_upd_state" value="${(empty file)? '0':'1'}"/>
                             </div>
                         </form>
                     </div>
                 </c:when>
-                <%--<c:when test="${item.tag eq 'button'}">--%>
-                    <%--<c:choose>--%>
-                        <%--<c:when test="${item.contents['type'] eq 'int'}">--%>
-                            <%--<input type="button" id="btn_${item.contents['target']}"--%>
-                            <%--<c:choose>--%>
-                            <%--<c:when test="${item.contents['target'] eq 'submit'}">--%>
-                                   <%--class="btn btn-primary" value="提交"--%>
-                            <%--</c:when>--%>
-                            <%--<c:when test="${item.contents['target'] eq 'prev'}">--%>
-                                   <%--class="btn btn-default" value="上一项"--%>
-                            <%--</c:when>--%>
-                            <%--<c:when test="${item.contents['target'] eq 'next'}">--%>
-                                   <%--class="btn btn-default" value="下一项"--%>
-                            <%--</c:when>--%>
-                            <%--</c:choose>--%>
-                            <%-->--%>
-                        <%--</c:when>--%>
-                    <%--</c:choose>--%>
-                <%--</c:when>--%>
             </c:choose>
-        </div>
+
     </div>
 </c:forEach>
 <!-- Control buttons -->

@@ -45,6 +45,7 @@
                 <ul>
                     <li>任务时限: ${startEndTime}</li>
                     <li>已参与人数: ${task.finishedCount}/${task.quota}</li>
+                    <li>可重复参与: ${(task.repeatable == 1)?'是':'否'}</li>
                     <c:if test="${not empty estTime}">
                         <li>预期任务时长: ${estTime}</li>
                     </c:if>
