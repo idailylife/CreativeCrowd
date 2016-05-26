@@ -16,7 +16,7 @@
             <ul class="nav navbar-nav">
                 <c:choose>
                     <c:when test="${loginState}">
-                        <li><a id="li_user_center" href="#">${displayName}</a></li>
+                        <li><a id="li_user_center" href="<c:url value="/user"/>">${displayName}</a></li>
                         <li><a id="logout" href="<c:url value="/user/logout"/> ">注销</a></li>
                     </c:when>
                     <c:otherwise>

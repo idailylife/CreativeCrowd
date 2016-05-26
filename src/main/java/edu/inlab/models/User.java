@@ -42,7 +42,7 @@ public class User extends CaptchaCapableModel {
     private String phoneNumber;
 
     @Column(name = "pay_method")
-    private Integer payMethod;
+    private String payMethod;
 
     @Column(name = "pay_account")
     private String payAccount;
@@ -83,7 +83,7 @@ public class User extends CaptchaCapableModel {
     }
 
     public User(String email, String password, String gender, Integer age
-            , String phoneNumber, Integer payMethod, String payAccount, Double acceptRate, String nickname){
+            , String phoneNumber, String  payMethod, String payAccount, Double acceptRate, String nickname){
         this.id = null;
         this.email = email;
         this.password = password;
@@ -127,7 +127,7 @@ public class User extends CaptchaCapableModel {
         return phoneNumber;
     }
 
-    public Integer getPayMethod() {
+    public String getPayMethod() {
         return payMethod;
     }
 
@@ -159,7 +159,7 @@ public class User extends CaptchaCapableModel {
         this.phoneNumber = phoneNumber;
     }
 
-    public void setPayMethod(Integer payMethod) {
+    public void setPayMethod(String payMethod) {
         this.payMethod = payMethod;
     }
 

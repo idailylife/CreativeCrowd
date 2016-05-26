@@ -16,7 +16,8 @@
         <a href="#">我的任务</a>
     </li>
     <li <c:if test="${not empty sel_pswd}">
-        class="active"</c:if>><a href="#">密码变更</a>
+        class="active"</c:if>>
+        <a href="#">密码变更</a>
     </li>
     <li <c:if test="${not empty sel_info}">class="active"</c:if>>
         <a href="<c:url value="/user/edit/info"/>">信息变更</a>
