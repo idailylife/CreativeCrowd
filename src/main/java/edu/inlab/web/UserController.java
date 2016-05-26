@@ -28,6 +28,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -220,6 +221,29 @@ public class UserController {
         return "user/edit/payment";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/edit/payment", method = RequestMethod.POST,
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public AjaxResponseBody editPaymentInfo(@RequestBody Map<String,String> map, HttpServletRequest request){
+        AjaxResponseBody responseBody = new AjaxResponseBody();
+        User currUser = getUserFromSession(request);
+        if(currUser != null && map.containsKey("payMethod")){
+            currUser.setPayMethod(map.get("payMethod"));
+            if(map.containsKey("payAccount")){
+                currUser.setPayAccount(map.get("payAccount"));
+            } else {
+                currUser.setPayAccount(null);
+            }
+            userService.updateUser(currUser);
+            responseBody.setState(200);
+        } else {
+            responseBody.setState(400);
+            responseBody.setMessage("No such user/invalid request content. Check login state.");
+        }
+        return  responseBody;
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public String userCenter(HttpServletRequest request, Model model){
         Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
@@ -231,4 +255,11 @@ public class UserController {
         model.addAttribute("sel_main", true);
         return "user";
     }
+
+    private User getUserFromSession(HttpServletRequest request){
+        Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
+        return userService.findById(uid);
+    }
+
+
 }

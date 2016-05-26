@@ -67,6 +67,9 @@
         <put-attribute name="content" value="/WEB-INF/views/pages/user/main.jsp" cascade="true"/>
     </definition>
 
+    <!-- User Mytask -->
+    
+
     <!-- Task Show-->
     <definition name="task/show" extends="base-definition">
         <!--<put-attribute name="head" value="/WEB-INF/views/pages/task/show_head.jsp"/>-->
