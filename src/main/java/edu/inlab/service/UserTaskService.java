@@ -14,7 +14,9 @@ public interface UserTaskService {
     UserTask getById(int id);
     List<UserTask> getByUserId(int userId, int size);
     List<UserTask> getByUserId(int userId, int startTaskId, int size);
-    UserTask getByUserAndTaskId(int userId, int taskId);
+    List<UserTask> getByUserAndTaskId(int userId, int taskId);
     Long getFinishedCount(int userId);
     Long getClaimedCount(int userId);
+    List<UserTask> getUnfinishedTasks(int userId);
+    UserTask getUnfinishedByUserIdAndTaskId(int userId, int taskId);
 }

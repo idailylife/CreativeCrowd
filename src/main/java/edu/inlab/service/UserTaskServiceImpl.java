@@ -43,7 +43,7 @@ public class UserTaskServiceImpl implements UserTaskService {
         return userTaskRepository.getByUserId(userId, startTaskId, size);
     }
 
-    public UserTask getByUserAndTaskId(int userId, int taskId) {
+    public List<UserTask> getByUserAndTaskId(int userId, int taskId) {
         return userTaskRepository.getByUserAndTaskId(userId, taskId);
     }
 
@@ -53,5 +53,13 @@ public class UserTaskServiceImpl implements UserTaskService {
 
     public Long getClaimedCount(int userId) {
         return (Long)userTaskRepository.getUserClaimedCount(userId);
+    }
+
+    public List<UserTask> getUnfinishedTasks(int userId) {
+        return userTaskRepository.getUserUnfinishedTasks(userId);
+    }
+
+    public UserTask getUnfinishedByUserIdAndTaskId(int userId, int taskId) {
+        return userTaskRepository.getUnfinished(userId, taskId);
     }
 }

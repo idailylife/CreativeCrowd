@@ -96,7 +96,7 @@ public class FileUploadController {
 
             ajaxResponseBody.setState(200);
             ajaxResponseBody.setContent(fileName);
-            request.getSession().removeAttribute(Constants.KEY_FILE_UPLOAD);
+            //request.getSession().removeAttribute(Constants.KEY_FILE_UPLOAD);
         }
         return ajaxResponseBody;
     }

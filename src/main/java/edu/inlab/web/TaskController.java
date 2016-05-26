@@ -1,5 +1,7 @@
 package edu.inlab.web;
 
+import com.sun.corba.se.impl.orbutil.closure.Constant;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import edu.inlab.models.*;
 import edu.inlab.models.handler.MicroTaskHandler;
 import edu.inlab.models.handler.SimpleMicroTaskHandler;
@@ -138,37 +140,36 @@ public class TaskController {
             }
         } else {
             //处理用户是否参与过/正在参与这个任务
-            //User user = userService.findById(loginState);
-            //Set<Task> tasks = user.getClaimedTasks();
-//            List<UserTask> userTasks = userTaskService.getByUserId(loginStateOrUserId, 1000);
-//            boolean claimedThisTask = false;
-//            for(UserTask userTask : userTasks){
-//                if(userTask.getTaskId().equals(task.getId())){
-//                    claimedThisTask = true;
-//                    if(userTask.getState() == UserTask.TYPE_FINISHED){
-//                    //该任务已经完成过了
-//                        taskJoinState = TaskJoinState.FINISHED;
-//                    } else {
-//                        taskJoinState = TaskJoinState.CLAIMED;
-//                    }
-//                    break;
-//                }
-//            }
-            UserTask userTask = userTaskService.getByUserAndTaskId(loginStateOrUserId, task.getId());
-            boolean claimedThisTask = false;
-            if(userTask != null){
-                claimedThisTask = true;
-                if(userTask.getState() == UserTask.TYPE_FINISHED){
-                    taskJoinState = TaskJoinState.FINISHED;
-                } else {
-                    taskJoinState = TaskJoinState.CLAIMED;
-                }
-            }
 
-            if(!claimedThisTask && !isExpiredOrFull){
+            //List<UserTask> claimedButNotFinishedTasks = userTaskService.getUnfinishedTasks(loginStateOrUserId);
+            UserTask unfinishedTask = userTaskService.getUnfinishedByUserIdAndTaskId(loginStateOrUserId, task.getId());
+            if(unfinishedTask != null){
+                taskJoinState = TaskJoinState.CLAIMED;
+            } else if(userTaskService.getByUserAndTaskId(loginStateOrUserId, task.getId()).size() > 0){
+                //已有任务完成记录
+                if(task.getRepeatable() == 1){
+                    taskJoinState = TaskJoinState.JOINABLE;
+                } else {
+                    taskJoinState = taskJoinState.FINISHED;
+                }
+            } else {
                 taskJoinState = TaskJoinState.JOINABLE;
             }
 
+//            UserTask userTask = userTaskService.getByUserAndTaskId(loginStateOrUserId, task.getId());
+//            boolean claimedThisTask = false;
+//            if(userTask != null){
+//                claimedThisTask = true;
+//                if(userTask.getState() == UserTask.TYPE_FINISHED){
+//                    taskJoinState = TaskJoinState.FINISHED;
+//                } else {
+//                    taskJoinState = TaskJoinState.CLAIMED;
+//                }
+//            }
+//
+//            if(!claimedThisTask && !isExpiredOrFull){
+//                taskJoinState = TaskJoinState.JOINABLE;
+//            }
         }
 
         return taskJoinState;
@@ -233,7 +234,7 @@ public class TaskController {
         Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
         //userService.loginStateParse(model, uid);
 
-        UserTask userTask = userTaskService.getByUserAndTaskId(uid, taskId);
+        UserTask userTask = userTaskService.getUnfinishedByUserIdAndTaskId(uid, taskId); //userTaskService.getByUserAndTaskId(uid, taskId);
         if(null == userTask){
             //TODO: 跳转到任务页?
             return "redirect:/task/tid" + taskId;
@@ -343,6 +344,7 @@ public class TaskController {
                 Task task = taskService.findById(userTask.getTaskId());
                 task.setFinishedCount(task.getFinishedCount() + 1);
                 taskService.updateTask(task);
+                request.getSession().removeAttribute(Constants.KEY_FILE_UPLOAD);
                 responseBody.setState(200);
             } else {
                 responseBody.setState(405);

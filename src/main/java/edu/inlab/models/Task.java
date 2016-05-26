@@ -6,6 +6,7 @@ import org.hibernate.annotations.TypeDef;
 import org.json.JSONObject;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -61,6 +62,10 @@ public class Task {
 
     @Column(name = "tag")
     private String tag;
+
+    @Column(name = "repeatable", nullable = false)
+    @Max(1)
+    private Integer repeatable;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "task_id")
@@ -169,6 +174,14 @@ public class Task {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public Integer getRepeatable() {
+        return repeatable;
+    }
+
+    public void setRepeatable(Integer repeatable) {
+        this.repeatable = repeatable;
     }
 
     @Override
