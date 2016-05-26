@@ -20,6 +20,7 @@
     <div class="row">
         <div class="col-md-8">
             <!-- Specified view -->
+            <input type="hidden" id="tid" value="${task.id}"/>
             <tiles:insertTemplate template="/WEB-INF/views/pages/json_handler/${handlerType}.jsp"/>
         </div>
         <div class="col-md-4">
