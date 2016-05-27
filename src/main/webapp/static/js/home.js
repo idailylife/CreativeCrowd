@@ -68,9 +68,20 @@ function appendPage(jsonAryResult) {
         var thumbnailDivObj = document.createElement("div");
         thumbnailDivObj.setAttribute("class", "thumbnail thumbnail-task");
 
-        var imageObj = document.createElement("img");
-        imageObj.setAttribute("src", homeUrl+"static/img/upload/"+ jsonTaskObj.image);
-        thumbnailDivObj.appendChild(imageObj);
+        // var imageObj = document.createElement("img");
+        // imageObj.setAttribute("src", homeUrl+"static/img/upload/"+ jsonTaskObj.image);
+        // thumbnailDivObj.appendChild(imageObj);
+        var imgContainer = document.createElement("div");
+        imgContainer.setAttribute("class", "task-img-container");
+        imgContainer.innerHTML = '<span class="helper"></span>';
+        var imgObj = document.createElement("img");
+        if(jsonTaskObj.image != null && jsonTaskObj.image.length > 0){
+            imgObj.setAttribute("src", homeUrl+"static/img/upload/"+ jsonTaskObj.image);
+        } else {
+            imgObj.setAttribute("src", homeUrl+"static/img/task-no-img.png");
+        }
+        imgContainer.appendChild(imgObj);
+        thumbnailDivObj.appendChild(imgContainer);
 
         var captionDiv = document.createElement("div");
         captionDiv.setAttribute("class", "caption");

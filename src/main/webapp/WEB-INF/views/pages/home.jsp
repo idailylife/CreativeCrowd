@@ -11,24 +11,36 @@
     <div id="carousel-tasks" class="carousel slide" data-ride="carousel">
         <!-- Indicators -->
         <ol class="carousel-indicators">
-            <li data-target="#carousel-tasks" data-slide-to="0" class="active"></li>
-            <li data-target="#carousel-tasks" data-slide-to="1" ></li>
+            <c:forEach items="${headlines}" var="headline" varStatus="loop">
+                <li data-target="#carousel" data-silde-to="${loop.index}"
+                    <c:if test="${loop.index == 0}">class="active"</c:if>>
+                </li>
+            </c:forEach>
+            <%--<li data-target="#carousel-tasks" data-slide-to="0" class="active"></li>--%>
+            <%--<li data-target="#carousel-tasks" data-slide-to="1" ></li>--%>
         </ol>
 
         <!-- Wrapper for slides -->
         <div class="carousel-inner" role="listbox">
-            <div class="item active">
-                <img src="http://www.baidu.com/img/bd_logo1.png" alt="baidu logo">
-                <div class="carousel-caption">
-                    <p>Baidu Logo</p>
+            <c:forEach items="${headlines}" var="headline" varStatus="loop">
+                <div class="item <c:if test="${loop.index==0}">active</c:if>">
+                    <a
+                    <c:choose>
+                        <c:when test="${headline.type eq 0}">
+                            href="<c:url value="/task/tid${headline.link}"/>"
+                        </c:when>
+                        <c:otherwise>
+                            href="#"
+                        </c:otherwise>
+                    </c:choose>
+                    >
+                        <img class="carousel-inner-img" src="<c:url value="/static/img/upload/${headline.image}"/> " alt="${headline.title}">
+                        <div class="carousel-caption">
+                            <p>${headline.title}</p>
+                        </div>
+                    </a>
                 </div>
-            </div>
-            <div class="item">
-                <img src="http://www.baidu.com/img/bd_logo1.png" alt="baidu logo2">
-                <div class="carousel-caption">
-                    <p>Baidu Logo 2</p>
-                </div>
-            </div>
+            </c:forEach>
         </div>
 
         <!-- Controls -->
@@ -49,15 +61,17 @@
             <a class="col-md-3 btn-task <c:if test="${task.taskInvalid}">task-invalid</c:if>"
                href="<c:url value="/task/tid${task.id}"/>" target="_blank" role="button">
                 <div class="thumbnail thumbnail-task">
+                    <div class="task-img-container">
+                        <span class="helper"></span>
                     <c:choose>
                         <c:when test="${not empty task.image}">
                             <img src="<c:url value="/static/img/upload/${task.image}"/> " alt="${task.title}">
                         </c:when>
                         <c:otherwise>
-                            <!-- TODO:Replace -->
-                            <img src="http://www.baidu.com/img/bd_logo1.png" alt="yet another baidu logo">
+                            <img src="<c:url value="/static/img/task-no-img.png"/> " alt="no-image">
                         </c:otherwise>
                     </c:choose>
+                    </div>
                     <div class="caption">
                         <h4>${task.title}</h4>
                         <p>有效时间: <span class="valid-time">${task.durationStr}</span></p>
