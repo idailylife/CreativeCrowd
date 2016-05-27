@@ -12,8 +12,11 @@
     <li <c:if test="${not empty sel_main}">class="active"</c:if>>
         <a href="<c:url value="/user"/>">信息概览</a>
     </li>
-    <li <c:if test="${not empty sel_task}">class="active"</c:if>>
-        <a href="#">我的任务</a>
+    <li <c:if test="${not empty sel_claim}">class="active"</c:if>>
+        <a href="<c:url value="/user/task/claimed"/> ">我申领的任务</a>
+    </li>
+    <li <c:if test="${not empty sel_request}">class="active"</c:if>>
+        <a href="#">我发布的任务</a>
     </li>
     <li <c:if test="${not empty sel_pswd}">
         class="active"</c:if>>

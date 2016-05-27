@@ -50,4 +50,10 @@ public class TaskRepoImpl extends AbstractDao<Integer, Task> implements TaskRepo
         query.setInteger("id", id);
         query.executeUpdate();
     }
+
+    public List<Task> getByIds(List<Integer> ids) {
+        Query query = getSession().createQuery("FROM Task WHERE id IN (:ids)");
+        query.setParameterList("ids", ids);
+        return query.list();
+    }
 }

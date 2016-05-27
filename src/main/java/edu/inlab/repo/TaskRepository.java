@@ -9,6 +9,7 @@ import java.util.List;
  */
 public interface TaskRepository {
     Task getTaskById(int id);
+    List<Task> getByIds(List<Integer> ids);
     List<Task> getByOwnerId(int ownerId);
     List<Task> getOpenTasks(int startId, int count);
     List<Task> getPagedTasks(int pageNo, int pageSize);

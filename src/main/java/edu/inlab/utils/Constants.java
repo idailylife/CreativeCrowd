@@ -21,4 +21,6 @@ public class Constants {
     public static final String KEY_TASK_EST_TIME = "est_time";
     public static final String KEY_TASK_REL_INFO = "info";
     public static final String KEY_CAPTCHA_SESSION ="_captcha";
+
+    public static final int USER_LIST_TASK_LENGTH = 20; //用户中心：每一页显示多少个Task
 }
