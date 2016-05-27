@@ -8,3 +8,63 @@
 .btn-full{
     width:100%;
 }
+
+.task-invalid > .thumbnail >.caption {
+    color: #9d9d9d;
+}
+
+.task-img-container{
+    height: 15rem;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 0;
+    position: relative;
+}
+
+.task-img-container > img{
+    width: 100%;
+    display:inline-block;
+    position: absolute;
+    top: -9999px;
+    bottom: -9999px;
+    left: -9999px;
+    right: -9999px;
+    margin: auto;
+}
+
+.helper{
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.jumbotron{
+    text-align: center;
+    background-color: #337ab7;
+    color: #fff;
+}
+
+.carousel-inner{
+    overflow: visible;
+}
+
+.carousel-inner > .item img{
+    margin: 0 auto;
+    height: 25rem !important;
+}
+
+.carousel-control {
+    background-image: none!important;
+}
+
+.btn-task:link{
+    text-decoration: none;
+}
+
+.thumbnail-task:hover{
+    border-color: #204d74;
+}
+
+.carousel-caption{
+    margin-bottom: -9rem;
+}

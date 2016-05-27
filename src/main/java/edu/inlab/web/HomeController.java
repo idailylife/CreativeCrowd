@@ -1,9 +1,11 @@
 package edu.inlab.web;
 
+import edu.inlab.models.Headline;
 import edu.inlab.models.Task;
 import edu.inlab.models.User;
 import edu.inlab.models.json.AjaxResponseBody;
 import edu.inlab.models.json.TaskPageCountRequestBody;
+import edu.inlab.service.HeadlineService;
 import edu.inlab.service.TaskService;
 import edu.inlab.service.UserService;
 import edu.inlab.utils.Constants;
@@ -35,6 +37,9 @@ public class HomeController {
     @Autowired
     TaskService taskService;
 
+    @Autowired
+    HeadlineService headlineService;
+
     @RequestMapping(method = RequestMethod.GET)
     public String home(Model model, HttpServletRequest request, HttpServletResponse response)
         throws IOException{
@@ -56,6 +61,10 @@ public class HomeController {
         //Fetch latest tasks
         List<Task> taskList = taskService.getPagedTasks(1, TASK_PAGE_SIZE);
         model.addAttribute("tasks", taskList);
+
+        //Fetch headlines
+        List<Headline> headlineList = headlineService.getAll();
+        model.addAttribute("headlines", headlineList);
 
         return "home";
     }
