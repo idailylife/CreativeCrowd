@@ -1,12 +1,16 @@
 package edu.inlab.service;
 
 import edu.inlab.models.Task;
+import edu.inlab.models.UserTask;
 import edu.inlab.repo.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by inlab-dell on 2016/5/10.
@@ -59,4 +63,14 @@ public class TaskServiceImpl implements TaskService {
     public void deleteTaskById(int id) {
         taskRepository.deleteTaskById(id);
     }
+
+    public Map<Integer, Task> findMapByIds(List<Integer> ids) {
+        List<Task> tasks =  taskRepository.getByIds(ids);
+        Map<Integer, Task> map = new HashMap<Integer, Task>();
+        for(Task task: tasks){
+            map.put(task.getId(), task);
+        }
+        return map;
+    }
+
 }

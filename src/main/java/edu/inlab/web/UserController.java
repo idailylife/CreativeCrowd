@@ -6,6 +6,7 @@ import edu.inlab.models.Task;
 import edu.inlab.models.UserTask;
 import edu.inlab.models.json.AjaxResponseBody;
 import edu.inlab.models.User;
+import edu.inlab.service.TaskService;
 import edu.inlab.service.UserService;
 import edu.inlab.service.UserTaskService;
 import edu.inlab.utils.EncodeFactory;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -44,6 +46,9 @@ public class UserController {
 
     @Autowired
     UserTaskService userTaskService;
+
+    @Autowired
+    TaskService taskService;
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String newUser(HttpServletRequest request){
@@ -246,11 +251,12 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String userCenter(HttpServletRequest request, Model model){
-        Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
-        User user = userService.findById(uid);
+//        Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
+//        User user = userService.findById(uid);
+        User user = getUserFromSession(request);
         model.addAttribute("user", user);
-        model.addAttribute("claimedCount", userTaskService.getClaimedCount(uid));
-        model.addAttribute("finishedCount", userTaskService.getFinishedCount(uid));
+        model.addAttribute("claimedCount", userTaskService.getClaimedCount(user.getId()));
+        model.addAttribute("finishedCount", userTaskService.getFinishedCount(user.getId()));
 
         model.addAttribute("sel_main", true);
         return "user";
@@ -258,8 +264,22 @@ public class UserController {
 
     private User getUserFromSession(HttpServletRequest request){
         Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
-        return userService.findById(uid);
+        User user =  userService.findById(uid);
+        if(user == null){
+            throw new ResourceNotFoundException("Cannot find such user with uid=" + uid);
+        }
+        return user;
     }
 
-
+    @Transactional
+    @RequestMapping(value = "task/claimed", method = RequestMethod.GET)
+    public String claimedTasks(HttpServletRequest request, Model model){
+        User user = getUserFromSession(request);
+        List<UserTask> userTasks = userTaskService.getByUserId(user.getId(), Constants.USER_LIST_TASK_LENGTH);
+        Map<Integer, Task> mappedTasks = taskService.findMapByIds(userTaskService.getTaskIds(userTasks));
+        //tasks可能会比userTasks多，因为可以重复申领
+        model.addAttribute("userTasks", userTasks);
+        model.addAttribute("mappedTasks", mappedTasks);
+        return "user/task/claimed";
+    }
 }

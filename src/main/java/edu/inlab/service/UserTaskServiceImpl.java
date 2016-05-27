@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,5 +62,13 @@ public class UserTaskServiceImpl implements UserTaskService {
 
     public UserTask getUnfinishedByUserIdAndTaskId(int userId, int taskId) {
         return userTaskRepository.getUnfinished(userId, taskId);
+    }
+
+    public List<Integer> getTaskIds(List<UserTask> userTasks) {
+        List<Integer> ids = new ArrayList<Integer>();
+        for(UserTask userTask: userTasks){
+            ids.add(userTask.getTaskId());
+        }
+        return ids;
     }
 }

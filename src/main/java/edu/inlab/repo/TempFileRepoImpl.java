@@ -35,4 +35,6 @@ public class TempFileRepoImpl extends AbstractDao<Integer, TempFile>
     public void deleteRecord(TempFile tempFile) {
         delete(tempFile);
     }
+
+
 }

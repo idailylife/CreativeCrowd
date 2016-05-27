@@ -67,8 +67,12 @@
         <put-attribute name="content" value="/WEB-INF/views/pages/user/main.jsp" cascade="true"/>
     </definition>
 
-    <!-- User Mytask -->
-
+    <!-- User Claimed Tasks -->
+    <definition name="user/task/claimed" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/views/tiles/layouts/twoColsBody.jsp"/>
+        <put-attribute name="left" value="/WEB-INF/views/pages/user/left_menu.jsp" cascade="true"/>
+        <put-attribute name="content" value="/WEB-INF/views/pages/user/task_claimed.jsp" cascade="true"/>
+    </definition>
 
     <!-- Task Show-->
     <definition name="task/show" extends="base-definition">

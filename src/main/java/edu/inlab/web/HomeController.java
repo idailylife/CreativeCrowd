@@ -46,16 +46,6 @@ public class HomeController {
         //return "pages/home";
         userService.maintainLoginState(request, response);
         Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
-//        if(null != uid){
-//            User user = userService.findById(uid);
-//            String displayName = user.getEmail();
-//            if(user.getNickname() != null)
-//                displayName = user.getNickname();
-//            model.addAttribute("loginState", true);
-//            model.addAttribute("displayName", displayName);
-//        } else {
-//            model.addAttribute("loginState", false);
-//        }
         userService.loginStateParse(model, uid);
 
         //Fetch latest tasks
