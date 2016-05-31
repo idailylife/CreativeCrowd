@@ -9,9 +9,12 @@ import javax.persistence.*;
 @Table(name = "usertask")
 public class UserTask {
     //public enum TaskState {CLAIMED, FINISHED, EXPIRED};
-    public static int TYPE_CLAIMED = 0;
-    public static int TYPE_FINISHED = 1;
-    public static int TYPE_EXPIRED = 2;
+    public static int STATE_CLAIMED = 0;
+    public static int STATE_FINISHED = 1;
+    public static int STATE_EXPIRED = 2;
+
+    public static int USERTYPE_NORMAL = 0;
+    public static int USERTYPE_MTURK = 1;
 
     public UserTask(){
 
@@ -20,7 +23,8 @@ public class UserTask {
     public UserTask(int userId, int taskId){
         this.userId = userId;
         this.taskId = taskId;
-        this.state = TYPE_CLAIMED;
+        this.state = STATE_CLAIMED;
+        this.userType = USERTYPE_NORMAL;
     }
 
     @Id
@@ -28,8 +32,14 @@ public class UserTask {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_type")
+    private Integer userType;
+
+    @Column(name = "user_id")
     private Integer userId;
+
+    @Column(name = "mturk_id")
+    private String mturkId;
 
     @Column(name = "task_id", nullable = false)
     private Integer taskId;
@@ -39,6 +49,9 @@ public class UserTask {
 
     @Column(name = "state", nullable = false)
     private Integer state;
+
+    @Column(name = "ref_code")
+    private String refCode;
 
     public Integer getId() {
         return id;
@@ -79,5 +92,36 @@ public class UserTask {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+
+    public Integer getUserType() {
+        return userType;
+    }
+
+    public void setUserType(Integer userType) {
+        this.userType = userType;
+    }
+
+    public String getMturkId() {
+        return mturkId;
+    }
+
+    public void setMturkId(String mturkId) {
+        this.mturkId = mturkId;
+    }
+
+    public String getRefCode() {
+        return refCode;
+    }
+
+    public void setRefCode(String refCode) {
+        this.refCode = refCode;
+    }
+
+    /**
+     * Generate a random reference code (for MTurk use)
+     */
+    public void generateRefCode(){
+        refCode = java.util.UUID.randomUUID().toString();
     }
 }

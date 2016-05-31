@@ -15,15 +15,6 @@ import java.util.Map;
  * Created by hebowei on 16/5/14.
  */
 public class TaskHandlerFactory {
-    @Deprecated
-    public static MicroTaskHandler getHandler(String type, String baseUrl){
-        if(type.equals("simple")){
-            return new SimpleMicroTaskHandler(baseUrl);
-        } else {
-            //TODO: other types?
-            return null;
-        }
-    }
 
     public static List<JstlCompatibleModel> parseMicrotaskToItemLists(JSONArray jsonArray){
         List<JstlCompatibleModel> compatibleModels = new ArrayList<JstlCompatibleModel>();

@@ -1,7 +1,5 @@
 package edu.inlab.web;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import edu.inlab.models.Task;
 import edu.inlab.models.UserTask;
 import edu.inlab.models.json.AjaxResponseBody;
@@ -11,6 +9,7 @@ import edu.inlab.service.UserService;
 import edu.inlab.service.UserTaskService;
 import edu.inlab.utils.EncodeFactory;
 import edu.inlab.utils.Constants;
+import edu.inlab.web.exception.ResourceNotFoundException;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -28,10 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by inlab-dell on 2016/5/5.

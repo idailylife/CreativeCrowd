@@ -21,6 +21,10 @@ import java.util.Set;
 @Table(name = "task")
 @TypeDef(name = "customJsonObject", typeClass = JSONObjectUserType.class)
 public class Task {
+    public static int TYPE_NORMAL = 0;
+    public static int TYPE_MTURK = 1;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -46,7 +50,7 @@ public class Task {
     private JSONObject descJson;
 
     @Column(name = "mode", nullable = false)
-    private Integer mode;
+    private Integer mode;   //Normal, Random Assign, Assign with Policy
 
     @Column(name = "start_time")
     private Integer startTime;
@@ -66,6 +70,12 @@ public class Task {
     @Column(name = "repeatable", nullable = false)
     @Max(1)
     private Integer repeatable;
+
+    @Column(name = "type", nullable = false)
+    private Integer type;
+
+    @Column(name = "time_limit")
+    private Integer timeLimit; // Time limit for one task (in minute)
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "task_id")
@@ -184,6 +194,22 @@ public class Task {
         this.repeatable = repeatable;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getTimeLimit() {
+        return timeLimit;
+    }
+
+    public void setTimeLimit(Integer timeLimit) {
+        this.timeLimit = timeLimit;
+    }
+
     @Override
     public int hashCode() {
         if(this.id != null){
@@ -224,10 +250,13 @@ public class Task {
      */
     public String getDurationStr(){
         if(null == startTime && null == endTime){
-            return "不限";
+            if(type == TYPE_NORMAL)
+                return "不限";
+            else if(type == TYPE_MTURK)
+                return "Unlimited";
         }
         String retStr = "";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+
         Calendar calendar = Calendar.getInstance();
         Date currDate = new Date();
         calendar.setTime(currDate);
@@ -235,27 +264,27 @@ public class Task {
 
 
         if(null != startTime){
-            Date date = new Date((long)startTime*1000);
-            calendar.setTime(date);
-            int startYear = calendar.get(Calendar.YEAR);
-            if(startYear == year){
-                retStr += new SimpleDateFormat("MM/dd").format(date);
-            } else {
-                retStr += dateFormat.format(date);
-            }
+            retStr += parseMMDDStr(startTime, year);
         }
+        retStr += " - ";
         if(null != endTime){
-            Date date = new Date((long)endTime*1000);
-            calendar.setTime(date);
-            int endYear = calendar.get(Calendar.YEAR);
-            retStr += " - ";
-            if(endYear == year){
-                retStr += new SimpleDateFormat("MM/dd").format(date);
-            } else {
-                retStr += dateFormat.format(date);
-            }
+            retStr += parseMMDDStr(endTime, year);
+        }
+        return retStr;
+    }
+
+    private String parseMMDDStr(Integer time, int year){
+        String retStr;
+        Date date = new Date((long)time*1000);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int endYear = calendar.get(Calendar.YEAR);
+
+        if(endYear == year){
+            retStr = new SimpleDateFormat("MM/dd").format(date);
         } else {
-            retStr += " - 不限";
+            retStr = dateFormat.format(date);
         }
         return retStr;
     }
