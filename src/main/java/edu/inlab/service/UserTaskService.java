@@ -19,5 +19,7 @@ public interface UserTaskService {
     Long getClaimedCount(int userId);
     List<UserTask> getUnfinishedTasks(int userId);
     UserTask getUnfinishedByUserIdAndTaskId(int userId, int taskId);
+    UserTask getUnfinishedByMTurkIdAndTaskId(String mturkId, int taskId);
     List<Integer> getTaskIds(List<UserTask> userTasks);
+    List<UserTask> getByMturkIdAndTaskId(String mturkId, int taskId);
 }

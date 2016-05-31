@@ -57,6 +57,9 @@ public class TaskServiceImpl implements TaskService {
             entity.setOwnerId(task.getOwnerId());
             entity.setQuota(task.getQuota());
             entity.setStartTime(task.getStartTime());
+            entity.setRepeatable(task.getRepeatable());
+            entity.setType(task.getType());
+            entity.setTimeLimit(task.getTimeLimit());
         }
     }
 

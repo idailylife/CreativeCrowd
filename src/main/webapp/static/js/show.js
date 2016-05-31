@@ -3,7 +3,51 @@
  */
 $(document).ready(function () {
     $("#btn-join").click(dispatchJoinBtnClick);
+    $("#btn-mt-chk-status").click(checkMtIdValidity);
+    $("#img-captcha").click(function () {
+        refreshCaptcha();
+    });
 });
+
+function checkMtIdValidity() {
+    var mturkId = $("#inputMTurkId").val();
+    var captcha = $("#inputCaptcha").val();
+    $("#alert-info").hide();
+    if(mturkId && captcha){
+        var data = {
+            mturkId: mturkId,
+            captcha: captcha,
+            taskId: $("#val-tid").val()
+        };
+        $.post({
+            url:  homeUrl + "task/check_mt",
+            data: data,
+            success: function (rcvData) {
+                if(rcvData.state == 200){
+                    $("#group-mt-id").addClass("has-success");
+                    $("#btn-mt-chk-status").hide();
+                    $("#btn-mt-join").show();
+                } else if(rcvData.state == 201){
+                    $("#group-mt-id").addClass("has-success");
+                    $("#btn-mt-chk-status").hide();
+                    $("#btn-mt-join").text("Resume").show();
+                } else {
+                    refreshCaptcha();
+                    if(rcvData.state!=401)
+                        $("input[type='text']").val("");
+                    else
+                        $("#inputCaptcha").val("");
+                    $("#alert-info").text(rcvData.message).show();
+                }
+            },
+            error: function (error) {
+                console.warn(error);
+            }
+        });
+    } else {
+        $("#alert-info").text("Please fill in all the blanks and retry.").show();
+    }
+}
 
 function dispatchJoinBtnClick() {
     var state = $(this).data("state");
@@ -45,4 +89,8 @@ function dispatchJoinBtnClick() {
             }
         });
     }
+}
+
+function refreshCaptcha() {
+    $("#img-captcha").attr("src", homeUrl+"captcha?"+Math.floor(Math.random()*100));
 }

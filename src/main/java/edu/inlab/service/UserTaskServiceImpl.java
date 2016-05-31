@@ -29,6 +29,9 @@ public class UserTaskServiceImpl implements UserTaskService {
             entity.setState(userTask.getState());
             entity.setTaskId(userTask.getTaskId());
             entity.setUserId(userTask.getUserId());
+            entity.setMturkId(userTask.getMturkId());
+            entity.setUserType(userTask.getUserType());
+            entity.setRefCode(userTask.getRefCode());
         }
     }
 
@@ -64,11 +67,19 @@ public class UserTaskServiceImpl implements UserTaskService {
         return userTaskRepository.getUnfinished(userId, taskId);
     }
 
+    public UserTask getUnfinishedByMTurkIdAndTaskId(String mturkId, int taskId) {
+        return userTaskRepository.getUnfinished(mturkId, taskId);
+    }
+
     public List<Integer> getTaskIds(List<UserTask> userTasks) {
         List<Integer> ids = new ArrayList<Integer>();
         for(UserTask userTask: userTasks){
             ids.add(userTask.getTaskId());
         }
         return ids;
+    }
+
+    public List<UserTask> getByMturkIdAndTaskId(String mturkId, int taskId) {
+        return userTaskRepository.getByMturkIdAndTaskId(mturkId, taskId);
     }
 }

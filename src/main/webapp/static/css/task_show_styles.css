@@ -1,0 +1,11 @@
+#btn-mt-join{
+    display: none;
+}
+
+div .alert-danger{
+    display: none;
+}
+
+#img-captcha:hover{
+    cursor: pointer;
+}

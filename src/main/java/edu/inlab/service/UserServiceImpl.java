@@ -135,19 +135,22 @@ public class UserServiceImpl implements UserService {
      * 维护用户登录状态并返回 错误状态码 或 合法的用户ID
      * @param request
      * @param response
-     * @return
+     * @return 如果是MTurk用户，返回Constants.VAL_USER_UID_MTURK
      */
     public int maintainLoginState(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
         //String errorCode = "";
         int retCode = NOT_LOGIN;
         if(uid != null){
-            User user = findById(uid);
-            if(null != user)
+            if(uid == Constants.VAL_USER_UID_MTURK){
+                //MTurk user
                 return uid;
-                //return SUCC_LOGIN;
-            //errorCode += "userNotFound ";
-            retCode = ERR_NO_SUCH_USER;
+            } else {
+                User user = findById(uid);
+                if(null != user)
+                    return uid;
+                retCode = ERR_NO_SUCH_USER;
+            }
         } else {
             Cookie[] cookies = request.getCookies();
             String token = null;
@@ -182,7 +185,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void loginStateParse(Model model, Integer uid) {
-        if(null != uid){
+        if(null != uid && uid > 0){
             User user = findById(uid);
             String displayName = user.getEmail();
             if(user.getNickname() != null)

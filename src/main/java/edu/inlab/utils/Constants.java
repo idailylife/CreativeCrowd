@@ -12,6 +12,8 @@ public class Constants {
     public static final int FILE_SIZE_THRESHOLD = 0; // Size threshold after which files will be written to disk
 
     public static final String KEY_USER_UID = "_uid";
+    public static final int VAL_USER_UID_MTURK = 0;
+    public static final String KEY_MTURK_ID = "_mturkId";
     public static final String KEY_USER_TOKEN = "_utoken";
     public static final String KEY_FILE_UPLOAD = "_fupload";
 

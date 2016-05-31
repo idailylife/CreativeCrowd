@@ -30,6 +30,15 @@ public class UserMicroTask {
     @Type(type = "customJsonObject")
     private JSONObject results;
 
+    public UserMicroTask (){
+
+    }
+
+    public UserMicroTask (Integer usertaskId, Integer microtaskId){
+        this.usertaskId = usertaskId;
+        this.microtaskId = microtaskId;
+    }
+
     public Integer getId() {
         return id;
     }

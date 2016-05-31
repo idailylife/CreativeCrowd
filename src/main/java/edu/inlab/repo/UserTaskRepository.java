@@ -12,8 +12,10 @@ public interface UserTaskRepository {
     UserTask getById(int id);
     List<UserTask> getByUserId(int userId, int startTaskId, int size);
     List<UserTask> getByUserAndTaskId(int userId, int taskId);
+    List<UserTask> getByMturkIdAndTaskId(String mturkId, int taskId);
     Number getUserClaimedCount(int userId);
     Number getUserFinishedCount(int userId);
     List<UserTask> getUserUnfinishedTasks(int userId);
     UserTask getUnfinished(int userId, int taskId);
+    UserTask getUnfinished(String mturkId, int taskId);
 }
