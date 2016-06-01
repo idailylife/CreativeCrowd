@@ -60,7 +60,12 @@ public class FileUploadController {
         UserTask userTask = null;
         Integer umtId = null;
         if(taskId != null && uid != null){
-            userTask = userTaskService.getUnfinishedByUserIdAndTaskId(uid, taskId);
+            if(uid > 0){
+                userTask = userTaskService.getUnfinishedByUserIdAndTaskId(uid, taskId);
+            } else if(uid == Constants.VAL_USER_UID_MTURK) {
+                String mturkId = (String) request.getSession().getAttribute(Constants.KEY_MTURK_ID);
+                userTask = userTaskService.getUnfinishedByMTurkIdAndTaskId(mturkId, taskId);
+            }
             umtId = userTask.getCurrUserMicrotaskId();
         }
         if(Constants.DEBUG)

@@ -15,24 +15,34 @@ public class MicroTaskAssignerFactory {
     @Autowired
     private MicroTaskAssigner randomMicroTaskAssigner;
 
+
     public MicroTaskAssigner getAssigner(String type){
+        MicroTaskAssigner assigner = null;
         if(type.equals("single")){
-            return singlePagedMicroTaskAssigner;
+            assigner = singlePagedMicroTaskAssigner;
         } else if(type.equals("random")){
-            return randomMicroTaskAssigner;
+            assigner = randomMicroTaskAssigner;
         }
-        return null;
+//        if(assigner != null){
+//            assigner.parseParamsString(paramStr);
+//        }
+        return assigner;
     }
 
     public MicroTaskAssigner getAssigner(int code){
+        MicroTaskAssigner assigner = null;
         switch (code){
             case 0:
-                return singlePagedMicroTaskAssigner;
+                assigner = singlePagedMicroTaskAssigner;
+                break;
             case 1:
-                return randomMicroTaskAssigner;
-            default:
-                return null;
+                assigner = randomMicroTaskAssigner;
+                break;
         }
+//        if(assigner != null){
+//            assigner.parseParamsString(paramStr);
+//        }
+        return assigner;
     }
 
     public void setSinglePagedMicroTaskAssigner(SinglePagedMicroTaskAssigner singlePagedMicroTaskAssigner) {
