@@ -14,7 +14,7 @@ import java.util.*;
  *     [
  *      {label,     {id: ID, text: CONTENT, *for: FOR_ID}} :=> labels (for some input FOR_ID)
  *      {text,      {id: ID, multiline: true/false, *placeholder: TEXT}}           :=> text input
- *      {choice,    {id: ID, *type: single/multiple, items:[ITEM_1, ITEM_2, ...]}
+ *      {choice,    {id: ID, type: single/multiple, ary_items:[ITEM_1, ITEM_2, ...]}
  *              :=> single(default)/multiple choice box
  *      {image,     {src: internal_url}}    :=> image
  *      {button,    {*id:ID, type: int/ext, *url: EXTERNAL_URL, *target: prev/next/submit, *text: TEXT}}
@@ -23,12 +23,11 @@ import java.util.*;
  *                  external buttons can have customized id
  *      {file,      {accept: ALLOWED_TYPES, *text: TEXT_DESCRIPTION}}      :=> file
  *     ]
- * Output:
+ *
  */
 
 @Deprecated
 public class SimpleMicroTaskHandler implements MicroTaskHandler {
-    //TODO: [IMPORTANT]Filter illegal scripts inside the text (XSS)
 
     static final String KEY_LABEL = "label";
     static final String KEY_TEXT = "text";

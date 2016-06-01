@@ -57,8 +57,9 @@
                     <div class="form-group">
                         <div id="alert-info" class="alert alert-danger" role="alert"></div>
                     </div>
-                    <div class="form-group pull-right">
+                    <div class="form-group">
                         <button type="button" class="btn btn-default" id="btn-mt-chk-status">Check Validity</button>
+                        <button type="button" class="btn btn-success" id="btn-mt-resume">Resume Task</button>
                         <button type="button" class="btn btn-success" id="btn-mt-join">Start Task</button>
                     </div>
 

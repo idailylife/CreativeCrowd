@@ -31,4 +31,5 @@
 <script>
     var homeUrl = "<c:url value="/"/>";
     var handlerType = "${handlerType}";
+    var taskType = ${task.type};
 </script>

@@ -11,7 +11,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 /**
  * Created by inlab-dell on 2016/5/9.
  * 在需要登录的地方处理登录验证、Session/Cookie维护
@@ -24,13 +23,13 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //request.setCharacterEncoding("UTF-8");
+
         int state = userService.maintainLoginState(request, response);
         if(state >= 0) {
             return true;
         }
         else{
-            response.sendRedirect("/user/login?next=" + request.getRequestURI() + "&state=" + state);
+            response.sendRedirect(request.getContextPath() + "/user/login?next=" + request.getRequestURI() + "&state=" + state);
             return false;
         }
     }
@@ -39,7 +38,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         if(modelAndView != null){ //防止渲染json对象出错
             Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
-            if(uid != null){
+            if(uid != null && uid > Constants.VAL_USER_UID_MTURK){
                 User user = userService.findById(uid);
                 String displayName = user.getEmail();
                 if(user.getNickname() != null)
@@ -48,6 +47,11 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 //model.addAttribute("loginState", true);
                 modelAndView.getModel().put("displayName", displayName);
                 //model.addAttribute("displayName", displayName);
+            } else if(uid!=null && uid == 0) {
+                modelAndView.getModel().put("loginState", false);
+                String mturkId = (String) request.getSession().getAttribute(Constants.KEY_MTURK_ID);
+                modelAndView.getModel().put("mturkId", mturkId);
+                modelAndView.getModel().put("isMTurkTask", true);
             } else {
                 modelAndView.getModel().put("loginState", false);
             }
