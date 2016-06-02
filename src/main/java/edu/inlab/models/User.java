@@ -60,6 +60,9 @@ public class User extends CaptchaCapableModel {
     @Column(name = "token_cookie")
     private String tokenCookie;
 
+    @Column(name = "optlock")
+    @Version
+    private Integer version;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "usertask",
@@ -211,6 +214,13 @@ public class User extends CaptchaCapableModel {
         this.claimedTasks = claimedTasks;
     }
 
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 
     @Override
     public boolean equals(Object obj) {

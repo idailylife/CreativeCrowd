@@ -6,6 +6,7 @@ $(document).ready(readyFunction);
 function readyFunction() {
     $("#btn_save").click(saveClick);
     setSaveButtonState("disabled");
+
     if(document.getElementById("btn_submit") != null){
         $("#btn_submit").click(submitClick);
     }
@@ -32,27 +33,47 @@ function readyFunction() {
 }
 
 function submitClick() {
-    saveClick();
-    $.ajax({
-        type: "post",
-        url: homeUrl + "task/submit",
-        success: function (data) {
-            switch(data.state){
-                case 200:
-                    location.href = homeUrl + "task/done";
-                    break;
-                case 405:
-                    alert(messageResources.SUBMIT_405);
-                    break;
-                case 401:
-                    alert(messageResources.SUBMIT_401);
-                    break;
-            }
-        },
-        error: function (err) {
-            alert(messageResources.AJAX_CONN_FAIL + err);
+    var errCount = saveClick();
+    if(document.getElementById("btn_upload") != null && $("#btn_file").attr("required")){
+        if($("#file_upd_state").val() == 0){
+            errCount++;
+            alert(messageResources.UPLOAD_FILE_NOT_READY);
         }
-    });
+    }
+    if(errCount == 0){
+        setSubmitButtonState("submitting");
+        $.ajax({
+            type: "post",
+            url: homeUrl + "task/submit",
+            success: function (data) {
+                switch(data.state){
+                    case 200:
+                        var redirUrl = homeUrl + "task/done";
+                        if(taskType == 1){
+                            redirUrl += "?refCode=" + data.content;
+                        }
+                        window.location.href = redirUrl;
+                        break;
+                    case 201:
+                        window.location.reload();
+                        break;
+                    case 405:
+                        alert(messageResources.SUBMIT_405);
+                        setSubmitButtonState("fail");
+                        break;
+                    case 401:
+                        alert(messageResources.SUBMIT_401);
+                        setSubmitButtonState("fail");
+                        break;
+                }
+
+            },
+            error: function (err) {
+                alert(messageResources.AJAX_CONN_FAIL + err);
+                setSubmitButtonState("normal");
+            }
+        });
+    }
 }
 
 
@@ -73,12 +94,7 @@ function saveClick() {
         }
     }
 
-    if(document.getElementById("btn_upload") != null && $("#btn_file").attr("required")){
-        if($("#file_upd_state").val() == 0){
-            errCount++;
-            alert(messageResources.UPLOAD_FILE_NOT_READY);
-        }
-    }
+
 
     if(errCount == 0){
         //Ajax upload
@@ -127,6 +143,19 @@ function setSaveButtonState(state){
         btn.prop("disabled", true);
     } else if(state == "saved"){
         btn.val(messageResources.BTN_STATE_SAVED).prop("disabled", true);
+    }
+}
+
+function setSubmitButtonState(state) {
+    var btn = $("#btn_submit");
+    btn.prop("disabled", false);
+    if(state == "normal"){
+        btn.val(messageResources.BTN_STATE_SUBMIT);
+    } else if(state == "submitting"){
+        btn.val(messageResources.BTN_STATE_SUBMITTING)
+            .prop("disabled", true);
+    } else if(state == "fail"){
+        btn.val(messageResources.BTN_STATE_RETRY);
     }
 }
 
@@ -181,7 +210,9 @@ var messageResources = function () {
                 BTN_STATE_SAVING: "正在保存",
                 BTN_STATE_SAVE: "保存",
                 BTN_STATE_RETRY: "重试",
-                BTN_STATE_SAVED: "已保存"
+                BTN_STATE_SAVED: "已保存",
+                BTN_STATE_SUBMITTING: "正在提交",
+                BTN_STATE_SUBMIT: "提交"
             };
             break;
         case 1:
@@ -197,7 +228,9 @@ var messageResources = function () {
                 BTN_STATE_SAVING: "Saving",
                 BTN_STATE_SAVE: "Save",
                 BTN_STATE_RETRY: "Retry ",
-                BTN_STATE_SAVED: "Saved"
+                BTN_STATE_SAVED: "Saved",
+                BTN_STATE_SUBMITTING: "Submitting",
+                BTN_STATE_SUBMIT: "Submit"
             };
             break;
     }

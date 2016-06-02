@@ -1,6 +1,9 @@
 package edu.inlab.repo;
 
 import edu.inlab.models.UserTask;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -71,7 +74,7 @@ public class UserTaskRepoImpl extends AbstractDao<Integer, UserTask> implements 
         UserTask retTask = (UserTask) getSession().createCriteria(UserTask.class)
                 .add(Restrictions.eq("userId", userId))
                 .add(Restrictions.eq("taskId", taskId))
-                .add(Restrictions.eq("state", 0))
+                .add(Restrictions.eq("state", UserTask.STATE_CLAIMED))
                 .uniqueResult();
         return retTask;
     }
@@ -80,7 +83,7 @@ public class UserTaskRepoImpl extends AbstractDao<Integer, UserTask> implements 
         UserTask userTask = (UserTask) getSession().createCriteria(UserTask.class)
                 .add(Restrictions.eq("mturkId", mturkId))
                 .add(Restrictions.eq("taskId", taskId))
-                .add(Restrictions.eq("state", 0))
+                .add(Restrictions.eq("state", UserTask.STATE_CLAIMED))
                 .uniqueResult();
         return userTask;
     }
@@ -90,6 +93,17 @@ public class UserTaskRepoImpl extends AbstractDao<Integer, UserTask> implements 
                 .add(Restrictions.eq("userType", UserTask.USERTYPE_MTURK))
                 .add(Restrictions.eq("mturkId", mturkId))
                 .add(Restrictions.eq("taskId", taskId))
+                .list();
+        return userTasks;
+    }
+
+    public List<UserTask> getFinishedOrExpired(String mturkId, int taskId){
+        Criteria criteria = getSession().createCriteria(UserTask.class);
+        Criterion state_finished = Restrictions.eq("state", UserTask.STATE_FINISHED);
+        Criterion state_expired = Restrictions.eq("state", UserTask.STATE_EXPIRED);
+        List<UserTask> userTasks = criteria.add(Restrictions.eq("mturkId", mturkId))
+                .add(Restrictions.eq("taskId", taskId))
+                .add(Restrictions.or(state_expired, state_finished))
                 .list();
         return userTasks;
     }

@@ -30,6 +30,10 @@ public class UserMicroTask {
     @Type(type = "customJsonObject")
     private JSONObject results;
 
+    @Column(name = "optlock")
+    @Version
+    private Integer version;
+
     public UserMicroTask (){
 
     }
@@ -70,5 +74,13 @@ public class UserMicroTask {
 
     public void setUsertaskId(Integer usertaskId) {
         this.usertaskId = usertaskId;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

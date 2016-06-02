@@ -66,4 +66,13 @@ public class CaptchaController {
         }
         return null;
     }
+
+    public static boolean testCaptcha(String userInput, HttpServletRequest request){
+        String sessionCaptcha = (String) request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION);
+        if(null == sessionCaptcha)
+            return false;
+        sessionCaptcha = sessionCaptcha.toLowerCase();
+        userInput = userInput.toLowerCase();
+        return userInput.equals(sessionCaptcha);
+    }
 }

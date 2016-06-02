@@ -110,9 +110,10 @@ public class TaskController {
             model.addAttribute("infoMap", infoMap);
         }
 
-
-
-        model.addAttribute("task", taskService.findById(taskId));
+        model.addAttribute("task", task);
+        if(task.getType() == Task.TYPE_MTURK){
+            model.addAttribute("isMTurkTask", true);
+        }
 
         int loginState = -400;
         try{
@@ -126,6 +127,42 @@ public class TaskController {
         return "task/show";
     }
 
+    /**
+     * Get MTurk task join state
+     * @param task
+     * @param mturkId
+     * @return
+     */
+    private TaskJoinState getTaskJoinState(Task task, String mturkId){
+        if(mturkId == null){
+            return TaskJoinState.NEED_LOGIN;
+        }
+        if(task.isExpired() || task.isFull()){
+            return TaskJoinState.EXPIRED;
+        }
+        UserTask claimedUnfinishedUT = userTaskService.getUnfinishedByMTurkIdAndTaskId(mturkId, task.getId());
+        if(null != claimedUnfinishedUT){
+            return  TaskJoinState.CLAIMED;
+        }
+        List<UserTask> finiteStateUserTasks = userTaskService.getFinishedOrExpired(mturkId, task.getId());
+        if(finiteStateUserTasks.isEmpty()){
+            return TaskJoinState.JOINABLE;
+        } else {
+            if(task.getRepeatable() == 0){
+                return TaskJoinState.FINISHED;
+            } else {
+                return TaskJoinState.JOINABLE;
+            }
+        }
+    }
+
+    /**
+     * Get task join state for normal tasks,
+     * If the task is a MTurk task, return JOINABLE
+     * @param task
+     * @param loginStateOrUserId
+     * @return TaskJoinState
+     */
     private TaskJoinState getTaskJoinState(Task task, int loginStateOrUserId){
         TaskJoinState taskJoinState = TaskJoinState.EXPIRED;
         boolean isExpiredOrFull = task.isExpired() || task.isFull();
@@ -135,10 +172,14 @@ public class TaskController {
             if(!isExpiredOrFull){
                 taskJoinState = TaskJoinState.NEED_LOGIN;
             }
+        } else if(loginStateOrUserId == 0){
+            //MTurk task
+            return TaskJoinState.JOINABLE;
         } else {
             //处理用户是否参与过/正在参与这个任务
 
             //List<UserTask> claimedButNotFinishedTasks = userTaskService.getUnfinishedTasks(loginStateOrUserId);
+
             UserTask unfinishedTask = userTaskService.getUnfinishedByUserIdAndTaskId(loginStateOrUserId, task.getId());
             if(unfinishedTask != null){
                 taskJoinState = TaskJoinState.CLAIMED;
@@ -176,7 +217,13 @@ public class TaskController {
             responseBody.setMessage("User or id is null");
         } else {
             Task task = taskService.findById(taskClaimRequestBody.getTaskId());
-            TaskJoinState taskJoinState = getTaskJoinState(task, uid);
+            TaskJoinState taskJoinState;
+            if(uid == 0){
+                taskJoinState = getTaskJoinState(task, mturkId);
+            } else {
+                taskJoinState = getTaskJoinState(task, uid);
+            }
+
             if(taskJoinState.equals(TaskJoinState.JOINABLE)){
                 //Create UserTask
 
@@ -186,23 +233,6 @@ public class TaskController {
                 else
                     userTask = new UserTask(mturkId, task.getId());
                 userTaskService.saveUserTask(userTask);
-                //Create UserMicroTasks
-
-                /*Start of change*/
-//                //TODO:取消新建microtask流程，按照新规则来
-//                for(Microtask microtask: task.getRelatedMictorasks()){
-//                    UserMicroTask userMicroTask = new UserMicroTask();
-//                    userMicroTask.setMicrotaskId(microtask.getId());
-//                    userMicroTask.setUsertaskId(userTask.getId());
-//                    userMicrotaskService.save(userMicroTask);
-//                    if(microtask.getPrevId() == null){
-//                        //First microtask to this task
-//                        userTask.setCurrUserMicrotaskId(userMicroTask.getId());
-//                    }
-//                }
-//
-//                userTaskService.updateUserTask(userTask);
-                /* End of change */
 
                 //Set task claimed count
                 task.setClaimedCount(task.getClaimedCount()+1);
@@ -430,14 +460,14 @@ public class TaskController {
                                          @Valid MTurkIdValidationRequestBody body,
                                          BindingResult bindingResult){
         AjaxResponseBody responseBody = new AjaxResponseBody();
-        if(bindingResult.hasErrors()){
+        if(bindingResult.hasErrors()) {
             responseBody.setState(400);
             responseBody.setMessage("Your form contains errors, fail to process.");
             responseBody.setContent(bindingResult.toString());
-        } else if (!body.getCaptcha().equals(request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION))) {
+            //} else if (!body.getCaptcha().equals(request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION))) {
+        } else if(!CaptchaController.testCaptcha(body.getCaptcha(), request)){
             responseBody.setState(401);
             responseBody.setMessage("Invalid captcha:(");
-
         } else {
             Integer tid = Integer.parseInt(body.getTaskId());
             List<UserTask> claimedUserTasks = userTaskService.getByMturkIdAndTaskId(body.getMturkId(), tid);

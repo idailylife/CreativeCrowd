@@ -1,5 +1,6 @@
 package edu.inlab.web;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import edu.inlab.models.Task;
 import edu.inlab.models.UserTask;
 import edu.inlab.models.json.AjaxResponseBody;
@@ -66,8 +67,9 @@ public class UserController {
             responseBody.setState(400);
             responseBody.setMessage("Illegal input.");
         } else {
-            String expectedCaptcha = (String)request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION);
-            if(!Constants.DEBUG && (expectedCaptcha==null || !expectedCaptcha.equals(user.getCaptcha()))){
+            //String expectedCaptcha = (String)request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION);
+            //if(!Constants.DEBUG && (expectedCaptcha==null || !expectedCaptcha.equals(user.getCaptcha()))){
+            if(!Constants.DEBUG && !CaptchaController.testCaptcha(user.getCaptcha(), request)){
                 responseBody.setState(403);
                 responseBody.setMessage("Wrong captcha.");
             } else if(!userService.isUniqueEmail(user.getEmail(), null)){
@@ -114,8 +116,9 @@ public class UserController {
             responseBody.setState(400);
             responseBody.setMessage("Illegal input.");
         } else {
-            String expectedCaptcha = (String)request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION);
-            if(!Constants.DEBUG && (expectedCaptcha==null || !expectedCaptcha.equals(user.getCaptcha()))){
+            //String expectedCaptcha = (String)request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION);
+            //if(!Constants.DEBUG && (expectedCaptcha==null || !expectedCaptcha.equals(user.getCaptcha()))){
+            if(!Constants.DEBUG && !CaptchaController.testCaptcha(user.getCaptcha(), request)){
                 responseBody.setState(403);
                 responseBody.setMessage("Wrong captcha.");
             } else {
@@ -160,15 +163,20 @@ public class UserController {
 
     @RequestMapping(value = "/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        request.getSession().removeAttribute(Constants.KEY_USER_UID);
-        Cookie uidCookie = new Cookie(Constants.KEY_USER_UID, null);
-        uidCookie.setPath(request.getContextPath());
-        uidCookie.setMaxAge(0);
-        Cookie tokenCookie = new Cookie(Constants.KEY_USER_TOKEN, null);
-        tokenCookie.setMaxAge(0);
-        tokenCookie.setPath(request.getContextPath());
-        response.addCookie(uidCookie);
-        response.addCookie(tokenCookie);
+        User user = getUserFromSession(request);
+        if(user != null){
+            user.setTokenCookie(null);
+            userService.updateUser(user);
+            request.getSession().removeAttribute(Constants.KEY_USER_UID);
+            Cookie uidCookie = new Cookie(Constants.KEY_USER_UID, null);
+            uidCookie.setPath(request.getContextPath());
+            uidCookie.setMaxAge(0);
+            Cookie tokenCookie = new Cookie(Constants.KEY_USER_TOKEN, null);
+            tokenCookie.setMaxAge(0);
+            tokenCookie.setPath(request.getContextPath());
+            response.addCookie(uidCookie);
+            response.addCookie(tokenCookie);
+        }
         response.sendRedirect(request.getContextPath());
     }
 
