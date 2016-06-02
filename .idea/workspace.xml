@@ -5,32 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bddaff38-8dea-4676-ba35-f0cbe2b0e000" name="Default" comment="Ajax json object至服务器并Response json走通，缺hibernate data persistance衔接">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/models/json/MTurkIdValidationRequestBody.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/service/assignment/MicroTaskAssigner.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/service/assignment/MicroTaskAssignerFactory.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/service/assignment/RandomMicroTaskAssigner.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/service/assignment/SinglePagedMicroTaskAssigner.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/web/exception/TaskAssignException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/config/WebConfig.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/config/WebConfig.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/models/Task.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/models/Task.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/models/UserMicroTask.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/models/UserMicroTask.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/models/UserTask.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/models/UserTask.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/models/handler/SimpleMicroTaskHandler.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/models/handler/SimpleMicroTaskHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/models/handler/TaskHandlerFactory.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/models/handler/TaskHandlerFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/repo/UserTaskRepoImpl.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/repo/UserTaskRepoImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/repo/UserTaskRepository.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/repo/UserTaskRepository.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/service/TaskServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/service/TaskServiceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/service/UserServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/service/UserServiceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/service/UserTaskService.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/service/UserTaskService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/service/UserTaskServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/service/UserTaskServiceImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/utils/Constants.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/utils/Constants.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/web/TaskController.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/web/TaskController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/web/UserController.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/web/UserController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/pages/task/show.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/views/pages/task/show.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/static/css/task_show_styles.css" afterPath="$PROJECT_DIR$/src/main/webapp/static/css/task_show_styles.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/static/js/show.js" afterPath="$PROJECT_DIR$/src/main/webapp/static/js/show.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/edu/inlab/web/ResourceNotFoundException.java" afterPath="$PROJECT_DIR$/src/main/java/edu/inlab/web/exception/ResourceNotFoundException.java" />
     </list>
     <ignored path="CreativeCrowd.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -70,8 +46,18 @@
       <file leaf-file-name="TaskController.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/edu/inlab/web/TaskController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="518">
-              <caret line="372" column="88" selection-start-line="372" selection-start-column="88" selection-end-line="372" selection-end-column="88" />
+            <state relative-caret-position="738">
+              <caret line="385" column="61" selection-start-line="385" selection-start-column="61" selection-end-line="385" selection-end-column="61" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Task.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/edu/inlab/models/Task.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="430">
+              <caret line="46" column="12" selection-start-line="46" selection-start-column="12" selection-end-line="46" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -210,12 +196,12 @@
         <option value="$PROJECT_DIR$/src/main/java/edu/inlab/models/UserMicroTask.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/inlab/service/assignment/RandomMicroTaskAssigner.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/inlab/service/assignment/MicroTaskAssignerFactory.java" />
-        <option value="$PROJECT_DIR$/src/main/java/edu/inlab/models/Task.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/inlab/web/ResourceNotFoundException.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/inlab/web/exception/ResourceNotFoundException.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/inlab/service/assignment/MicroTaskAssigner.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/inlab/web/exception/TaskAssignException.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/inlab/service/assignment/SinglePagedMicroTaskAssigner.java" />
+        <option value="$PROJECT_DIR$/src/main/java/edu/inlab/models/Task.java" />
         <option value="$PROJECT_DIR$/src/main/java/edu/inlab/web/TaskController.java" />
       </list>
     </option>
@@ -1605,12 +1591,12 @@
       <workItem from="1464231996048" duration="17948000" />
       <workItem from="1464317662909" duration="19154000" />
       <workItem from="1464577507767" duration="19572000" />
-      <workItem from="1464676224236" duration="10794000" />
+      <workItem from="1464676224236" duration="11982000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="378114000" />
+    <option name="totallyTimeSpent" value="379302000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1622,8 +1608,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-9" y="-9" width="2578" height="1408" extended-state="7" />
-    <editor active="true" />
+    <frame x="-9" y="-9" width="2578" height="1408" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26041666" sideWeight="0.28890663" order="7" side_tool="true" content_ui="tabs" />
@@ -1635,7 +1621,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24980047" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25842696" sideWeight="0.71109337" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25842696" sideWeight="0.71109337" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32985553" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32504013" sideWeight="0.49361533" order="14" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -2162,14 +2148,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/edu/inlab/models/Task.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2432">
-          <caret line="263" column="0" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/inlab/repo/AbstractDao.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="242">
@@ -2206,10 +2184,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/edu/inlab/models/Task.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="430">
+          <caret line="46" column="12" selection-start-line="46" selection-start-column="12" selection-end-line="46" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/edu/inlab/web/TaskController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="372" column="88" selection-start-line="372" selection-start-column="88" selection-end-line="372" selection-end-column="88" />
+        <state relative-caret-position="738">
+          <caret line="385" column="61" selection-start-line="385" selection-start-column="61" selection-end-line="385" selection-end-column="61" />
           <folding />
         </state>
       </provider>
