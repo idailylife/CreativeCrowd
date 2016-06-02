@@ -39,10 +39,12 @@ public class Task {
 
     @Column(name = "claimed_count", nullable = false)
     @Min(value = 0)
+    @Version
     private Integer claimedCount;
 
     @Column(name = "finished_count", nullable = false)
     @Min(value = 0)
+    @Version
     private Integer finishedCount;
 
     @Column(name = "desc_json")

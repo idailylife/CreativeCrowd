@@ -371,8 +371,13 @@ public class TaskController {
                     userTask.generateRefCode();
                     userTaskService.updateUserTask(userTask);
                     task.setFinishedCount(task.getFinishedCount() + 1); //TODO:会不会有并发问题？
+                    taskService.updateTask(task);
+                    responseBody.setState(200);
+                } else {
+                    //Task not finished, set to the next one
 
                 }
+                request.getSession().removeAttribute(Constants.KEY_FILE_UPLOAD);
             }
 
 
