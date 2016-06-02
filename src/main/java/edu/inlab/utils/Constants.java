@@ -6,7 +6,8 @@ package edu.inlab.utils;
 public class Constants {
     public static final boolean DEBUG = false;
 
-    public static final String UPLOAD_FILE_STORE_LOCATION = "D:/Code/Java/CreativeCrowd/src/main/webapp/static/img/upload/";
+    public static final String UPLOAD_FILE_STORE_LOCATION = "/Users/hebowei/IdeaProjects/CreativeCrowd/src/main/webapp/static/img/upload/";
+    //"D:/Code/Java/CreativeCrowd/src/main/webapp/static/img/upload/";
     public static final long MAX_FILE_SIZE = 5242880;  //5MB
     public static final long MAX_REQUEST_SIZE = 20971520;  //20MB
     public static final int FILE_SIZE_THRESHOLD = 0; // Size threshold after which files will be written to disk

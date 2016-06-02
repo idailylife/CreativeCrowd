@@ -38,4 +38,8 @@ public class SinglePagedMicroTaskAssigner implements MicroTaskAssigner {
         }
         return null;
     }
+
+    public void parseParamsString(String params) {
+
+    }
 }

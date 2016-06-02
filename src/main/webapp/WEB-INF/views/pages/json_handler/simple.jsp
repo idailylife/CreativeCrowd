@@ -8,6 +8,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+
 <c:forEach items="${handlerContent}" var="item">
     <div class="row row-with-gap col-md-12">
 
@@ -25,11 +26,29 @@
                     <img id="ud_${item.contents['id']}" class="img-responsive center-block img-thumbnail"
                          src="<c:url value="/static/img/upload/"/>${item.contents['src']} ">
                 </c:when>
+                <c:when test="${item.tag eq 'choice'}">
+                    <c:forEach items="${item.contents['ary_items']}" var="choiceItem">
+                        <c:choose>
+                            <c:when test="${item.contents['type'] eq 'single'}">
+                                <label class="radio-inline">
+                                    <input type="radio" name="ud_${item.contents['id']}" value="${choiceItem}">
+                                    ${choiceItem}
+                                </label>
+                            </c:when>
+                            <c:otherwise>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="ud_${item.contents['id']}" value="${choiceItem}">
+                                    ${choiceItem}
+                                </label>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </c:when>
                 <c:when test="${item.tag eq 'text'}">
                     <c:choose>
                         <c:when test="${item.contents['multiline'] eq 'true'}">
                     <textarea class="form-control form-ud-input" id="ud_${item.contents['id']}" name="${item.contents['id']}" rows="5"
-                            <c:if test="${item.contents.containsKey('placeholder')}">
+                           <c:if test="${item.contents.containsKey('placeholder')}">
                                 placeholder="${item.contents['placeholder']}"
                             </c:if> ><c:if test="${savedResults.containsKey(item.contents['id'])}">${savedResults[item.contents['id']]}</c:if></textarea>
                         </c:when>
@@ -62,19 +81,21 @@
                                 </c:if> >
                             </div>
                             <div class="col-md-6">
-                                <a class="btn btn-default" id="btn_upload" href="#" role="button" disabled="disabled">
+                                <button class="btn btn-default" id="btn_upload" type="button" disabled="disabled">
                                     <c:choose>
                                         <c:when test="${not empty file}">
-                                            替换
+                                            ${isMTurkTask ? 'Replace':'替换'}
                                         </c:when>
                                         <c:otherwise>
-                                            上传
+                                            ${isMTurkTask ? 'Upload':'上传'}
                                         </c:otherwise>
                                     </c:choose>
-                                </a>
+                                </button>
                                 <label id="label_upload_state">
                                     <c:if test="${not empty file}">
-                                        <a href="<c:url value="/static/img/upload/${file}"/>" target="_blank">曾经传过一张图</a>
+                                        <a href="<c:url value="/static/img/upload/${file}"/>" target="_blank">
+                                        ${isMTurkTask ? 'An image was uploaded before':'之前已上传过一张图'}
+                                        </a>
                                     </c:if>
                                 </label>
                                 <input type="hidden" id="file_upd_state" value="${(empty file)? '0':'1'}"/>
@@ -90,15 +111,15 @@
 <div class="row row-with-gap col-md-12">
     <div class="text-right">
         <c:if test="${not empty prev}">
-            <input type="button" class="btn btn-default" id="btn_prev" value="上一题">
+            <input type="button" class="btn btn-default" id="btn_prev" value="${(task.type == 0)? '上一题':'Prev'}">
         </c:if>
-        <input type="button" class="btn btn-default" id="btn_save" value="保存">
+        <input type="button" class="btn btn-default" id="btn_save" value="${(task.type == 0)? '保存':'Save'}">
         <c:choose>
             <c:when test="${empty next}">
-                <input type="button" class="btn btn-primary" id="btn_submit" value="提交">
+                <input type="button" class="btn btn-primary" id="btn_submit" value="${(task.type == 0)? '提交':'Submit'}">
             </c:when>
             <c:otherwise>
-                <input type="button" class="btn btn-default" id="btn_next" value="下一题">
+                <input type="button" class="btn btn-default" id="btn_next" value="${(task.type == 0)? '下一题':'Next'}">
             </c:otherwise>
         </c:choose>
     </div>

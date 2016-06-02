@@ -98,9 +98,6 @@ public class TaskController {
 
         model.addAttribute("startEndTime", task.getDurationStr());
 
-        //Judge if current task has expired
-
-        //model.addAttribute("isExpiredOrFull", isExpiredOrFull);
 
         if(jsonDesc.has(Constants.KEY_TASK_EST_TIME)){
             String estTime = jsonDesc.getString(Constants.KEY_TASK_EST_TIME);
@@ -170,9 +167,11 @@ public class TaskController {
             @RequestBody TaskClaimRequestBody taskClaimRequestBody,
             HttpServletRequest request){
         Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
+        String mturkId = (String) request.getSession().getAttribute(Constants.KEY_MTURK_ID);
         User user = userService.findById(uid);
         AjaxResponseBody responseBody = new AjaxResponseBody();
-        if(uid == null || user == null){
+
+        if(user == null && mturkId == null){
             responseBody.setState(500);
             responseBody.setMessage("User or id is null");
         } else {
@@ -180,7 +179,12 @@ public class TaskController {
             TaskJoinState taskJoinState = getTaskJoinState(task, uid);
             if(taskJoinState.equals(TaskJoinState.JOINABLE)){
                 //Create UserTask
-                UserTask userTask = new UserTask(uid, task.getId());
+
+                UserTask userTask;
+                if(uid > 0)
+                    userTask = new UserTask(uid, task.getId());
+                else
+                    userTask = new UserTask(mturkId, task.getId());
                 userTaskService.saveUserTask(userTask);
                 //Create UserMicroTasks
 
@@ -227,7 +231,8 @@ public class TaskController {
         String mturkId = (String) request.getSession().getAttribute(Constants.KEY_MTURK_ID);
         //userService.loginStateParse(model, uid);
 
-        UserTask userTask = null;
+
+        UserTask userTask;
         if(uid != 0){
             //Normal task
             userTask = userTaskService.getUnfinishedByUserIdAndTaskId(uid, taskId); //userTaskService.getByUserAndTaskId(uid, taskId);
@@ -243,7 +248,8 @@ public class TaskController {
         if(userTask.getCurrUserMicrotaskId() == null){
             //没有正在进行中的microtask，根据设定的Microtask Coordinator来分配新任务
             Task task = taskService.findById(userTask.getTaskId());
-            MicroTaskAssigner taskAssigner = microTaskAssignerFactory.getAssigner(task.getType());
+
+            MicroTaskAssigner taskAssigner = microTaskAssignerFactory.getAssigner(task.getMode());
             Microtask nextMt = taskAssigner.assignNext(userTask);
             if(nextMt == null){
                 return "redirect:/task/tid" + taskId;
@@ -308,7 +314,13 @@ public class TaskController {
         UserTask userTask = null;
         Integer umtId = null;
         if(taskId != null && uid != null){
-            userTask = userTaskService.getUnfinishedByUserIdAndTaskId(uid, taskId);
+
+            if(uid != 0)
+                userTask = userTaskService.getUnfinishedByUserIdAndTaskId(uid, taskId);
+            else {
+                String mturkId = (String) request.getSession().getAttribute(Constants.KEY_MTURK_ID);
+                userTask = userTaskService.getUnfinishedByMTurkIdAndTaskId(mturkId, taskId);
+            }
             umtId = userTask.getCurrUserMicrotaskId();
         }
 
@@ -344,6 +356,7 @@ public class TaskController {
         return responseBody;
     }
 
+
     @Transactional
     @ResponseBody
     @RequestMapping(value = "/submit", method = RequestMethod.POST,
@@ -362,7 +375,8 @@ public class TaskController {
             } else {
                 UserTask userTask = userTaskService.getById(userMicroTask.getUsertaskId());
                 Task task = taskService.findById(userTask.getTaskId());
-                Microtask microtask = microTaskAssignerFactory.getAssigner(task.getType())
+
+                Microtask microtask = microTaskAssignerFactory.getAssigner(task.getMode())
                         .assignNext(userTask);
                 if(microtask == null){
                     //Task finished
@@ -373,9 +387,17 @@ public class TaskController {
                     task.setFinishedCount(task.getFinishedCount() + 1); //TODO:会不会有并发问题？
                     taskService.updateTask(task);
                     responseBody.setState(200);
+                    responseBody.setMessage("Task finished.");
+                    responseBody.setContent(userTask.getRefCode());
                 } else {
-                    //Task not finished, set to the next one
-
+                    //Task not finished, navigate to the next microtask
+                    UserMicroTask nextUserMT = new UserMicroTask(userTask.getId(), microtask.getId());
+                    userMicrotaskService.save(nextUserMT);
+                    userTask.setCurrUserMicrotaskId(nextUserMT.getId());
+                    userTaskService.updateUserTask(userTask);
+                    responseBody.setState(201);
+                    responseBody.setMessage("New userMicroTask created.");
+                    responseBody.setContent(userMicroTask.getId().toString());
                 }
                 request.getSession().removeAttribute(Constants.KEY_FILE_UPLOAD);
             }
@@ -419,26 +441,24 @@ public class TaskController {
         } else {
             Integer tid = Integer.parseInt(body.getTaskId());
             List<UserTask> claimedUserTasks = userTaskService.getByMturkIdAndTaskId(body.getMturkId(), tid);
+            UserTask unfinishedUserTask = userTaskService.getUnfinishedByMTurkIdAndTaskId(body.getMturkId(), tid);
             if(claimedUserTasks.isEmpty()){
+                //Fresh new
                 responseBody.setState(200);
             } else {
                 Task task = taskService.findById(tid);
-                if(task.getRepeatable() == 0){
+
+                if(unfinishedUserTask != null){
+                    //Resume unfinished one
+                    responseBody.setState(201);
+                    responseBody.setMessage("Find a claimed but not finished task");
+                } else if(task.getRepeatable() == 0){
+                    //Cannot do more...
                     responseBody.setState(402);
                     responseBody.setMessage("Task has already been finished.");
                 } else {
-                    boolean found = false;
-                    for(UserTask userTask: claimedUserTasks){
-                        if(userTask.getState() == UserTask.STATE_CLAIMED){
-                            responseBody.setState(201);
-                            responseBody.setContent(userTask.getId().toString());
-                            responseBody.setMessage("Find a claimed but not finished task");
-                            found = true;
-                            break;
-                        }
-                    }
-                    if(!found)
-                        responseBody.setState(200);
+
+                    responseBody.setState(200);
                 }
             }
         }

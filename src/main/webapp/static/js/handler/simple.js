@@ -42,15 +42,15 @@ function submitClick() {
                     location.href = homeUrl + "task/done";
                     break;
                 case 405:
-                    alert("Task not finished.");
+                    alert(messageResources.SUBMIT_405);
                     break;
                 case 401:
-                    alert("登录超时，请刷新页面重试.");
+                    alert(messageResources.SUBMIT_401);
                     break;
             }
         },
         error: function (err) {
-            alert("服务器连接中断，请检查网络连接");
+            alert(messageResources.AJAX_CONN_FAIL + err);
         }
     });
 }
@@ -76,7 +76,7 @@ function saveClick() {
     if(document.getElementById("btn_upload") != null && $("#btn_file").attr("required")){
         if($("#file_upd_state").val() == 0){
             errCount++;
-            alert("请先上传文件再保存或提交!");
+            alert(messageResources.UPLOAD_FILE_NOT_READY);
         }
     }
 
@@ -97,7 +97,7 @@ function saveClick() {
                         setSaveButtonState("saved");
                         break;
                     case 401: case 402:
-                        alert("无法获得用户校验结果. 无法保存当前结果,请刷新页面重试.");
+                        alert(messageResources.SAVE_401_402);
                         //$("#btn_save").addClass("btn-danger");
                         setSaveButtonState("fail");
                         break;
@@ -105,27 +105,28 @@ function saveClick() {
             },
             error: function (err) {
                 console.log(err);
-                alert("无法与服务器取得联络，请稍后重试.");
+                alert(messageResources.AJAX_CONN_FAIL);
             }
         });
     }
+    return errCount;
 }
 
 function setSaveButtonState(state){
     var btn = $("#btn_save");
     btn.removeClass("btn-warning").addClass("btn-default");
     if(state == "saving"){
-        btn.val("正在保存").prop("disabled", true);
+        btn.val(messageResources.BTN_STATE_SAVING).prop("disabled", true);
     } else if(state == "normal"){
-        btn.val("保存").prop("disabled", false);
+        btn.val(messageResources.BTN_STATE_SAVE).prop("disabled", false);
     } else if(state == "fail"){
-        btn.val("重试").prop("disabled", false)
+        btn.val(messageResources.BTN_STATE_RETRY).prop("disabled", false)
             .addClass("btn-warning")
             .removeClass("btn-default");
     } else if(state == "disabled"){
         btn.prop("disabled", true);
     } else if(state == "saved"){
-        btn.val("已保存").prop("disabled", true);
+        btn.val(messageResources.BTN_STATE_SAVED).prop("disabled", true);
     }
 }
 
@@ -142,24 +143,63 @@ function uploadClick() {
         success: function (data) {
             switch (data.state){
                 case 200:
-                    $("#label_upload_state").text("上传成功")
+                    $("#label_upload_state").text(messageResources.UPLOAD_SUCCEED)
                         .addClass("text-success");
                     $("#btn_upload").attr("disabled", "disabled");
                     $("#file_upd_state").val(1);
                     break;
                 case 401:
-                    $("#label_upload_state").text("上传失败:页面等待超时")
+                    $("#label_upload_state").text(messageResources.UPLOAD_TIMEOUT)
                         .addClass("text-danger");
                     break;
                 case 402:
-                    $("#label_upload_state").text("上传失败:文件大小或格式异常")
+                    $("#label_upload_state").text(messageResources.UPLOAD_FILE_ERROR)
                         .addClass("text-danger");
                     break;
             }
         },
         error: function (err) {
             console.log(err);
-            alert("服务器状态异常.");
+            alert(messageResources.AJAX_CONN_FAIL);
         }
     });
 }
+
+var messageResources = function () {
+    var resource;
+    switch(taskType){
+        case 0:
+            resource = {
+                SUBMIT_405: "错误405:任务尚未完成",
+                SUBMIT_401: "错误401:登录超时,请刷新页面重试",
+                AJAX_CONN_FAIL: "服务器连接中断,请检查网络连接\n",
+                UPLOAD_FILE_NOT_READY: "请先上传文件再保存或提交",
+                UPLOAD_SUCCEED: "上传成功",
+                UPLOAD_TIMEOUT: "上传失败:页面等待超时",
+                UPLOAD_FILE_ERROR: "上传失败:文件大小或格式异常",
+                SAVE_401_402: "无法获得用户校验结果. 无法保存当前结果,请刷新页面重试.",
+                BTN_STATE_SAVING: "正在保存",
+                BTN_STATE_SAVE: "保存",
+                BTN_STATE_RETRY: "重试",
+                BTN_STATE_SAVED: "已保存"
+            };
+            break;
+        case 1:
+            resource = {
+                SUBMIT_405: "Error 405: Task submitted but not finished.",
+                SUBMIT_401: "错误401: Login time out, please click the origin link from MTurk.",
+                AJAX_CONN_FAIL: "Cannot connect to server, please try again.\n",
+                UPLOAD_FILE_NOT_READY: "Please `Upload` your file before save or submit.",
+                UPLOAD_SUCCEED: "File uploaded successfully.",
+                UPLOAD_TIMEOUT: "Fail to upload, request time out.",
+                UPLOAD_FILE_ERROR: "Fail to upload: Illegal file size or format.",
+                SAVE_401_402: "Cannot verify current user, please try again.",
+                BTN_STATE_SAVING: "Saving",
+                BTN_STATE_SAVE: "Save",
+                BTN_STATE_RETRY: "Retry ",
+                BTN_STATE_SAVED: "Saved"
+            };
+            break;
+    }
+    return resource;
+}();
