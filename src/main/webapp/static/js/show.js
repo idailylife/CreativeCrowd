@@ -4,6 +4,10 @@
 $(document).ready(function () {
     $("#btn-join").click(dispatchJoinBtnClick);
     $("#btn-mt-chk-status").click(checkMtIdValidity);
+    $("#btn-mt-join").click(dispatchMturkJoinBtnClick);
+    $("#btn-mt-resume").click(function(){
+        window.location.href = homeUrl + "task/do/" + $("#val-tid").val();
+    });
     $("#img-captcha").click(function () {
         refreshCaptcha();
     });
@@ -30,7 +34,7 @@ function checkMtIdValidity() {
                 } else if(rcvData.state == 201){
                     $("#group-mt-id").addClass("has-success");
                     $("#btn-mt-chk-status").hide();
-                    $("#btn-mt-join").text("Resume").show();
+                    $("#btn-mt-resume").show();
                 } else {
                     refreshCaptcha();
                     if(rcvData.state!=401)
@@ -47,6 +51,40 @@ function checkMtIdValidity() {
     } else {
         $("#alert-info").text("Please fill in all the blanks and retry.").show();
     }
+}
+
+function dispatchMturkJoinBtnClick() {
+    $("#btn-mt-join").prop("disabled", true);
+    var tid = $("#val-tid").val();
+    $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: homeUrl+"task/claim",
+        data: '{"taskId":' + tid + '}',
+        error: function (error) {
+            console.warn(error);
+            alert("An error occurred, please refresh this page." + error);
+        },
+        success: function (data) {
+            switch(data.state){
+                case 200:
+                    console.log("succ");
+                case 300:
+                    console.log("redirecting...");
+                    window.location.href = homeUrl + "task/do/" + tid;
+                    break;
+                case 400:
+                    console.error("任务状态异常");
+                    alert("An error occurred in processing task state, please refresh the page and retry.");
+                    break;
+                case 500:
+                    alert("Your MTurk ID is not valid, please try again!");
+                    break;
+            }
+            $("#btn-mt-join").prop("disabled", true);
+        }
+    });
+
 }
 
 function dispatchJoinBtnClick() {

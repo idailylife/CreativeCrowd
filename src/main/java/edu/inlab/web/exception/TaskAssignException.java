@@ -8,4 +8,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Task can not be assigned.")
 public class TaskAssignException extends RuntimeException {
+    public TaskAssignException(String message) {
+        super(message);
+    }
+
+    public TaskAssignException() {
+        super();
+    }
 }

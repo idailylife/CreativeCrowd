@@ -10,7 +10,7 @@
 <nav class="navbar navbar-inverse">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="<c:url value="/"/> ">创意众包平台</a>
+            <a class="navbar-brand" href="<c:url value="/"/> ">${isMTurkTask? 'CreativeCrowd for MTurk':'创意众包平台'}</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
@@ -18,6 +18,9 @@
                     <c:when test="${loginState}">
                         <li><a id="li_user_center" href="<c:url value="/user"/>">${displayName}</a></li>
                         <li><a id="logout" href="<c:url value="/user/logout"/> ">注销</a></li>
+                    </c:when>
+                    <c:when test="${isMTurkTask}">
+                        <li><a href="#">MTurk ID: ${mturkId}</a> </li>
                     </c:when>
                     <c:otherwise>
                         <li><a id="signup" href="<c:url value="/user/register"/> ">注册</a></li>

@@ -1,6 +1,7 @@
 package edu.inlab.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by inlab-dell on 2016/5/4.
@@ -25,6 +26,13 @@ public class UserTask {
         this.taskId = taskId;
         this.state = STATE_CLAIMED;
         this.userType = USERTYPE_NORMAL;
+    }
+
+    public UserTask(String mturkId, int taskId){
+        this.mturkId = mturkId;
+        this.taskId = taskId;
+        this.state = STATE_CLAIMED;
+        this.userType = USERTYPE_MTURK;
     }
 
     @Id
@@ -52,6 +60,10 @@ public class UserTask {
 
     @Column(name = "ref_code")
     private String refCode;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "usertask_id")
+    private List<UserMicroTask> relatedUserMicrotasks;
 
     public Integer getId() {
         return id;
@@ -116,6 +128,14 @@ public class UserTask {
 
     public void setRefCode(String refCode) {
         this.refCode = refCode;
+    }
+
+    public List<UserMicroTask> getRelatedUserMicrotasks() {
+        return relatedUserMicrotasks;
+    }
+
+    public void setRelatedUserMicrotasks(List<UserMicroTask> relatedUserMicrotasks) {
+        this.relatedUserMicrotasks = relatedUserMicrotasks;
     }
 
     /**

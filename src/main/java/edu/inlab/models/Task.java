@@ -76,6 +76,9 @@ public class Task {
     @Column(name = "type", nullable = false)
     private Integer type;
 
+    @Column(name = "params")
+    private String params;  //Assigner parameters string
+
     @Column(name = "time_limit")
     private Integer timeLimit; // Time limit for one task (in minute)
 
@@ -202,6 +205,14 @@ public class Task {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public String getParams() {
+        return params;
+    }
+
+    public void setParams(String params) {
+        this.params = params;
     }
 
     public Integer getTimeLimit() {
