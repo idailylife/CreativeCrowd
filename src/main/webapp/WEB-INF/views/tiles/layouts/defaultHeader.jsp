@@ -20,7 +20,9 @@
                         <li><a id="logout" href="<c:url value="/user/logout"/> ">注销</a></li>
                     </c:when>
                     <c:when test="${isMTurkTask}">
-                        <li><a href="#">MTurk ID: ${mturkId}</a> </li>
+                        <c:if test="${not empty mturkId}">
+                            <li><a href="#">MTurk ID: ${mturkId}</a> </li>
+                        </c:if>
                     </c:when>
                     <c:otherwise>
                         <li><a id="signup" href="<c:url value="/user/register"/> ">注册</a></li>

@@ -53,13 +53,19 @@ public class UserTask {
     private Integer taskId;
 
     @Column(name = "curr_usermicrotask_id")
+    @Version
     private Integer currUserMicrotaskId;
 
     @Column(name = "state", nullable = false)
+    @Version
     private Integer state;
 
     @Column(name = "ref_code")
     private String refCode;
+
+    @Column(name = "optlock")
+    @Version
+    private Integer version;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "usertask_id")
@@ -128,6 +134,14 @@ public class UserTask {
 
     public void setRefCode(String refCode) {
         this.refCode = refCode;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     public List<UserMicroTask> getRelatedUserMicrotasks() {

@@ -19,6 +19,10 @@ public class TempFile {
     @Column(name = "filename", nullable = false)
     private String filename;
 
+    @Column(name = "optlock")
+    @Version
+    private Integer version;
+
     public Integer getId() {
         return id;
     }
@@ -41,5 +45,13 @@ public class TempFile {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

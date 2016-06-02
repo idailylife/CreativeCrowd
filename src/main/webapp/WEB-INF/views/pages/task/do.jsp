@@ -12,6 +12,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <div class="container" id="question_container">
+    <c:if test="${not empty taskProgress}">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: ${taskProgress}%;">
+            </div>
+        </div>
+    </c:if>
+
+
     <div class="row">
         <div class="col-md-12">
             <h1>${task.title}</h1>

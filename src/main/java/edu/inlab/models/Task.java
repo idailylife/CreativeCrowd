@@ -39,12 +39,10 @@ public class Task {
 
     @Column(name = "claimed_count", nullable = false)
     @Min(value = 0)
-    @Version
     private Integer claimedCount;
 
     @Column(name = "finished_count", nullable = false)
     @Min(value = 0)
-    @Version
     private Integer finishedCount;
 
     @Column(name = "desc_json")
@@ -81,6 +79,10 @@ public class Task {
 
     @Column(name = "time_limit")
     private Integer timeLimit; // Time limit for one task (in minute)
+
+    @Column(name = "optlock")
+    @Version
+    private Integer version;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "task_id")
@@ -221,6 +223,14 @@ public class Task {
 
     public void setTimeLimit(Integer timeLimit) {
         this.timeLimit = timeLimit;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     @Override

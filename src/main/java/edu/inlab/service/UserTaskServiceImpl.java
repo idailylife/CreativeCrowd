@@ -82,4 +82,8 @@ public class UserTaskServiceImpl implements UserTaskService {
     public List<UserTask> getByMturkIdAndTaskId(String mturkId, int taskId) {
         return userTaskRepository.getByMturkIdAndTaskId(mturkId, taskId);
     }
+
+    public List<UserTask> getFinishedOrExpired(String mturkId, int taskId) {
+        return userTaskRepository.getFinishedOrExpired(mturkId, taskId);
+    }
 }

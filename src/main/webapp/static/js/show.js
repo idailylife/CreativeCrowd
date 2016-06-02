@@ -17,6 +17,7 @@ function checkMtIdValidity() {
     var mturkId = $("#inputMTurkId").val();
     var captcha = $("#inputCaptcha").val();
     $("#alert-info").hide();
+    $("#btn-mt-chk-status").prop("disabled", true);
     if(mturkId && captcha){
         var data = {
             mturkId: mturkId,
@@ -43,6 +44,7 @@ function checkMtIdValidity() {
                         $("#inputCaptcha").val("");
                     $("#alert-info").text(rcvData.message).show();
                 }
+                $("#btn-mt-chk-status").prop("disabled", false);
             },
             error: function (error) {
                 console.warn(error);
