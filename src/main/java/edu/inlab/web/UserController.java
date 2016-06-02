@@ -5,6 +5,7 @@ import edu.inlab.models.Task;
 import edu.inlab.models.UserTask;
 import edu.inlab.models.json.AjaxResponseBody;
 import edu.inlab.models.User;
+import edu.inlab.models.json.UserEchoRequestBody;
 import edu.inlab.service.TaskService;
 import edu.inlab.service.UserService;
 import edu.inlab.service.UserTaskService;
@@ -23,6 +24,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Version;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -287,4 +289,5 @@ public class UserController {
         model.addAttribute("mappedTasks", mappedTasks);
         return "user/task/claimed";
     }
+
 }

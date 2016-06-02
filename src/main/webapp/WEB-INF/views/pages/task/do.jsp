@@ -29,10 +29,17 @@
         <div class="col-md-8">
             <!-- Specified view -->
             <input type="hidden" id="tid" value="${task.id}"/>
+            <input type="hidden" id="mturkId" value="${mturkId}"/>
             <tiles:insertTemplate template="/WEB-INF/views/pages/json_handler/${handlerType}.jsp"/>
         </div>
         <div class="col-md-4">
             <!-- TODO: Task properties here -->
+            <c:if test="${not empty task.timeLimit}">
+                <div class="alert alert-info" id="timeContainer">
+                    <h4>Time Left: <span id="timeRemaining">-:-</span></h4>
+                    <p>Please submit before timeout.</p>
+                </div>
+            </c:if>
         </div>
     </div>
 </div>
@@ -40,4 +47,5 @@
     var homeUrl = "<c:url value="/"/>";
     var handlerType = "${handlerType}";
     var taskType = ${task.type};
+
 </script>

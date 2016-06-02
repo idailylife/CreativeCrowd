@@ -32,6 +32,7 @@ public class UserTaskServiceImpl implements UserTaskService {
             entity.setMturkId(userTask.getMturkId());
             entity.setUserType(userTask.getUserType());
             entity.setRefCode(userTask.getRefCode());
+            entity.setStartTime(userTask.getStartTime());
         }
     }
 

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonView;
  */
 public class TaskClaimRequestBody {
     @JsonView(JsonDummyView.Public.class)
-    Integer taskId;
+    private Integer taskId;
 
     public Integer getTaskId() {
         return taskId;

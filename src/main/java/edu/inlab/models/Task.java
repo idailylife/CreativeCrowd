@@ -53,10 +53,10 @@ public class Task {
     private Integer mode;   //Normal, Random Assign, Assign with Policy
 
     @Column(name = "start_time")
-    private Integer startTime;
+    private Long startTime;
 
     @Column(name = "end_time")
-    private Integer endTime;
+    private Long endTime;
 
     @Column(name = "owner_id", nullable = false)
     private Integer ownerId;
@@ -129,19 +129,19 @@ public class Task {
         this.mode = mode;
     }
 
-    public Integer getStartTime() {
+    public Long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Integer startTime) {
+    public void setStartTime(Long startTime) {
         this.startTime = startTime;
     }
 
-    public Integer getEndTime() {
+    public Long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Integer endTime) {
+    public void setEndTime(Long endTime) {
         this.endTime = endTime;
     }
 
@@ -254,7 +254,7 @@ public class Task {
             return false;
         }
         Date currDate = new Date();
-        Date endDate = new Date((long)this.endTime*1000);
+        Date endDate = new Date(this.endTime*1000);
         return currDate.after(endDate);
     }
 
@@ -263,8 +263,7 @@ public class Task {
     }
 
     public boolean getTaskInvalid(){
-        boolean state = isExpired() || isFull();
-        return state;
+        return isExpired() || isFull();
     }
 
     /**
@@ -296,9 +295,9 @@ public class Task {
         return retStr;
     }
 
-    private String parseMMDDStr(Integer time, int year){
+    private String parseMMDDStr(Long time, int year){
         String retStr;
-        Date date = new Date((long)time*1000);
+        Date date = new Date(time*1000);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
