@@ -232,6 +232,7 @@ public class TaskController {
                     userTask = new UserTask(uid, task.getId());
                 else
                     userTask = new UserTask(mturkId, task.getId());
+                userTask.setStartTime(System.currentTimeMillis()/1000);
                 userTaskService.saveUserTask(userTask);
 
                 //Set task claimed count
@@ -406,6 +407,16 @@ public class TaskController {
                 UserTask userTask = userTaskService.getById(userMicroTask.getUsertaskId());
                 Task task = taskService.findById(userTask.getTaskId());
 
+                //Check if the task is overtime
+                long timeLeft = EchoController.getRemainingTime(task, userTask);
+                if(timeLeft < 0){
+                    userTask.setState(UserTask.STATE_EXPIRED);
+                    userTaskService.updateUserTask(userTask);
+                    responseBody.setState(403);
+                    responseBody.setMessage("Time is over, sorry :<");
+                    return responseBody;
+                }
+
                 Microtask microtask = microTaskAssignerFactory.getAssigner(task.getMode())
                         .assignNext(userTask);
                 if(microtask == null){
@@ -431,22 +442,6 @@ public class TaskController {
                 }
                 request.getSession().removeAttribute(Constants.KEY_FILE_UPLOAD);
             }
-
-
-//            userTask.setState(1);
-//            if(userMicroTask.getId().equals(userTask.getCurrUserMicrotaskId())){
-//                userTask.setState(UserTask.STATE_FINISHED);
-//                userTask.setCurrUserMicrotaskId(null);
-//                userTaskService.updateUserTask(userTask);
-//                Task task = taskService.findById(userTask.getTaskId());
-//                task.setFinishedCount(task.getFinishedCount() + 1);
-//                taskService.updateTask(task);
-//                request.getSession().removeAttribute(Constants.KEY_FILE_UPLOAD);
-//                responseBody.setState(200);
-//            } else {
-//                responseBody.setState(405);
-//                responseBody.setMessage("Task not finished");
-//            }
 
         }
         return responseBody;
@@ -485,7 +480,7 @@ public class TaskController {
                 } else if(task.getRepeatable() == 0){
                     //Cannot do more...
                     responseBody.setState(402);
-                    responseBody.setMessage("Task has already been finished.");
+                    responseBody.setMessage("Task has already been finished or is expired.");
                 } else {
 
                     responseBody.setState(200);

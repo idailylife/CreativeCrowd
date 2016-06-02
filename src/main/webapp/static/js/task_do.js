@@ -47,4 +47,78 @@ $(document).ready(function () {
         type: "text/css",
         href: homeUrl + "static/css/handler/" + handlerType + ".css"
     }).appendTo("head");
+    if(($("#timeRemaining") != null) && (taskType == 1)){
+        var timeRemaining = 0;
+
+        var echoData = {
+            taskType : taskType,
+            taskId  : $("#tid").val(),
+            mturkId : $("#mturkId").val()
+        };
+        var echoService = function () {
+            $.ajax({
+                type: "post",
+                url: homeUrl + 'echo/mturk',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(echoData),
+                dataType: 'json',
+                success: function (data) {
+                    switch (data.state){
+                        case 200:
+                            //console.log(data.content);
+                            timeRemaining = data.content;
+                            setRemainTime(data.content);
+                            break;
+                        case 400:case 401:case 415: case 402:
+                            console.error(data.message);
+                            break;
+                        case 403:
+                            showOvertime();
+                            break;
+                        default:
+                            alert("Unknown return state " + data.state);
+                    }
+                },
+                error : function (jqXHR, textStatus, errorThrown) {
+                    alert("Cannot connect to server: "+ textStatus);
+                    console.error(errorThrown);
+                    console.error(jqXHR);
+                }
+            });
+        };
+        echoService();
+        setInterval(echoService, 10000); //10 seconds beat
+        setInterval(function () {
+            timeRemaining = timeRemaining - 1;
+            setRemainTime(timeRemaining);
+            if(timeRemaining < 300){
+                warnOvertime();
+            }
+            if(timeRemaining == 60){
+                alert("Please submit your work before timeout, or the task will be abolished");
+            }
+            
+            
+        },1000);
+    }
 });
+
+function setRemainTime(timeInSeconds){
+    var minutes = Math.floor(timeInSeconds / 60);
+    var seconds = timeInSeconds % 60;
+    if(seconds < 10){
+        seconds = '0' + seconds;
+    }
+    var text = minutes + ':' + seconds;
+    $("#timeRemaining").text(text);
+}
+
+function warnOvertime() {
+    //警告超时
+    $("#timeContainer").removeClass("alert-info")
+        .addClass("alert-danger");
+}
+
+function showOvertime(){
+    alert("Oh, sorry, time is up! Task aborted.");
+}

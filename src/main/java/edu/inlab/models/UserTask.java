@@ -1,6 +1,7 @@
 package edu.inlab.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -62,6 +63,10 @@ public class UserTask {
 
     @Column(name = "ref_code")
     private String refCode;
+
+    @Column(name = "start_time")
+    @NotNull
+    private Long startTime;
 
     @Column(name = "optlock")
     @Version
@@ -142,6 +147,14 @@ public class UserTask {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
     }
 
     public List<UserMicroTask> getRelatedUserMicrotasks() {
