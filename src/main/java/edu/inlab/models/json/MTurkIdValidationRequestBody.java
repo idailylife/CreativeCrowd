@@ -38,4 +38,9 @@ public class MTurkIdValidationRequestBody {
     public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
+
+    @Override
+    public String toString() {
+        return "{mturkId:" + mturkId + ", captcha:" + captcha + ",taskId:" + taskId + "}";
+    }
 }

@@ -74,6 +74,7 @@ $(document).ready(function () {
                             break;
                         case 403:
                             showOvertime();
+                            clearInterval(echoInterval);
                             break;
                         default:
                             alert("Unknown return state " + data.state);
@@ -87,9 +88,12 @@ $(document).ready(function () {
             });
         };
         echoService();
-        setInterval(echoService, 10000); //10 seconds beat
-        setInterval(function () {
+        var echoInterval = setInterval(echoService, 10000); //10 seconds beat
+        var timeDispInterval = setInterval(function () {
             timeRemaining = timeRemaining - 1;
+            if(timeRemaining < 0){
+                clearInterval(timeDispInterval);
+            }
             setRemainTime(timeRemaining);
             if(timeRemaining < 300){
                 warnOvertime();
@@ -98,12 +102,14 @@ $(document).ready(function () {
                 alert("Please submit your work before timeout, or the task will be abolished");
             }
             
-            
         },1000);
     }
 });
 
 function setRemainTime(timeInSeconds){
+    if(timeInSeconds < 0){
+        return;
+    }
     var minutes = Math.floor(timeInSeconds / 60);
     var seconds = timeInSeconds % 60;
     if(seconds < 10){
