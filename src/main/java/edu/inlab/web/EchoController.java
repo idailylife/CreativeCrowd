@@ -100,7 +100,7 @@ public class EchoController {
      * @param userTask
      * @return if negative, the usertask is expired
      */
-    static long getRemainingTime(Task task, UserTask userTask){
+    public static long getRemainingTime(Task task, UserTask userTask){
         Long expiration = task.getTimeLimit() * (long)60; //Minutes to seconds
         Long startTime = userTask.getStartTime();
         Long currentTime = System.currentTimeMillis() / 1000;
