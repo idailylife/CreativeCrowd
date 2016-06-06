@@ -154,21 +154,22 @@ public class UserServiceImpl implements UserService {
         } else {
             Cookie[] cookies = request.getCookies();
             String token = null;
-            for(Cookie cookie: cookies){
-                if(cookie.getName().equals(Constants.KEY_USER_UID)){
-                    uid = Integer.valueOf(cookie.getValue());
-                    if(uid != null && findById(uid) != null){
-                        continue;
-                    } else {
-                        cookie.setMaxAge(0);
-                        response.addCookie(cookie);
-                        //errorCode += "cookieInvalid ";
-                        retCode = ERR_COOKIE_INVALID;
+            if(cookies == null){
+                for(Cookie cookie: cookies){
+                    if(cookie.getName().equals(Constants.KEY_USER_UID)){
+                        uid = Integer.valueOf(cookie.getValue());
+                        if(uid == null || findById(uid) == null){
+                            cookie.setMaxAge(0);
+                            response.addCookie(cookie);
+                            //errorCode += "cookieInvalid ";
+                            retCode = ERR_COOKIE_INVALID;
+                        }
+                    } else if(cookie.getName().equals(Constants.KEY_USER_TOKEN)){
+                        token = cookie.getValue();
                     }
-                } else if(cookie.getName().equals(Constants.KEY_USER_TOKEN)){
-                    token = cookie.getValue();
                 }
             }
+
             if(uid != null && token != null){
                 int verifyState = verify(uid, token);
                 if(verifyState == UserService.SUCC_LOGIN){

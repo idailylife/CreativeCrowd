@@ -72,6 +72,12 @@ public class UserTask {
     @Version
     private Integer version;
 
+    @Column(name = "transaction_id")
+    private Integer transactionId;
+
+    @Column(name = "remuneration", nullable = false)
+    private Double remuneration;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "usertask_id")
     private List<UserMicroTask> relatedUserMicrotasks;
@@ -157,6 +163,22 @@ public class UserTask {
         this.startTime = startTime;
     }
 
+    public Double getRemuneration() {
+        return remuneration;
+    }
+
+    public void setRemuneration(Double remuneration) {
+        this.remuneration = remuneration;
+    }
+
+    public Integer getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(Integer transactionId) {
+        this.transactionId = transactionId;
+    }
+
     public List<UserMicroTask> getRelatedUserMicrotasks() {
         return relatedUserMicrotasks;
     }
@@ -171,4 +193,5 @@ public class UserTask {
     public void generateRefCode(){
         refCode = java.util.UUID.randomUUID().toString();
     }
+
 }

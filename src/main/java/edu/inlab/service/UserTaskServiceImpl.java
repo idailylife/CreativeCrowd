@@ -70,10 +70,9 @@ public class UserTaskServiceImpl implements UserTaskService {
         return userTaskRepository.getUserUnfinishedTasks(userId);
     }
 
-    public UserTask getUnfinishedByUserIdAndTaskId(int userId, int taskId) {
-        UserTask userTask =  userTaskRepository.getUnfinished(userId, taskId);
-        //Check and maintain validity (expiration) of this task
-        Task task = taskRepository.getTaskById(taskId);
+    private UserTask getValidatedUserTask(UserTask userTask, Task task){
+        if(task.getTimeLimit() == null)
+            return userTask;
         if(EchoController.getRemainingTime(task, userTask) <= 0){
             userTask.setState(UserTask.STATE_EXPIRED);
             updateUserTask(userTask);
@@ -82,16 +81,18 @@ public class UserTaskServiceImpl implements UserTaskService {
         return userTask;
     }
 
+    public UserTask getUnfinishedByUserIdAndTaskId(int userId, int taskId) {
+        UserTask userTask =  userTaskRepository.getUnfinished(userId, taskId);
+        //Check and maintain validity (expiration) of this task
+        Task task = taskRepository.getTaskById(taskId);
+        return getValidatedUserTask(userTask, task);
+    }
+
     public UserTask getUnfinishedByMTurkIdAndTaskId(String mturkId, int taskId) {
         UserTask userTask = userTaskRepository.getUnfinished(mturkId, taskId);
         //Maintain validity
         Task task = taskRepository.getTaskById(taskId);
-        if(EchoController.getRemainingTime(task, userTask) <= 0){
-            userTask.setState(UserTask.STATE_EXPIRED);
-            updateUserTask(userTask);
-            return null;
-        }
-        return userTask;
+        return getValidatedUserTask(userTask, task);
     }
 
     public List<Integer> getTaskIds(List<UserTask> userTasks) {
