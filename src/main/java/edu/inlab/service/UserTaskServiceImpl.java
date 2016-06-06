@@ -1,7 +1,10 @@
 package edu.inlab.service;
 
+import edu.inlab.models.Task;
 import edu.inlab.models.UserTask;
+import edu.inlab.repo.TaskRepository;
 import edu.inlab.repo.UserTaskRepository;
+import edu.inlab.web.EchoController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,9 @@ import java.util.List;
 public class UserTaskServiceImpl implements UserTaskService {
     @Autowired
     UserTaskRepository userTaskRepository;
+
+    @Autowired
+    TaskRepository taskRepository;
 
     public void saveUserTask(UserTask userTask) {
         userTaskRepository.save(userTask);
@@ -65,11 +71,27 @@ public class UserTaskServiceImpl implements UserTaskService {
     }
 
     public UserTask getUnfinishedByUserIdAndTaskId(int userId, int taskId) {
-        return userTaskRepository.getUnfinished(userId, taskId);
+        UserTask userTask =  userTaskRepository.getUnfinished(userId, taskId);
+        //Check and maintain validity (expiration) of this task
+        Task task = taskRepository.getTaskById(taskId);
+        if(EchoController.getRemainingTime(task, userTask) <= 0){
+            userTask.setState(UserTask.STATE_EXPIRED);
+            updateUserTask(userTask);
+            return null;
+        }
+        return userTask;
     }
 
     public UserTask getUnfinishedByMTurkIdAndTaskId(String mturkId, int taskId) {
-        return userTaskRepository.getUnfinished(mturkId, taskId);
+        UserTask userTask = userTaskRepository.getUnfinished(mturkId, taskId);
+        //Maintain validity
+        Task task = taskRepository.getTaskById(taskId);
+        if(EchoController.getRemainingTime(task, userTask) <= 0){
+            userTask.setState(UserTask.STATE_EXPIRED);
+            updateUserTask(userTask);
+            return null;
+        }
+        return userTask;
     }
 
     public List<Integer> getTaskIds(List<UserTask> userTasks) {
