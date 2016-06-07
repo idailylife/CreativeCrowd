@@ -8,6 +8,8 @@ import edu.inlab.models.json.TaskClaimRequestBody;
 import edu.inlab.service.*;
 import edu.inlab.service.assignment.MicroTaskAssigner;
 import edu.inlab.service.assignment.MicroTaskAssignerFactory;
+import edu.inlab.service.wage.WageAssigner;
+import edu.inlab.service.wage.WageFactory;
 import edu.inlab.utils.Constants;
 import edu.inlab.utils.JSON2Map;
 import edu.inlab.web.exception.ResourceNotFoundException;
@@ -57,6 +59,9 @@ public class TaskController {
 
     @Autowired
     MicroTaskAssignerFactory microTaskAssignerFactory;
+
+    @Autowired
+    WageFactory wageFactory;
 
     @Transactional  //Avoids lazy-load problem
     @RequestMapping(value = "/tid{taskId}", method = RequestMethod.GET)
@@ -420,12 +425,18 @@ public class TaskController {
                 Microtask microtask = microTaskAssignerFactory.getAssigner(task.getMode())
                         .assignNext(userTask);
                 if(microtask == null){
+                    //Calculate wage for normal tasks
+                    if(task.getType() == Task.TYPE_NORMAL){
+                        WageAssigner wageAssigner = WageFactory.getAssigner(task.getWageType());
+                        userTask.setRemuneration(wageAssigner.assignWage(task, userTask));
+                    }
+
                     //Task finished
                     userTask.setState(UserTask.STATE_FINISHED);
                     userTask.setCurrUserMicrotaskId(null);
                     userTask.generateRefCode();
                     userTaskService.updateUserTask(userTask);
-                    task.setFinishedCount(task.getFinishedCount() + 1); //TODO:会不会有并发问题？
+                    task.setFinishedCount(task.getFinishedCount() + 1);
                     taskService.updateTask(task);
                     responseBody.setState(200);
                     responseBody.setMessage("Task finished.");

@@ -26,10 +26,20 @@ public class Microtask {
     @ManyToOne
     private Task task;
 
+    /**
+     * Template of a microtask
+     * For the definition of simple handler, please refer to
+     *   edu.inlab.models.handlers.SimpleMicroTaskHandler
+     * Should be rendered by handler that declared in `handler` column
+     */
     @Column(name = "template", nullable = false)
     @Type(type = "customJsonArray")
     private JSONArray template;
 
+    /**
+     * Defines the type of handler to render the template
+     * A handler should be written at /webapp/WEB-INF/views/pages/json_handler/[HANDLER_TYPE].jsp
+     */
     @Column(name = "handler")
     private String handlerType;
 

@@ -10,8 +10,14 @@
 <div class="container">
 <c:choose>
     <c:when test="${empty refCode}">
-        <h2>任务完成,即将跳转至主页...</h2>
-        <p>任务酬金等进度请访问个人中心查看.</p>
+        <h2>任务完成!</h2>
+        <p>5秒后将跳转至主页.</p>
+        <p>任务进度、任务酬金等请访问<a href="<c:url value="/user/task/claimed"/>">个人中心-我申领的任务</a>查看.</p>
+        <script>
+            setTimeout(function () {
+                window.location.href = '<c:url value="/" />';
+            }, 5000);
+        </script>
     </c:when>
     <c:otherwise>
         <h2>Congratulations!</h2>

@@ -48,7 +48,15 @@
                             ${taskStateStr}
                         </td>
                         <td>
-                            ${userTask.remuneration}
+                            <c:choose>
+                                <c:when test="${userTask.state != 1}">
+                                    --
+                                </c:when>
+                                <c:otherwise>
+                                    ${userTask.remuneration}
+                                </c:otherwise>
+                            </c:choose>
+
                         </td>
                         <td>
                             ${(empty userTask.transactionId)? '未发放':'已发放'}

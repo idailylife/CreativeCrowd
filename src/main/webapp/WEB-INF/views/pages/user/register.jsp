@@ -23,9 +23,14 @@
                     <label for="inputEmail">邮箱</label>
                     <input type="email" class="form-control" id="inputEmail" name="email" placeholder="Email">
                 </div>
-                <div class="form-group info-input">
+                <div class="form-group info-input password-input-group">
                     <label for="inputPassword">密码</label>
                     <input type="password" class="form-control" id="inputPassword" name="password" placeholder="密码">
+                </div>
+                <div class="form-group info-input password-input-group" >
+                    <label for="inputPasswordConfirm">密码确认</label>
+                    <input type="password" class="form-control" id="inputPasswordConfirm" name="password_confirm" placeholder="密码确认">
+                    <p class="err-message text-danger">两次输入的密码不一致.</p>
                 </div>
                 <div class="form-group" id="captcha-group">
                     <label for="inputCaptcha">验证码</label>

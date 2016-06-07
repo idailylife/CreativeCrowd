@@ -21,10 +21,6 @@ import java.util.Set;
 @Table(name = "task")
 @TypeDef(name = "customJsonObject", typeClass = JSONObjectUserType.class)
 public class Task {
-    public static int TYPE_NORMAL = 0;
-    public static int TYPE_MTURK = 1;
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -45,10 +41,31 @@ public class Task {
     @Min(value = 0)
     private Integer finishedCount;
 
+    /**
+     * Task description
+     * {
+     *     desc: 任务简略描述,
+     *     desc_detail: 任务细节描述,
+     *     est_time: 预估完成时间,
+     *     info: {
+     *         附加信息字段: 附加信息值,
+     *         ...
+     *     }
+     * }
+     * `info` is optional.
+     */
     @Column(name = "desc_json")
     @Type(type = "customJsonObject")
     private JSONObject descJson;
 
+    /**
+     * This defines the way that microtasks being assigned to one worker
+     * Models and assigners should be defined in edu.inlab.service.assignment.MicroTaskAssigner
+     * When assigning microtasks, MicroTaskAssignFactory will get instances of specified assigners to
+     *   dispatch(assign) microtasks
+     * For further implementation, params of assigner can be defined in `params` column
+     *   as JSON key:value pairs
+     */
     @Column(name = "mode", nullable = false)
     private Integer mode;   //Normal, Random Assign, Assign with Policy
 
@@ -67,6 +84,9 @@ public class Task {
     @Column(name = "tag")
     private String tag;
 
+    /**
+     * This defines if a task can be claimed more than once by one unique worker
+     */
     @Column(name = "repeatable", nullable = false)
     @Max(1)
     private Integer repeatable;
@@ -74,11 +94,26 @@ public class Task {
     @Column(name = "type", nullable = false)
     private Integer type;
 
+    public static int TYPE_NORMAL = 0;
+    public static int TYPE_MTURK = 1;
+
     @Column(name = "params")
     private String params;  //Assigner parameters string
 
     @Column(name = "time_limit")
     private Integer timeLimit; // Time limit for one task (in minute)
+
+    /**
+     * The wageType is to define the type of wage to be paid to workers
+     * See following definitions for details.
+     */
+    @Column(name = "wage_type")
+    private Integer wageType;
+    public static int WAGE_TYPE_PER_TASK = 0;   //One-time computed wage, the `wage` column is a double numeric value
+    public static int WAGE_TYPE_PER_MICROTASK = 1;  //Defined as an JSON string in the `wage` column, to be implemented
+
+    @Column(name = "wage", nullable = false)
+    private String wage;
 
     @Column(name = "optlock")
     @Version
@@ -231,6 +266,22 @@ public class Task {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public Integer getWageType() {
+        return wageType;
+    }
+
+    public void setWageType(Integer wageType) {
+        this.wageType = wageType;
+    }
+
+    public String getWage() {
+        return wage;
+    }
+
+    public void setWage(String wage) {
+        this.wage = wage;
     }
 
     @Override
