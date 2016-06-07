@@ -39,6 +39,7 @@ public class UserTaskServiceImpl implements UserTaskService {
             entity.setUserType(userTask.getUserType());
             entity.setRefCode(userTask.getRefCode());
             entity.setStartTime(userTask.getStartTime());
+            entity.setRemuneration(userTask.getRemuneration());
         }
     }
 

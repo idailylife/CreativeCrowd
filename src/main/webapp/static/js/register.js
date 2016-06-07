@@ -12,7 +12,12 @@ $(document).ready(function () {
     });
     $("#registerForm").submit(function (event) {
         event.preventDefault();
-        postRegForm();
+        if($("#inputPassword").val() != $("#inputPasswordConfirm").val()){
+            $(".password-input-group").addClass("has-error");
+        } else {
+            postRegForm();
+        }
+
     });
     $("#img-captcha").click(function () {
         $(this).attr("src", homeUrl+"captcha?"+Math.floor(Math.random()*100));

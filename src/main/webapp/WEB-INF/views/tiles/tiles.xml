@@ -33,6 +33,9 @@
     <!--User Register-->
     <definition name="user/register" extends="base-definition">
         <put-attribute name="body" value="/WEB-INF/views/pages/user/register.jsp"/>
+        <put-list-attribute name="stylesheets" inherit="true">
+            <add-attribute value="/static/css/register_styles.css"/>
+        </put-list-attribute>
     </definition>
 
     <!--User Login-->

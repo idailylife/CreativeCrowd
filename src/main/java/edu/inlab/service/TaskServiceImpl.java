@@ -63,6 +63,8 @@ public class TaskServiceImpl implements TaskService {
             entity.setTag(task.getTag());
             entity.setRelatedMictorasks(entity.getRelatedMictorasks());
             entity.setTimeLimit(task.getTimeLimit());
+            entity.setWage(task.getWage());
+            entity.setWageType(task.getWageType());
         }
     }
 

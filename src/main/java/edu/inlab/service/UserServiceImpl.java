@@ -154,7 +154,7 @@ public class UserServiceImpl implements UserService {
         } else {
             Cookie[] cookies = request.getCookies();
             String token = null;
-            if(cookies == null){
+            if(cookies != null){
                 for(Cookie cookie: cookies){
                     if(cookie.getName().equals(Constants.KEY_USER_UID)){
                         uid = Integer.valueOf(cookie.getValue());
