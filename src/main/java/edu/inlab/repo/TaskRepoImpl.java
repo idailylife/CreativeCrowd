@@ -17,6 +17,7 @@ public class TaskRepoImpl extends AbstractDao<Integer, Task> implements TaskRepo
         return getByKey(id);
     }
 
+    @SuppressWarnings("unchecked")
     public List<Task> getByOwnerId(int ownerId) {
         List<Task> tasks = getSession().createCriteria(Task.class)
                 .add(Restrictions.eq("ownerId", ownerId))
@@ -24,6 +25,7 @@ public class TaskRepoImpl extends AbstractDao<Integer, Task> implements TaskRepo
         return tasks;
     }
 
+    @SuppressWarnings("unchecked")
     public List<Task> getOpenTasks(int startId, int count) {
         List<Task> tasks = getSession().createCriteria(Task.class)
                 .add(Restrictions.ge("id", startId))
@@ -32,6 +34,7 @@ public class TaskRepoImpl extends AbstractDao<Integer, Task> implements TaskRepo
         return tasks;
     }
 
+    @SuppressWarnings("unchecked")
     public List<Task> getPagedTasks(int pageNo, int pageSize){
         List<Task> tasks = getSession().createCriteria(Task.class)
                 .addOrder(Order.desc("id"))
