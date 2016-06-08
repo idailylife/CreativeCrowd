@@ -458,6 +458,13 @@ public class TaskController {
         return responseBody;
     }
 
+
+    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    public String createTask(HttpServletRequest request, Model model){
+
+        return "task/create";
+    }
+
     /*MTurk Support*/
     @ResponseBody
     @RequestMapping(value = "/check_mt", method = RequestMethod.POST,

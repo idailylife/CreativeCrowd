@@ -104,4 +104,19 @@
     <definition name="task/done" extends="base-definition">
         <put-attribute name="body" value="/WEB-INF/views/pages/task/done.jsp"/>
     </definition>
+
+
+    <!-- Task Create -->
+    <definition name="task/create" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/views/pages/task/create.jsp"/>
+        <put-list-attribute name="stylesheets" inherit="true">
+            <add-attribute value="/static/css/task_create_styles.css"/>
+            <add-attribute value="/static/css/util/bootstrap-datetimepicker.min.css"/>
+        </put-list-attribute>
+        <put-list-attribute name="javascripts" inherit="true">
+            <add-attribute value="/static/js/util/bootstrap-datetimepicker.min.js"/>
+            <add-attribute value="/static/js/util/bootstrap-datetimepicker.zh-CN.js"/>
+            <add-attribute value="/static/js/task_create.js"/>
+        </put-list-attribute>
+    </definition>
 </tiles-definitions>
