@@ -11,8 +11,9 @@ Designed to be a flexible crowdsourcing platform, which will support customized 
 - Hibernate 4
 - Apache Tiles 3
 
-## 功能
-- building
+## Features
+- Microtask Assignment: Sequenced, Randomized (More options under developing)
+- Auto-generated reference code for basic support of MTurk
+- Customizable microtask page rendering from JSON definition (Currently we support Label, Text, File, Image input types)
 
 * * *
-Powered by inLab@ZJU
