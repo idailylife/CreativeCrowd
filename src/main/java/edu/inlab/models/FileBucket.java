@@ -1,5 +1,6 @@
 package edu.inlab.models;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;

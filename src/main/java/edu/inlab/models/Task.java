@@ -3,6 +3,8 @@ package edu.inlab.models;
 import edu.inlab.repo.usertype.JSONObjectUserType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -27,17 +29,17 @@ public class Task {
     private Integer id;
 
     @Column(name = "title")
+    @Length(min = 10, max = 128)
     private String title;
 
     @Column(name = "quota", nullable = false)
-    @Min(value = 0)
     private Integer quota;
 
-    @Column(name = "claimed_count", nullable = false)
+    @Column(name = "claimed_count")
     @Min(value = 0)
     private Integer claimedCount;
 
-    @Column(name = "finished_count", nullable = false)
+    @Column(name = "finished_count")
     @Min(value = 0)
     private Integer finishedCount;
 
@@ -119,10 +121,17 @@ public class Task {
     @Version
     private Integer version;
 
+    private String captcha;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "task_id")
     private List<Microtask> relatedMictorasks;
 
+    public Task() {
+        this.claimedCount = 0;
+        this.finishedCount = 0;
+        this.wageType = WAGE_TYPE_PER_TASK;
+    }
 
     public Integer getId() {
         return id;
@@ -282,6 +291,14 @@ public class Task {
 
     public void setWage(String wage) {
         this.wage = wage;
+    }
+
+    public String getCaptcha() {
+        return captcha;
+    }
+
+    public void setCaptcha(String captcha) {
+        this.captcha = captcha;
     }
 
     @Override

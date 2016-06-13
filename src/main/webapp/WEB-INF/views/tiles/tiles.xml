@@ -110,12 +110,17 @@
         <put-attribute name="body" value="/WEB-INF/views/pages/task/create.jsp"/>
         <put-list-attribute name="stylesheets" inherit="true">
             <add-attribute value="/static/css/task_create_styles.css"/>
-            <add-attribute value="/static/css/util/bootstrap-datetimepicker.min.css"/>
+            <add-attribute value="/static/css/util/jquery.datetimepicker.css"/>
         </put-list-attribute>
         <put-list-attribute name="javascripts" inherit="true">
-            <add-attribute value="/static/js/util/bootstrap-datetimepicker.min.js"/>
-            <add-attribute value="/static/js/util/bootstrap-datetimepicker.zh-CN.js"/>
+            <add-attribute value="/static/js/util/jquery.datetimepicker.full.min.js"/>
             <add-attribute value="/static/js/task_create.js"/>
         </put-list-attribute>
+    </definition>
+
+    <!-- Microtask Create -->
+    <definition name="task/create_micro" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/views/pages/task/create_microtask.jsp"/>
+
     </definition>
 </tiles-definitions>

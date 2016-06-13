@@ -14,6 +14,7 @@
         <div class="col-sm-12">
             <h1>创建众包任务</h1>
             <form id="formBasicInfo">
+                <input type="hidden" name="ownerId" value="${uid}">
                 <div class="panel panel-primary">
                     <div class="panel-heading">基本信息</div>
                     <div class="panel-body">
@@ -36,24 +37,36 @@
                             <label>允许同一用户多次申领</label>
                             <div class="">
                                 <label class="checkbox-inline">
-                                    <input type="radio" name="repeatable" value="0" >是
+                                    <input type="radio" name="repeatable" value="1" >是
                                 </label>
                                 <label class="checkbox-inline">
-                                    <input type="radio" name="repeatable" value="1" checked="checked">否
+                                    <input type="radio" name="repeatable" value="0" checked="checked">否
                                 </label>
                             </div>
                         </div>
                         <div class="form-group col-sm-12">
                             <label for="inputImage">图片</label>
-                            <input type="file" id="inputImage" name="image">
+                            <input type="file" id="inputImage" name="file">
                             <p class="help-block">支持jpg,png,gif图片，文件最大4MB.</p>
                         </div>
                         <div class="form-group col-sm-12">
                             <label for="inputTag">分类Tag</label>
                             <input class="form-control" type="text" id="inputTag" name="tag" placeholder="多个分类以空格分隔, 不超过3类">
                         </div>
-
+                        <div class="form-group col-sm-12">
+                            <label for="textDesc">任务简介</label>
+                            <textarea id="textDesc" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label for="textDescDetail">任务内容</label>
+                            <textarea id="textDescDetail" class="form-control" rows="5"></textarea>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label>其他信息(JSON String)</label>
+                            <textarea id="textDescOther" class="form-control" rows="2">{}</textarea>
+                        </div>
                     </div>
+                    <input type="hidden" name="descJson" value="{}">
                 </div>
 
                 <div class="panel panel-primary">
@@ -80,20 +93,16 @@
                         <div class="form-group col-sm-6">
                             <label for="inputStartTime">任务开始时间</label>
                             <div class="input-group">
-                                <input id="inputStartTime" class="form-control" type="datetime" name="endTime" placeholder="yyyy-mm-dd hh:ii">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">+</button>
-                                </span>
+                                <input id="inputStartTime" class="form-control form_datetime" type="text" placeholder="yyyy/mm/dd hh:ii">
+                                <input type="hidden" name="startTime">
                             </div>
 
                         </div>
                         <div class="form-group col-sm-6">
                             <label for="inputEndTime">任务终止时间</label>
                             <div class="input-group">
-                                <input id="inputEndTime" class="form-control" type="datetime" name="endTime" placeholder="yyyy-mm-dd hh:ii">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">+</button>
-                                </span>
+                                <input id="inputEndTime" class="form-control form_datetime" type="text" placeholder="yyyy/mm/dd hh:ii">
+                                <input type="hidden" name="endTime">
                             </div>
 
                         </div>
@@ -101,13 +110,13 @@
                             <label>Microtask(微任务)指派方式</label>
                             <ul class="nav nav-pills" role="tablist">
                                 <li role="presentation" class="active">
-                                    <a href="#tabSimple" aria-controls="simple" role="tab" data-toggle="tab">顺序</a>
+                                    <a href="#tabSimple" aria-controls="simple" role="tab" data-toggle="tab" data-mode="0">顺序</a>
                                 </li>
                                 <li role="presentation">
-                                    <a href="#tabRandom" aria-controls="random" role="tab" data-toggle="tab">随机</a>
+                                    <a href="#tabRandom" aria-controls="random" role="tab" data-toggle="tab" data-mode="1">随机</a>
                                 </li>
                                 <li role="presentation">
-                                    <a href="#tabDevelop" aria-controls="develop" role="tab" data-toggle="tab">Dev!</a>
+                                    <a href="#tabDevelop" aria-controls="develop" role="tab" data-toggle="tab" data-mode="-1">Dev!</a>
                                 </li>
                             </ul>
                             <ul class="tab-content">
@@ -123,30 +132,34 @@
                                         <p>将微任务随机分配给参与者，用户完成指定个数的微任务方可提交。</p>
                                         <div class="form-inline">
                                             <div class="form-group">
-                                                <label for="inputRandomParam">每个任务分配的微任务个数</label>
-                                                <input type="number" class="form-control" id="inputRandomParam">
+                                                <label for="inputRandomParam">每个任务分配的微任务个数(不超过微任务总数)</label>
+                                                <input type="number" class="form-control" id="inputRandomParam" name="params">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane fade" id="tabDevelop">
                                     <br>
-                                    <p>Dev!模式：自定义指派方案（待实现）</p>
+                                    <p>Dev!模式：自定义指派方案（Coming soon）</p>
                                 </div>
                             </ul>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="inputWage">任务酬金</label>
+                            <div class="input-group">
+                                <span class="input-group-addon" >￥</span>
+                                <input type="number" class="form-control" name="wage" id="inputWage">
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="panel panel-primary">
-                    <div class="panel-heading">酬金发放</div>
-                    <div class="panel-body">
-                        <div class="form-group col-sm-6">
-                            <label for="inputWage">任务酬金</label>
-                            <div class="input-group">
-                                <span class="input-group-addon" >￥</span>
-                                <input type="number" class="form-control" name="timeLimit" id="inputWage">
-                            </div>
+                    <div class="panel-heading">验证</div>
+                    <div class="panel-body form-inline">
+                        <div class="form-group col-sm-12">
+                            <img id="img-captcha" src="<c:url value="/captcha"/>" style="height: 3rem">
+                            <input class="form-control" id="inputCaptcha" name="captcha" placeholder="请输入验证码">
                         </div>
                     </div>
                 </div>
@@ -163,3 +176,7 @@
         </div>
     </div>
 </div>
+
+<script>
+    var homeUrl = "<c:url value="/"/>";
+</script>

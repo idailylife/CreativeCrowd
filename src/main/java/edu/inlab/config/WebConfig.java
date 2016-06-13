@@ -84,6 +84,8 @@ public class WebConfig extends WebMvcConfigurerAdapter{
                 .addResourceLocations("/static/");
     }
 
+
+
     //Multipart resolver
     @Bean(name = "multipartResolver")
     public StandardServletMultipartResolver resolver(){

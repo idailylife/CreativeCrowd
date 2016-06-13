@@ -21,12 +21,15 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -460,9 +463,51 @@ public class TaskController {
 
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String createTask(HttpServletRequest request, Model model){
-
+    public String createTask(Model model, HttpServletRequest request){
+        model.addAttribute("uid", request.getSession().getAttribute(Constants.KEY_USER_UID));
         return "task/create";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/create", method = RequestMethod.POST,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public AjaxResponseBody createTaskAjax(@Valid Task task, BindingResult bindingResult,
+                                           FileBucket fileBucket,
+                                           HttpServletRequest request) throws IOException{
+        AjaxResponseBody responseBody = new AjaxResponseBody();
+        if(bindingResult.hasErrors()){
+            responseBody.setState(400);
+            responseBody.setMessage("Request fields contain errors.");
+            //responseBody.setContent("");
+            return responseBody;
+        }
+        Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
+        if(!uid.equals(task.getOwnerId())){
+            responseBody.setState(403);
+            responseBody.setMessage("Owner id does not match.");
+            return responseBody;
+        }
+        if(fileBucket.getFile() != null && !fileBucket.getFile().isEmpty()){
+            //Save file
+            Random random = new Random();
+            String fileName = String.valueOf(random.nextInt(1000)) +
+                    fileBucket.getFile().getOriginalFilename();
+            FileCopyUtils.copy(fileBucket.getFile().getBytes(),
+                    new File(Constants.UPLOAD_FILE_STORE_LOCATION + fileName));
+            task.setImage(fileName);
+        }
+
+        taskService.saveTask(task);
+        responseBody.setState(200);
+        responseBody.setContent(task.getId().toString());
+        return responseBody;
+    }
+
+
+    @RequestMapping(value = "/create/{tid}", method = RequestMethod.GET)
+    public String createMicroTask(HttpServletRequest request, Model model){
+
+        return "task/create_micro";
     }
 
     /*MTurk Support*/
