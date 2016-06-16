@@ -158,7 +158,10 @@ public class UserServiceImpl implements UserService {
             if(cookies != null){
                 for(Cookie cookie: cookies){
                     if(cookie.getName().equals(Constants.KEY_USER_UID)){
-                        uid = Integer.valueOf(cookie.getValue());
+                        if(!cookie.getValue().isEmpty()){
+                            //Fix empty cookie string error
+                            uid = Integer.valueOf(cookie.getValue());
+                        }
                         if(uid == null || findById(uid) == null){
                             cookie.setMaxAge(0);
                             response.addCookie(cookie);
