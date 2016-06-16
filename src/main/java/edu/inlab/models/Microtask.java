@@ -26,6 +26,7 @@ public class Microtask {
     @ManyToOne
     private Task task;
 
+
     /**
      * Template of a microtask
      * For the definition of simple handler, please refer to

@@ -15,6 +15,8 @@ public class MicroTaskAssignerFactory {
     @Autowired
     private MicroTaskAssigner randomMicroTaskAssigner;
 
+    @Autowired
+    private MicroTaskAssigner sequenceMicroTaskAssigner;
 
     public MicroTaskAssigner getAssigner(String type){
         MicroTaskAssigner assigner = null;
@@ -22,10 +24,9 @@ public class MicroTaskAssignerFactory {
             assigner = singlePagedMicroTaskAssigner;
         } else if(type.equals("random")){
             assigner = randomMicroTaskAssigner;
+        } else if(type.equals("sequence")){
+            assigner = sequenceMicroTaskAssigner;
         }
-//        if(assigner != null){
-//            assigner.parseParamsString(paramStr);
-//        }
         return assigner;
     }
 
@@ -38,10 +39,11 @@ public class MicroTaskAssignerFactory {
             case 1:
                 assigner = randomMicroTaskAssigner;
                 break;
+            case 2:
+                assigner = sequenceMicroTaskAssigner;
+                break;
         }
-//        if(assigner != null){
-//            assigner.parseParamsString(paramStr);
-//        }
+
         return assigner;
     }
 
@@ -51,5 +53,9 @@ public class MicroTaskAssignerFactory {
 
     public void setRandomMicroTaskAssigner(RandomMicroTaskAssigner randomMicroTaskAssigner) {
         this.randomMicroTaskAssigner = randomMicroTaskAssigner;
+    }
+
+    public void setSequenceMicroTaskAssigner(MicroTaskAssigner sequenceMicroTaskAssigner) {
+        this.sequenceMicroTaskAssigner = sequenceMicroTaskAssigner;
     }
 }

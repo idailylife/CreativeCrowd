@@ -1,6 +1,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
-  Created by IntelliJ IDEA.
+  simple渲染模式
+   * Deals with simple microtasks.
+ * Input: the templateStr is a `stringified` jsonArray, which contains multiple lines of jsonObjects
+ *     each jsonObject has a key indicates its type, which can be a (lower-cased, * means optional):
+ *     [
+ *      {label,     {id: ID, text: CONTENT, *for: FOR_ID}} :=> labels (for some input FOR_ID)
+ *      {text,      {id: ID, multiline: true/false, *placeholder: TEXT}}           :=> text input
+ *      {choice,    {id: ID, type: single/multiple, ary_items:[ITEM_1, ITEM_2, ...]}
+ *              :=> single(default)/multiple choice box
+ *      {image,     {src: internal_url}}    :=> image
+ *      {file,      {accept: ALLOWED_TYPES, *text: TEXT_DESCRIPTION}}      :=> file
+ *     ]
   User: hebowei
   Date: 16/5/21
   Time: 下午2:25

@@ -25,6 +25,7 @@ public interface UserService {
 
     User findById(int id);
     User findByEmail(String email);
+    User getUserFromSession(HttpServletRequest request);
     void saveUser(User user);
     void updateUser(User user);
     void deleteUser(int id);

@@ -110,10 +110,13 @@
                             <label>Microtask(微任务)指派方式</label>
                             <ul class="nav nav-pills" role="tablist">
                                 <li role="presentation" class="active">
-                                    <a href="#tabSimple" aria-controls="simple" role="tab" data-toggle="tab" data-mode="0">顺序</a>
+                                    <a href="#tabSimple" aria-controls="simple" role="tab" data-toggle="tab" data-mode="0">单页</a>
                                 </li>
                                 <li role="presentation">
                                     <a href="#tabRandom" aria-controls="random" role="tab" data-toggle="tab" data-mode="1">随机</a>
+                                </li>
+                                <li role="presentation">
+                                    <a href="#tabSequence" aria-controls="sequence" role="tab" data-toggle="tab" data-mode="2">顺序</a>
                                 </li>
                                 <li role="presentation">
                                     <a href="#tabDevelop" aria-controls="develop" role="tab" data-toggle="tab" data-mode="-1">Dev!</a>
@@ -123,7 +126,7 @@
                                 <div role="tabpanel" class="tab-pane fade in active" id="tabSimple">
                                     <div class="row">
                                         <br>
-                                        <p>将微任务按照设计顺序逐个呈现，用户需要完成所有的微任务才能提交。</p>
+                                        <p>只有一页的任务，适用于调查问卷</p>
                                     </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane fade" id="tabRandom">
@@ -136,6 +139,12 @@
                                                 <input type="number" class="form-control" id="inputRandomParam" name="params">
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="tabSequence">
+                                    <div class="row">
+                                        <br>
+                                        <p>按照指定顺序推送Microtask</p>
                                     </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane fade" id="tabDevelop">

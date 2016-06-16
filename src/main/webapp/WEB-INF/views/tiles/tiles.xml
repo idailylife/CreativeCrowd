@@ -118,9 +118,16 @@
         </put-list-attribute>
     </definition>
 
-    <!-- Microtask Create -->
+    <!-- Microtask Create/Edit -->
     <definition name="task/create_micro" extends="base-definition">
         <put-attribute name="body" value="/WEB-INF/views/pages/task/create_microtask.jsp"/>
-
+        <put-list-attribute name="javascripts" inherit="true">
+            <add-attribute value="/static/js/util/jsoneditor.min.js"/>
+            <add-attribute value="/static/js/util/bootstrap-tabs-dynamic.js"/>
+            <add-attribute value="/static/js/task_edit_microtask.js"/>
+        </put-list-attribute>
+        <put-list-attribute name="stylesheets" inherit="true">
+            <add-attribute value="/static/css/util/jsoneditor.min.css"/>
+        </put-list-attribute>
     </definition>
 </tiles-definitions>

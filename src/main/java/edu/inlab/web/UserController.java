@@ -165,7 +165,7 @@ public class UserController {
 
     @RequestMapping(value = "/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        User user = getUserFromSession(request);
+        User user = userService.getUserFromSession(request);
         if(user != null){
             user.setTokenCookie(null);
             userService.updateUser(user);
@@ -239,7 +239,7 @@ public class UserController {
     produces = MediaType.APPLICATION_JSON_VALUE)
     public AjaxResponseBody editPaymentInfo(@RequestBody Map<String,String> map, HttpServletRequest request){
         AjaxResponseBody responseBody = new AjaxResponseBody();
-        User currUser = getUserFromSession(request);
+        User currUser = userService.getUserFromSession(request);
         if(currUser != null && map.containsKey("payMethod")){
             currUser.setPayMethod(map.get("payMethod"));
             if(map.containsKey("payAccount")){
@@ -260,7 +260,7 @@ public class UserController {
     public String userCenter(HttpServletRequest request, Model model){
 //        Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
 //        User user = userService.findById(uid);
-        User user = getUserFromSession(request);
+        User user = userService.getUserFromSession(request);
         model.addAttribute("user", user);
         model.addAttribute("claimedCount", userTaskService.getClaimedCount(user.getId()));
         model.addAttribute("finishedCount", userTaskService.getFinishedCount(user.getId()));
@@ -269,19 +269,12 @@ public class UserController {
         return "user";
     }
 
-    private User getUserFromSession(HttpServletRequest request){
-        Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
-        User user =  userService.findById(uid);
-        if(user == null){
-            throw new ResourceNotFoundException("Cannot find such user with uid=" + uid);
-        }
-        return user;
-    }
+
 
     @Transactional
     @RequestMapping(value = "task/claimed", method = RequestMethod.GET)
     public String claimedTasks(HttpServletRequest request, Model model){
-        User user = getUserFromSession(request);
+        User user = userService.getUserFromSession(request);
         List<UserTask> userTasks = userTaskService.getByUserId(user.getId(), Constants.USER_LIST_TASK_LENGTH);
         Map<Integer, Task> mappedTasks = taskService.findMapByIds(userTaskService.getTaskIds(userTasks));
         //tasks可能会比userTasks多，因为可以重复申领

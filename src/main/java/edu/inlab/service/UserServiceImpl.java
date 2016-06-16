@@ -4,6 +4,7 @@ import edu.inlab.models.User;
 import edu.inlab.repo.UserRepository;
 import edu.inlab.utils.Constants;
 import edu.inlab.utils.EncodeFactory;
+import edu.inlab.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -196,5 +197,14 @@ public class UserServiceImpl implements UserService {
         } else {
             model.addAttribute("loginState", false);
         }
+    }
+
+    public User getUserFromSession(HttpServletRequest request){
+        Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
+        User user =  findById(uid);
+        if(user == null){
+            throw new ResourceNotFoundException("Cannot find such user with uid=" + uid);
+        }
+        return user;
     }
 }

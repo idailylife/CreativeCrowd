@@ -11,5 +11,7 @@ import java.util.List;
 public interface MicroTaskRepository{
     Microtask getById(int id);
     void save(Microtask microtask);
+    void update(Microtask microtask);
+    void remove(Microtask microtask);
     List<Microtask> getByTaskId(int taskId);
 }

@@ -3,12 +3,14 @@ package edu.inlab.repo;
 import edu.inlab.models.Microtask;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * Created by hebowei on 16/5/14.
  */
+@Transactional
 @Repository("microTaskRepo")
 public class MicroTaskRepoImpl extends AbstractDao<Integer, Microtask> implements MicroTaskRepository {
     public Microtask getById(int id) {
@@ -24,5 +26,15 @@ public class MicroTaskRepoImpl extends AbstractDao<Integer, Microtask> implement
                 .add(Restrictions.eq("taskId", taskId))
                 .list();
         return microtasks;
+    }
+
+    @Override
+    public void update(Microtask microtask) {
+        saveOrUpdate(microtask);
+    }
+
+    @Override
+    public void remove(Microtask microtask) {
+        delete(microtask);
     }
 }

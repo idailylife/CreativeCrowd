@@ -22,7 +22,7 @@ import java.util.Set;
 @Entity
 @Table(name = "task")
 @TypeDef(name = "customJsonObject", typeClass = JSONObjectUserType.class)
-public class Task {
+public class Task extends CaptchaCapableModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -69,7 +69,7 @@ public class Task {
      *   as JSON key:value pairs
      */
     @Column(name = "mode", nullable = false)
-    private Integer mode;   //Normal, Random Assign, Assign with Policy
+    private Integer mode;   //Normal, Random Assign, Sequenced Assign
 
     @Column(name = "start_time")
     private Long startTime;
@@ -121,7 +121,6 @@ public class Task {
     @Version
     private Integer version;
 
-    private String captcha;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "task_id")
@@ -291,14 +290,6 @@ public class Task {
 
     public void setWage(String wage) {
         this.wage = wage;
-    }
-
-    public String getCaptcha() {
-        return captcha;
-    }
-
-    public void setCaptcha(String captcha) {
-        this.captcha = captcha;
     }
 
     @Override

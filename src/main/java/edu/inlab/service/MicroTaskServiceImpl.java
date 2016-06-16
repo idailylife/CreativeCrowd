@@ -20,4 +20,14 @@ public class MicroTaskServiceImpl implements MicroTaskService {
     public void save(Microtask microtask) {
         microTaskRepository.save(microtask);
     }
+
+    @Override
+    public void delete(Microtask microtask) {
+        microTaskRepository.remove(microtask);
+    }
+
+    @Override
+    public void saveOrUpdate(Microtask microtask) {
+        microTaskRepository.update(microtask);
+    }
 }

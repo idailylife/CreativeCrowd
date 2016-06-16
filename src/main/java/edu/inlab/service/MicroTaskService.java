@@ -8,4 +8,6 @@ import edu.inlab.models.Microtask;
 public interface MicroTaskService {
     Microtask getById(int id);
     void save(Microtask microtask);
+    void delete(Microtask microtask);
+    void saveOrUpdate(Microtask microtask);
 }

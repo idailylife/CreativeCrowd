@@ -503,11 +503,58 @@ public class TaskController {
         return responseBody;
     }
 
-
-    @RequestMapping(value = "/create/{tid}", method = RequestMethod.GET)
-    public String createMicroTask(HttpServletRequest request, Model model){
-
+    /**
+     * 创建/编辑众包任务中的Microtasks
+     * @param request
+     * @param model
+     * @return
+     */
+    @Transactional
+    @RequestMapping(value = "/edit/{tid}", method = RequestMethod.GET)
+    public String createMicroTask(@PathVariable("tid") Integer tid, HttpServletRequest request, Model model){
+        User user = userService.getUserFromSession(request);
+        Task task = taskService.findById(tid);
+        if(user == null || task == null || !task.getOwnerId().equals(user.getId())){
+            //Illegal request
+            return "redirect:/?illegal_request=1";
+        }
+        //Retrieve existing microtasks
+        List<Microtask> microtasks = new ArrayList<>(task.getRelatedMictorasks());
+        model.addAttribute("microtasks", microtasks);
+        model.addAttribute("task", task);
         return "task/create_micro";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/edit/{tid}", method = RequestMethod.POST,
+    produces = MediaType.APPLICATION_JSON_VALUE,
+    consumes = MediaType.APPLICATION_JSON_VALUE)
+    public AjaxResponseBody saveOrUpdateMicrotask(@PathVariable("tid") Integer tid,
+                                        HttpServletRequest request,
+                                        @RequestBody @Valid Microtask microtask){
+        AjaxResponseBody responseBody = new AjaxResponseBody();
+        User user = userService.getUserFromSession(request);
+        Task task = taskService.findById(tid);
+        if(user == null || task == null || !task.getOwnerId().equals(user.getId())){
+            //Illegal request
+            responseBody.setState(403);
+            return responseBody;
+        }
+        //TODO: json格式\表单内容验证
+        microtask.setTask(task);
+        if(microtask.getId() == null){
+            microTaskService.save(microtask);
+        } else {
+            Microtask existingMTask = microTaskService.getById(microtask.getId());
+            existingMTask.setHandlerType(microtask.getHandlerType());
+            existingMTask.setNextId(microtask.getNextId());
+            existingMTask.setPrevId(microtask.getPrevId());
+            existingMTask.setTemplate(microtask.getTemplate());
+            microTaskService.saveOrUpdate(existingMTask);
+        }
+        responseBody.setState(200);
+        responseBody.setContent(microtask.getId().toString());
+        return responseBody;
     }
 
     /*MTurk Support*/
