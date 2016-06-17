@@ -1,5 +1,6 @@
 package edu.inlab.service;
 
+import edu.inlab.models.Microtask;
 import edu.inlab.models.Task;
 import edu.inlab.models.UserTask;
 
@@ -19,4 +20,6 @@ public interface TaskService {
     void saveTask(Task task);
     void updateTask(Task task);
     void deleteTaskById(int id);
+    void onMicrotaskDelete(Microtask microtask, Task task);
+    void onMicrotaskCreate(Microtask microtask, Task task);
 }

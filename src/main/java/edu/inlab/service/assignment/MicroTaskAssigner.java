@@ -18,5 +18,10 @@ public interface MicroTaskAssigner {
      * @return 下一项microtask，如果用户任务结束，可以为null
      */
     Microtask assignNext(UserTask userTask) throws RuntimeException;
+    void onMicrotaskDelete(Microtask microtask);
+    void onMicrotaskCreate(Microtask microtask);
 
+    int TASK_ASSIGN_SINGLE = 0;
+    int TASK_ASSIGN_RANDOM = 1;
+    int TASK_ASSIGN_SEQUENCE = 2;
 }

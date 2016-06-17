@@ -12,7 +12,7 @@ $(document).ready(function () {
 
     $("#btnTabAdd").click(function () {
         insertActionCount++;
-        appendMicroTask(null, "new_"+insertActionCount);
+        appendMicroTask(null, "新建_"+insertActionCount);
     });
 
     $(".btnInsertNext").each(function () {
@@ -31,6 +31,10 @@ $(document).ready(function () {
         setSave(this);
     });
 
+    $(".btnDelete").each(function () {
+        setDelete(this);
+    });
+
     $("#btnSeqConfigSave").click(function () {
         var seqText = parseMicrotaskSequenceStr();
         if(!seqText){
@@ -40,26 +44,91 @@ $(document).ready(function () {
         setTaskParams(seqText);
     });
 
-    var setTaskParams = function(params){
-        $.ajax({
-            method: 'post',
-            url: homeUrl+'task/updparams/'+taskId,
-            data: JSON.stringify({params: params}),
-            contentType : "application/json; charset=utf-8",
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-                //TODO
+    $("#btnRandConfigSave").click(function () {
+       setTaskParams($("#inputTaskParams").val());
+    });
+
+    $('#btnSaveAll').click(function () {
+        //保存所有当前配置并提交
+        $(this).prop("disabled", true);
+        setProgBarStateAndText(10, "Init...");
+        //Save all tabs
+        var li, li_id, tab_id, i;
+        var liArray = $("ul.nav-tabs>li");
+        var saveCount = 0, maxSaveCount = liArray.length-2+1;
+        var incrSaveCount = function () {
+            saveCount++;
+            var prog = 100*saveCount/maxSaveCount;
+            setProgBarStateAndText(prog, "Saving item " + saveCount + " of " + maxSaveCount);
+            if(saveCount >= maxSaveCount){
+                alert("all done!");
             }
-        })
+        };
+
+        for(i=0; i<liArray.length; i++){
+            li_id = liArray[i].id;
+            tab_id = li_id.match(/\S+(?=-li)/);
+            if(tab_id=='control' || tab_id==null)
+                continue;
+            var editorText = editorList[tab_id].getText();
+            var savedText = $("#textTemplate_"+tab_id).val();
+            if(editorText != savedText){
+                //本地变更未保存，需要上传
+                saveTabContent(tab_id, incrSaveCount);
+            } else {
+                incrSaveCount();
+            }
+        }
+        //task params
+        updatePossibleParams(incrSaveCount);
+    });
+    
+    var setProgBarStateAndText = function(state, text) {
+        if(state > 0){
+            $(".progress").show();
+            $("#progBarSaveAll")
+                .css("width", state + "%");
+            $("#progBarSaveAll>span").text(text);
+        } else {
+            $(".progress").hide();
+        }
     }
 });
+
+var setTaskParams = function(params, informFunc){
+    $.ajax({
+        method: 'post',
+        url: homeUrl+'task/updparams/'+taskId,
+        data: JSON.stringify({params: params}),
+        contentType : "application/json; charset=utf-8",
+        dataType: 'json',
+        success: function (data) {
+            console.log(data);
+            if(data.state == 200){
+                $(".paramSaveState").text("配置保存成功.");
+                setTimeout(function () {
+                    $(".paramSaveState").text("");
+                }, 5000);
+                if(informFunc)
+                    informFunc();
+            } else if(data.start == 403){
+                alert("登录超时");
+            }
+        }
+    })
+};
 
 function setSave(element) {
     $(element).click(function () {
         var tableId = $(element).currentBSTabID();
         saveTabContent(tableId);;
-    })
+    });
+}
+
+function setDelete(element) {
+    $(element).click(function () {
+        deleteTabContent($(element).currentBSTabID());
+    });
 }
 
 function setMoveBackward(element) {
@@ -80,7 +149,7 @@ function setInsertNext(element) {
     $(element).click(function () {
         var currTabId = $(this).currentBSTabID();
         insertActionCount++;
-        appendMicroTask(currTabId, "new_"+insertActionCount);
+        appendMicroTask(currTabId, "新建_"+insertActionCount);
     });
 }
 
@@ -133,6 +202,7 @@ function registerButtonActions(newId){
     setMoveBackward(document.getElementById("btnMoveBackward_"+newId));
     setMoveForward(document.getElementById("btnMoveForward_"+newId));
     setSave(document.getElementById("btnSave_"+newId));
+    setDelete(document.getElementById("btnDelete_"+newId));
 }
 
 /**
@@ -142,7 +212,7 @@ function registerButtonActions(newId){
 function prepareJsonString(tabContentId) {
     //Update json editor data
     var editorText = editorList[tabContentId].getText();
-    $("#textTemplate_"+tabContentId).val(editorText);
+    //$("#textTemplate_"+tabContentId).val(editorText);
     var data = {
         handlerType: $("#inputHandlerType_"+tabContentId).val(),
         template: editorText,
@@ -165,12 +235,68 @@ function prepareJsonString(tabContentId) {
     return JSON.stringify(data);
 }
 
-function saveTabContent(tabContentId) {
+function deleteTabContent(tabContentId) {
+    var id = $("form[id='"+tabContentId+"-form']>input[type=hidden]").val();
+    if(id){
+        //Saved microtask: delete from server first
+        $.ajax({
+            url: homeUrl + '/task/edit/'+taskId,
+            type: 'DELETE',
+            contentType : "application/json; charset=utf-8",
+            dataType: 'json',
+            data: JSON.stringify({mtaskId:id}),
+            success: function (data) {
+                console.log(data);
+                if(data.state == 200){
+                    removeTabContent(tabContentId);
+                    updateSequenceTaskParams();
+                } else if(data.state == 403){
+                    alert("无法删除，鉴权失败");
+                } else if(data.state == 400){
+                    alert("请求格式错误:"+data.message)
+                }
+            },
+            error: function (err) {
+                alert("服务器响应异常，请重试");
+                setSaveButtonState("normal");
+            }
+        });
+    } else {
+        //Clear tab directly
+        removeTabContent(tabContentId);
+    }
+}
+
+function updatePossibleParams(informFunc) {
+    updateRandomTaskParams(informFunc);
+    updateSequenceTaskParams(informFunc);
+}
+
+function updateSequenceTaskParams(informFunc) {
+    if($("#btnSeqConfigSave").length > 0){
+        //顺序任务，同步更新参数
+        setTaskParams(parseMicrotaskSequenceStr(), informFunc);
+    }
+}
+
+function updateRandomTaskParams(informFunc) {
+    if($('#btnRandConfigSave').length > 0){
+        setTaskParams($("#inputTaskParams").val(), informFunc);
+    }
+}
+
+function removeTabContent(tabContentId) {
+    var tabs = $("ul.nav-tabs");
+    var tab = $(tabs).getBSTabByID(tabContentId);
+    tab.removeBSTab();
+}
+
+function saveTabContent(tabContentId, informFunc) {
     var jsonText = prepareJsonString(tabContentId);
-    setSaveButtonState("disabled");
+    setSaveButtonState(tabContentId, "disabled");
     $.ajax({
         url: homeUrl + '/task/edit/'+taskId,
-        type: 'post',
+        type: 'PUT',
         contentType : "application/json; charset=utf-8",
         dataType: 'json',
         data: jsonText,
@@ -182,6 +308,10 @@ function saveTabContent(tabContentId) {
                 setTimeout(function () {
                     $("#labelSaveState_"+tabContentId).text("");
                 }, 5000);
+                $("#textTemplate_"+tabContentId).val(jsonText.template);//Update hidden value
+                updateSequenceTaskParams();
+                if(informFunc)
+                    informFunc();
             } else if(data.state == 403){
                 alert("无法保存，鉴权失败");
                 setSaveButtonState("normal");
@@ -221,6 +351,7 @@ function parseMicrotaskSequenceStr() {
             console.warn("Fail to parse: un-saved element(s) detected.");
             return null;
         }
+        idList.push(currId);
     }
     return JSON.stringify(idList);
 }

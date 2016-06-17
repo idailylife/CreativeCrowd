@@ -522,11 +522,22 @@ public class TaskController {
         List<Microtask> microtasks = new ArrayList<>(task.getRelatedMictorasks());
         model.addAttribute("microtasks", microtasks);
         model.addAttribute("task", task);
+        if(task.getMode().equals(MicroTaskAssigner.TASK_ASSIGN_SEQUENCE)){
+            //Parse sequences to array
+            JSONArray seqJsonAry = new JSONArray(task.getParams());
+            List<String> microtaskSeq = new ArrayList<>();
+            for(int i=0; i<seqJsonAry.length(); i++){
+                if(seqJsonAry.get(i) instanceof String){
+                    microtaskSeq.add(seqJsonAry.getString(i));
+                }
+            }
+            model.addAttribute("microtaskSeq", microtaskSeq);
+        }
         return "task/create_micro";
     }
 
     @ResponseBody
-    @RequestMapping(value = "/edit/{tid}", method = RequestMethod.POST,
+    @RequestMapping(value = "/edit/{tid}", method = RequestMethod.PUT,
     produces = MediaType.APPLICATION_JSON_VALUE,
     consumes = MediaType.APPLICATION_JSON_VALUE)
     public AjaxResponseBody saveOrUpdateMicrotask(@PathVariable("tid") Integer tid,
@@ -543,6 +554,7 @@ public class TaskController {
         //TODO: json格式\表单内容验证
         microtask.setTask(task);
         if(microtask.getId() == null){
+
             microTaskService.save(microtask);
         } else {
             Microtask existingMTask = microTaskService.getById(microtask.getId());
@@ -556,6 +568,38 @@ public class TaskController {
         responseBody.setContent(microtask.getId().toString());
         return responseBody;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/edit/{tid}", method = RequestMethod.DELETE,
+    produces = MediaType.APPLICATION_JSON_VALUE,
+    consumes = MediaType.APPLICATION_JSON_VALUE)
+    public AjaxResponseBody deleteMicrotask(@PathVariable("tid") Integer tid,
+                                            HttpServletRequest request,
+                                            @RequestBody Map<String,Integer> idMap){
+        AjaxResponseBody responseBody = new AjaxResponseBody();
+        User user = userService.getUserFromSession(request);
+        Task task = taskService.findById(tid);
+        if(user == null || task == null || !task.getOwnerId().equals(user.getId())){
+            //Illegal request
+            responseBody.setState(403);
+            return responseBody;
+        }
+        if(idMap.containsKey("mtaskId")){
+            Microtask microtask = microTaskService.getById(idMap.get("mtaskId"));
+
+            if(microtask!=null && microtask.getTask().getId().equals(tid)){
+                //taskService.onMicrotaskDelete(microtask, task);//通知看看params是不是要修改
+                microTaskService.delete(microtask);
+                responseBody.setState(200);
+                return responseBody;
+            }
+
+            responseBody.setMessage("Microtask does not belongs to requested task.");
+        }
+        responseBody.setState(400);
+        return responseBody;
+    }
+
 
     /*MTurk Support*/
     @ResponseBody
@@ -607,6 +651,32 @@ public class TaskController {
             request.getSession().removeAttribute(Constants.KEY_MTURK_ID);
         }
 
+        return responseBody;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updparams/{tid}", method = RequestMethod.POST,
+    produces = MediaType.APPLICATION_JSON_VALUE,
+    consumes = MediaType.APPLICATION_JSON_VALUE)
+    public AjaxResponseBody updateTaskParams(@PathVariable("tid") Integer tid,
+                                             @RequestBody Map<String, String> reqBody,
+                                             HttpServletRequest request){
+        AjaxResponseBody responseBody = new AjaxResponseBody();
+        User user = userService.getUserFromSession(request);
+        Task task = taskService.findById(tid);
+        if(user == null || task == null || !task.getOwnerId().equals(user.getId())){
+            //Illegal request
+            responseBody.setState(403);
+            return responseBody;
+        }
+        if(reqBody.containsKey("params")){
+            task.setParams(reqBody.get("params"));
+            taskService.updateTask(task);
+            responseBody.setState(200);
+        } else {
+            responseBody.setState(400);
+            responseBody.setMessage("Unknown request format.");
+        }
         return responseBody;
     }
 

@@ -80,6 +80,16 @@ public class RandomMicroTaskAssigner implements MicroTaskAssigner {
         return ids;
     }
 
+    @Override
+    public void onMicrotaskDelete(Microtask microtask) {
+
+    }
+
+    @Override
+    public void onMicrotaskCreate(Microtask microtask) {
+
+    }
+
     public TaskService getTaskService() {
         return taskService;
     }

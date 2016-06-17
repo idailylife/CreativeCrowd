@@ -73,7 +73,7 @@ $.fn.addBSTab = function(id, title, content, insertAfter){
 };
 
 $.fn.getBSTabByID = function(id){
-    a = $("a[href=#" + id + "]");
+    a = $("a[href='#" + id + "']");
     if (a.length <= 0){
         throw "Could not find a tab with that ID: '" + id + "'."
     }

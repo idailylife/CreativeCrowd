@@ -1,8 +1,11 @@
 package edu.inlab.service;
 
+import edu.inlab.models.Microtask;
 import edu.inlab.models.Task;
 import edu.inlab.models.UserTask;
 import edu.inlab.repo.TaskRepository;
+import edu.inlab.service.assignment.MicroTaskAssigner;
+import edu.inlab.service.assignment.MicroTaskAssignerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +24,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     TaskRepository taskRepository;
+
+    @Autowired
+    MicroTaskAssignerFactory microTaskAssignerFactory;
 
     public Task findById(int id) {
         return taskRepository.getTaskById(id);
@@ -81,4 +87,19 @@ public class TaskServiceImpl implements TaskService {
         return map;
     }
 
+    /**
+     * Inform microtask assigners the deletion of microtask
+     * @param microtask
+     */
+    @Override
+    public void onMicrotaskDelete(Microtask microtask, Task task) {
+        MicroTaskAssigner assigner = microTaskAssignerFactory.getAssigner(task.getMode());
+        assigner.onMicrotaskDelete(microtask);
+    }
+
+    @Override
+    public void onMicrotaskCreate(Microtask microtask, Task task) {
+        MicroTaskAssigner assigner = microTaskAssignerFactory.getAssigner(task.getMode());
+
+    }
 }

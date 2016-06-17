@@ -7,8 +7,20 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<div class="progress">
+    <div id="progBarSaveAll" class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" style="width: 50%">
+        <span></span>
+    </div>
+</div>
 <div class="container">
-    <h4>${task.title}:任务配置</h4>
+    <div class="row">
+        <div class="col-sm-9">
+            <h4>${task.title}:任务配置</h4>
+        </div>
+        <div class="col-sm-3">
+            <button id="btnSaveAll" type="button" class="btn btn-success pull-right">保存并提交配置</button>
+        </div>
+    </div>
     <div class="row" style="margin-top: 0.5rem;">
         <div class="col-sm-12">
             <!-- nav tabs-->
@@ -18,11 +30,24 @@
                     <a href="#control" aria-controls="control" role="tab" data-toggle="tab">设置</a>
                 </li>
                 <!-- Existing microtasks -->
-                <c:forEach items="${microtasks}" var="microtask">
-                    <li role="presentation" id="${microtask.id}-li">
-                        <a href="#${microtask.id}" aria-controls="${microtask.id}" role="tab" data-toggle="tab">#${microtask.id}</a>
-                    </li>
-                </c:forEach>
+                <c:choose>
+                    <c:when test="${task.mode eq 2}">
+                        <!-- Sequenced microtask assignment -->
+                        <c:forEach items="${microtaskSeq}" var="mtaskId">
+                            <li role="presentation" id="${mtaskId}-li">
+                                <a href="#${mtaskId}" aria-controls="${mtaskId}" role="tab" data-toggle="tab">#${mtaskId}</a>
+                            </li>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <!-- Other modes that does not care about the sequence -->
+                        <c:forEach items="${microtasks}" var="microtask">
+                            <li role="presentation" id="${microtask.id}-li">
+                                <a href="#${microtask.id}" aria-controls="${microtask.id}" role="tab" data-toggle="tab">#${microtask.id}</a>
+                            </li>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
                 <!-- `Add` button -->
                 <li role="presentation" id="tabInsert">
                     <a href="#" aria-controls="add" role="tab" id="btnTabAdd">+</a>
@@ -42,6 +67,7 @@
                             <div class="col-sm-12">
                                 <h4>顺序任务配置</h4>
                                 <a id="btnSeqConfigSave" class="btn btn-primary" href="#" role="button">保存微任务顺序</a>
+                                <span class="paramSaveState"></span>
                                 <input type="hidden" id="varTaskParams" value="${task.params}">
                             </div>
                         </c:if>
@@ -57,6 +83,9 @@
                                 <div class="col-sm-6">
                                     <a id="btnRandConfigSave" class="btn btn-primary" href="#" role="button">保存配置</a>
                                 </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <span class="paramSaveState"></span>
                             </div>
                         </c:if>
                     </div>

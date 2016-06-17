@@ -33,13 +33,13 @@ public class MicroTaskAssignerFactory {
     public MicroTaskAssigner getAssigner(int code){
         MicroTaskAssigner assigner = null;
         switch (code){
-            case 0:
+            case MicroTaskAssigner.TASK_ASSIGN_SINGLE:
                 assigner = singlePagedMicroTaskAssigner;
                 break;
-            case 1:
+            case MicroTaskAssigner.TASK_ASSIGN_RANDOM:
                 assigner = randomMicroTaskAssigner;
                 break;
-            case 2:
+            case MicroTaskAssigner.TASK_ASSIGN_SEQUENCE:
                 assigner = sequenceMicroTaskAssigner;
                 break;
         }

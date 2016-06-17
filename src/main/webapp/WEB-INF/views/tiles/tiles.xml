@@ -127,7 +127,9 @@
             <add-attribute value="/static/js/task_edit_microtask.js"/>
         </put-list-attribute>
         <put-list-attribute name="stylesheets" inherit="true">
+            <add-attribute value="/static/css/task_edit_microtask.css"/>
             <add-attribute value="/static/css/util/jsoneditor.min.css"/>
+
         </put-list-attribute>
     </definition>
 </tiles-definitions>
