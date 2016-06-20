@@ -11,8 +11,8 @@ import javax.servlet.ServletRegistration;
 /**
  * Created by inlab-dell on 2016/5/4.
  */
-public class CreCrowdAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
+public class CreCrowdAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     protected Class<?>[] getRootConfigClasses() {
         return new Class<?>[]{RootConfig.class};
     }
@@ -38,8 +38,11 @@ public class CreCrowdAppInitializer extends AbstractAnnotationConfigDispatcherSe
     }
 
     private MultipartConfigElement getMultipartConfigElement(){
-        MultipartConfigElement multipartConfigElement = new MultipartConfigElement(Constants.UPLOAD_FILE_STORE_LOCATION,
-                Constants.MAX_FILE_SIZE, Constants.MAX_REQUEST_SIZE, Constants.FILE_SIZE_THRESHOLD);
+        MultipartConfigElement multipartConfigElement = new MultipartConfigElement(
+                Constants.UPLOAD_FILE_STORE_LOCATION,
+                Constants.MAX_FILE_SIZE,
+                Constants.MAX_REQUEST_SIZE,
+                Constants.FILE_SIZE_THRESHOLD);
         return multipartConfigElement;
     }
 

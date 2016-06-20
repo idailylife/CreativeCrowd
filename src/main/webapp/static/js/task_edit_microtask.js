@@ -10,6 +10,13 @@ $(document).ready(function () {
             parseJsonEditor(this);
     });
 
+    if($("#hiddenRandTaskParams").length > 0){
+        (function () {
+            var randParam = JSON.parse($("#hiddenRandTaskParams").val());
+            $("#inputTaskParams").val(randParam.randSize);
+        })();
+    }
+
     $("#btnTabAdd").click(function () {
         insertActionCount++;
         appendMicroTask(null, "新建_"+insertActionCount);
@@ -45,7 +52,11 @@ $(document).ready(function () {
     });
 
     $("#btnRandConfigSave").click(function () {
-       setTaskParams($("#inputTaskParams").val());
+        var randParam = JSON.parse($("#hiddenRandTaskParams").val());
+        randParam.randSize = $("#inputTaskParams").val();
+        randParam = JSON.stringify(randParam);
+        $("#hiddenRandTaskParams").val(randParam);
+        setTaskParams(randParam);
     });
 
     $('#btnSaveAll').click(function () {

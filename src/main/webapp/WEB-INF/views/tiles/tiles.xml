@@ -124,12 +124,13 @@
         <put-list-attribute name="javascripts" inherit="true">
             <add-attribute value="/static/js/util/jsoneditor.min.js"/>
             <add-attribute value="/static/js/util/bootstrap-tabs-dynamic.js"/>
+            <add-attribute value="/static/js/util/dropzone.min.js"/>
             <add-attribute value="/static/js/task_edit_microtask.js"/>
         </put-list-attribute>
         <put-list-attribute name="stylesheets" inherit="true">
             <add-attribute value="/static/css/task_edit_microtask.css"/>
             <add-attribute value="/static/css/util/jsoneditor.min.css"/>
-
+            <add-attribute value="/static/css/util/dropzone.min.css"/>
         </put-list-attribute>
     </definition>
 </tiles-definitions>

@@ -257,6 +257,10 @@ public class Task extends CaptchaCapableModel{
     }
 
     public void setParams(String params) {
+        if(!params.isEmpty() && params.charAt(0) == ','){
+            //Fix weird bug when uploading params via FormData: the string will contain a prefix `,`
+            params = params.substring(1);
+        }
         this.params = params;
     }
 

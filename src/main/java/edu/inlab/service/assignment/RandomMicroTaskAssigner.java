@@ -7,15 +7,15 @@ import edu.inlab.models.UserTask;
 import edu.inlab.service.MicroTaskService;
 import edu.inlab.service.TaskService;
 import edu.inlab.web.exception.TaskAssignException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Created by inlab-dell on 2016/5/31.
@@ -35,36 +35,69 @@ public class RandomMicroTaskAssigner implements MicroTaskAssigner {
     @Transactional
     public Microtask assignNext(UserTask userTask) {
         Task task = taskService.findById(userTask.getTaskId());
-        Integer microtaskSize = Integer.parseInt(task.getParams());
+        //Integer microtaskSize = Integer.parseInt(task.getParams());
         List<Microtask> relatedMicrotasks = task.getRelatedMictorasks();
+        Map<Integer, Microtask> mTaskIdMap = getMicrotaskMapFromList(relatedMicrotasks);
+
+        RandomParams randomParams = new RandomParams(task.getParams());
+        Set<Integer> microTaskIdsToAssign = getMicrotaskIdsFromList(relatedMicrotasks);
+        if(randomParams.finishedCount < relatedMicrotasks.size()){
+            //如果还有尚未分配的任务，可选的Id里去除已分配的
+            Set<Integer> assignedMTaskIds = randomParams.getFinishedMTaskIds();
+            microTaskIdsToAssign.removeAll(assignedMTaskIds);
+        }
+
+        if(microTaskIdsToAssign.isEmpty()){
+            throw new TaskAssignException("[E01]Microtask resource exhausted for task #" + task.getId());
+        }
 
         Random random = new Random();
-        int index = random.nextInt(relatedMicrotasks.size());
         if(userTask.getCurrUserMicrotaskId() == null){
-            //New task assignment
-            return relatedMicrotasks.get(index);
+            //从备选id中分配新Microtask
+            Integer nextId = microTaskIdsToAssign.iterator().next();
+            return mTaskIdMap.get(nextId);
         } else {
             List<UserMicroTask> userMicroTasks = userTask.getRelatedUserMicrotasks();
-            if(userMicroTasks.size() >= microtaskSize){
+            if(userMicroTasks.size() >= randomParams.getRandSize()){
                 return null; //Task finished
             }
-
             Set<Integer> existingMTaskIds = getFinishedMicrotaskIds(userMicroTasks);
-            Set<Integer> allMTaskIds = getMicrotaskIdsFromList(relatedMicrotasks);
-            allMTaskIds.removeAll(existingMTaskIds);    //Set A - B
-            index -= existingMTaskIds.size();
-            if(allMTaskIds.isEmpty()){
+            microTaskIdsToAssign.removeAll(existingMTaskIds);
+            if(microTaskIdsToAssign.isEmpty()){
                 throw new TaskAssignException("Microtask resource exhausted for task #" + task.getId() + "& UserTask #"
-                + userTask.getId());
+                        + userTask.getId());
             }
-            //return (Microtask) allMTaskIds.toArray()[index];
-            Integer candidateMTaskId = (Integer) allMTaskIds.toArray()[index];
-            return microTaskService.getById(candidateMTaskId);
+            int index = random.nextInt(microTaskIdsToAssign.size());
+            Integer candidateId = (Integer)microTaskIdsToAssign.toArray()[index];
+            return mTaskIdMap.get(candidateId);
         }
+
+
+//        if(userTask.getCurrUserMicrotaskId() == null){
+//            //New task assignment
+//            return relatedMicrotasks.get(index);
+//        } else {
+//            List<UserMicroTask> userMicroTasks = userTask.getRelatedUserMicrotasks();
+//            if(userMicroTasks.size() >= microtaskSize){
+//                return null; //Task finished
+//            }
+//
+//            Set<Integer> existingMTaskIds = getFinishedMicrotaskIds(userMicroTasks);
+//            Set<Integer> allMTaskIds = getMicrotaskIdsFromList(relatedMicrotasks);
+//            allMTaskIds.removeAll(existingMTaskIds);    //Set A - B
+//            index -= existingMTaskIds.size();
+//            if(allMTaskIds.isEmpty()){
+//                throw new TaskAssignException("Microtask resource exhausted for task #" + task.getId() + "& UserTask #"
+//                + userTask.getId());
+//            }
+//            //return (Microtask) allMTaskIds.toArray()[index];
+//            Integer candidateMTaskId = (Integer) allMTaskIds.toArray()[index];
+//            return microTaskService.getById(candidateMTaskId);
+//        }
 
     }
 
-    Set<Integer> getFinishedMicrotaskIds(List<UserMicroTask> userMicroTasks){
+    private Set<Integer> getFinishedMicrotaskIds(List<UserMicroTask> userMicroTasks){
         Set<Integer> microTaskIds = new HashSet<Integer>();
         for(UserMicroTask userMicroTask:userMicroTasks){
             microTaskIds.add(userMicroTask.getMicrotaskId());
@@ -72,12 +105,20 @@ public class RandomMicroTaskAssigner implements MicroTaskAssigner {
         return microTaskIds;
     }
 
-    Set<Integer> getMicrotaskIdsFromList(List<Microtask> microtasks){
+    private Set<Integer> getMicrotaskIdsFromList(List<Microtask> microtasks){
         Set<Integer> ids = new HashSet<Integer>();
         for(Microtask microtask:microtasks){
             ids.add(microtask.getId());
         }
         return ids;
+    }
+
+    private Map<Integer, Microtask> getMicrotaskMapFromList(List<Microtask> microtaskList){
+        Map<Integer, Microtask> map = new HashMap<>();
+        for(Microtask mtask:microtaskList){
+            map.put(mtask.getId(), mtask);
+        }
+        return map;
     }
 
     @Override
@@ -96,5 +137,61 @@ public class RandomMicroTaskAssigner implements MicroTaskAssigner {
 
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
+    }
+
+    private class RandomParams{
+        private int randSize;
+        private Set<Integer> finishedMTaskIds;
+        private int finishedCount;
+
+        public RandomParams(String paramsStr){
+            JSONObject paramObj = new JSONObject(paramsStr);
+            randSize = paramObj.getInt("randSize");
+            finishedCount = paramObj.getInt("finishedCount");
+            if(finishedCount > 0){
+                JSONArray finishedAry = paramObj.getJSONArray("finishedMTaskId");
+                finishedMTaskIds = new HashSet<>();
+                for(int i=0; i<finishedAry.length(); i++){
+                    finishedAry.put(finishedAry.getInt(i));
+                }
+            }
+        }
+
+        @Override
+        public String toString() {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("randSize", randSize);
+            jsonObject.put("finishedCount", finishedCount);
+            JSONArray itemAry = new JSONArray();
+            if(finishedMTaskIds != null){
+                finishedMTaskIds.forEach(itemAry::put); //Method reference!WOW~~~
+            }
+            jsonObject.put("finishedMTaskId", itemAry);
+            return jsonObject.toString();
+        }
+
+        public int getRandSize() {
+            return randSize;
+        }
+
+        public void setRandSize(int randSize) {
+            this.randSize = randSize;
+        }
+
+        public Set<Integer> getFinishedMTaskIds() {
+            return finishedMTaskIds;
+        }
+
+        public void setFinishedMTaskIds(Set<Integer> finishedMTaskIds) {
+            this.finishedMTaskIds = finishedMTaskIds;
+        }
+
+        public int getFinishedCount() {
+            return finishedCount;
+        }
+
+        public void setFinishedCount(int finishedCount) {
+            this.finishedCount = finishedCount;
+        }
     }
 }

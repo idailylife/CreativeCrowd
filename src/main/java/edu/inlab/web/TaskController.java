@@ -481,6 +481,14 @@ public class TaskController {
             //responseBody.setContent("");
             return responseBody;
         }
+        if(task.getCaptcha() == null ||
+                !task.getCaptcha().equals(request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION))){
+            //Wrong captcha
+            responseBody.setState(402);
+            responseBody.setMessage("Wrong or empty captcha");
+            return responseBody;
+        }
+
         Integer uid = (Integer) request.getSession().getAttribute(Constants.KEY_USER_UID);
         if(!uid.equals(task.getOwnerId())){
             responseBody.setState(403);

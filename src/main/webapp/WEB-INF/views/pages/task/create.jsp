@@ -136,7 +136,7 @@
                                         <div class="form-inline">
                                             <div class="form-group">
                                                 <label for="inputRandomParam">每个任务分配的微任务个数(不超过微任务总数)</label>
-                                                <input type="number" class="form-control" id="inputRandomParam" name="params">
+                                                <input type="number" class="form-control" id="inputRandomParam">
                                             </div>
                                         </div>
                                     </div>
@@ -151,6 +151,7 @@
                                     <br>
                                     <p>Dev!模式：自定义指派方案（Coming soon）</p>
                                 </div>
+                                <input type="hidden" id="hiddenParams" name="params">
                             </ul>
                         </div>
                         <div class="form-group col-sm-6">
@@ -166,7 +167,7 @@
                 <div class="panel panel-primary">
                     <div class="panel-heading">验证</div>
                     <div class="panel-body form-inline">
-                        <div class="form-group col-sm-12">
+                        <div class="form-group col-sm-12" id="formGroupCaptcha">
                             <img id="img-captcha" src="<c:url value="/captcha"/>" style="height: 3rem">
                             <input class="form-control" id="inputCaptcha" name="captcha" placeholder="请输入验证码">
                         </div>
@@ -187,5 +188,5 @@
 </div>
 
 <script>
-    var homeUrl = "<c:url value="/"/>";
+    var homeUrl = "${pageContext.request.contextPath}/";
 </script>
