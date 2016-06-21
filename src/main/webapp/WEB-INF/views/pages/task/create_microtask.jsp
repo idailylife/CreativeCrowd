@@ -48,7 +48,7 @@
                         </c:forEach>
                     </c:otherwise>
                 </c:choose>
-                <!-- `Add` button -->
+                <!-- `+` button -->
                 <li role="presentation" id="tabInsert">
                     <a href="#" aria-controls="add" role="tab" id="btnTabAdd">+</a>
                 </li>
@@ -65,7 +65,8 @@
                         </div>
                         <div class="col-sm-12">
                             <p>批量上传图片</p>
-                            <form action="<c:url value="/file/upload"/>" class="dropzone" id="formFileBatch">
+                            <form action="<c:url value="/file/batchUpload"/>" id="formFileBatch" enctype="multipart/form-data" class="dropzone">
+                                <input type="hidden" id="hiddenUploadToken" name="batchUploadToken" value="${uploadToken}">
                             </form>
                         </div>
                         <c:if test="${task.mode eq 2}">

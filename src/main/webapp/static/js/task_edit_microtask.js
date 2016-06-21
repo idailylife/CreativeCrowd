@@ -4,6 +4,13 @@
 var insertActionCount = 0;
 var editorList = {};
 $(document).ready(function () {
+    Dropzone.options.formFileBatch = {
+        maxFilesize: 2,
+        paramName: "file",
+        headers: { token: $('#hiddenUploadToken').val() },
+        acceptedFiles: 'image/*'
+    };
+
     $(".hiddenJsonTemplate").each(function () {
         console.log("parsing "+ this.id);
         if(this.value)
@@ -72,7 +79,22 @@ $(document).ready(function () {
             var prog = 100*saveCount/maxSaveCount;
             setProgBarStateAndText(prog, "Saving item " + saveCount + " of " + maxSaveCount);
             if(saveCount >= maxSaveCount){
-                alert("all done!");
+                $.ajax({
+                    type: "GET",
+                    url: homeUrl + 'file/unregister',
+                    data: {
+                        token: $("#hiddenUploadToken").val(),
+                        clearAll: false
+                    },
+                    success: function (data) {
+                        if(data.state == 200){
+                            window.location.href = homeUrl + 'user/task/published';
+                        }
+                    },
+                    error: function () {
+                        alert("提交发生错误");
+                    }
+                })
             }
         };
 

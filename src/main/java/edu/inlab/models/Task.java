@@ -96,8 +96,8 @@ public class Task extends CaptchaCapableModel{
     @Column(name = "type", nullable = false)
     private Integer type;
 
-    public static int TYPE_NORMAL = 0;
-    public static int TYPE_MTURK = 1;
+    public final static int TYPE_NORMAL = 0;
+    public final static int TYPE_MTURK = 1;
 
     @Column(name = "params")
     private String params;  //Assigner parameters string
@@ -310,6 +310,17 @@ public class Task extends CaptchaCapableModel{
             return this.id.equals(((Task) obj).getId());
         }
         return super.equals(obj);
+    }
+
+    public String getTypeName(){
+        switch (type){
+            case TYPE_MTURK:
+                return "MTurk";
+            case TYPE_NORMAL:
+                return "普通";
+            default:
+                return "未定义";
+        }
     }
 
     public boolean isExpired(){

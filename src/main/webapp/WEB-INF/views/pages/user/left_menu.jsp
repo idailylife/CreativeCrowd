@@ -16,7 +16,7 @@
         <a href="<c:url value="/user/task/claimed"/> ">我申领的任务</a>
     </li>
     <li <c:if test="${not empty sel_request}">class="active"</c:if>>
-        <a href="#">我发布的任务</a>
+        <a href="<c:url value="/user/task/published"/>">我发布的任务</a>
     </li>
     <li <c:if test="${not empty sel_pswd}">
         class="active"</c:if>>

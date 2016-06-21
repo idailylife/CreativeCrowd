@@ -3,6 +3,7 @@ package edu.inlab.repo;
 import edu.inlab.models.Task;
 import org.hibernate.Query;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +22,7 @@ public class TaskRepoImpl extends AbstractDao<Integer, Task> implements TaskRepo
     public List<Task> getByOwnerId(int ownerId) {
         List<Task> tasks = getSession().createCriteria(Task.class)
                 .add(Restrictions.eq("ownerId", ownerId))
+                .addOrder(Order.desc("id"))
                 .list();
         return tasks;
     }

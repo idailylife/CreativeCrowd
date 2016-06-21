@@ -9,22 +9,25 @@ import edu.inlab.service.FileValidator;
 import edu.inlab.service.TempFileService;
 import edu.inlab.service.UserTaskService;
 import edu.inlab.utils.Constants;
+import edu.inlab.utils.SessionDataHelper;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * Created by inlab-dell on 2016/5/20.
@@ -47,6 +50,37 @@ public class FileUploadController {
         binder.setValidator(fileValidator);
     }
 
+
+    @RequestMapping(value = "/batchUpload", method = RequestMethod.POST)
+    public ResponseEntity batchUploadFile(MultipartHttpServletRequest request,
+                                          @RequestHeader(name = "token") String token) throws IOException{
+
+//        if(!request.getSession().getAttribute(Constants.KEY_UPLOAD_TOKEN).equals(token))
+//            return new ResponseEntity("Wrong token", HttpStatus.UNAUTHORIZED);
+        Integer taskId = SessionDataHelper.getTaskIdFromToken(request, token);
+        if(taskId == null)
+            return new ResponseEntity("Wrong token1", HttpStatus.NOT_FOUND);
+
+        Iterator<String> iterator = request.getFileNames();
+        while(iterator.hasNext()){
+            String uploadedFile = iterator.next();
+            MultipartFile file = request.getFile(uploadedFile);
+            String fileName = "/task/" + taskId + '/' + file.getOriginalFilename();
+            File oldFile = new File(Constants.UPLOAD_FILE_STORE_LOCATION + fileName);
+            if(oldFile.exists()){
+                if(!oldFile.delete()){
+                    throw new IOException("Cannot delete origin file " + fileName);
+                }
+            } else if(!oldFile.getParentFile().exists()) {
+                if(!oldFile.getParentFile().mkdirs()){
+                    throw new IOException("Cannot create directories for file " + fileName);
+                }
+            }
+            FileCopyUtils.copy(file.getBytes(),
+                    new File(Constants.UPLOAD_FILE_STORE_LOCATION + fileName));
+        }
+        return new ResponseEntity<>("{}", HttpStatus.OK);
+    }
 
     @ResponseBody
     @RequestMapping(value = "/upload", method = RequestMethod.POST,
@@ -110,6 +144,19 @@ public class FileUploadController {
             //request.getSession().removeAttribute(Constants.KEY_FILE_UPLOAD);
         }
         return ajaxResponseBody;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/unregister", method = RequestMethod.GET,
+    produces = MediaType.APPLICATION_JSON_VALUE)
+    public AjaxResponseBody unregister(@RequestParam(name = "token") String token,
+                                       @RequestParam(name = "clearAll", required = false) Boolean clearAll,
+                                       HttpServletRequest request){
+        if(clearAll != null && clearAll)
+            request.getSession().removeAttribute(Constants.KEY_UPLOAD_TOKEN_MAP);
+        else
+            SessionDataHelper.removeToken(request, token);
+        return new AjaxResponseBody(200);
     }
 
 }

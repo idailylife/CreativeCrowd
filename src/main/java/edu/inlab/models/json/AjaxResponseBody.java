@@ -15,6 +15,14 @@ public class AjaxResponseBody {
     @JsonView(JsonDummyView.Public.class)
     String content;
 
+    public AjaxResponseBody(){
+
+    }
+
+    public AjaxResponseBody(int state){
+        this.state = state;
+    }
+
     public Integer getState() {
         return state;
     }

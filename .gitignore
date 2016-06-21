@@ -70,3 +70,4 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 /.idea/workspace.xml
+/src/main/webapp/static/img/upload

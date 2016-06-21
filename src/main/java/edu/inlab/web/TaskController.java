@@ -11,7 +11,9 @@ import edu.inlab.service.assignment.MicroTaskAssignerFactory;
 import edu.inlab.service.wage.WageAssigner;
 import edu.inlab.service.wage.WageFactory;
 import edu.inlab.utils.Constants;
+import edu.inlab.utils.EncodeFactory;
 import edu.inlab.utils.JSON2Map;
+import edu.inlab.utils.SessionDataHelper;
 import edu.inlab.web.exception.ResourceNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -530,6 +532,12 @@ public class TaskController {
         List<Microtask> microtasks = new ArrayList<>(task.getRelatedMictorasks());
         model.addAttribute("microtasks", microtasks);
         model.addAttribute("task", task);
+
+        String uploadToken = EncodeFactory.getRandomUUID();
+//        request.getSession().setAttribute(Constants.KEY_UPLOAD_TOKEN, uploadToken);
+        model.addAttribute("uploadToken", uploadToken);
+        SessionDataHelper.putTaskIdFormToken(request, uploadToken, task.getId());
+
         if(task.getMode().equals(MicroTaskAssigner.TASK_ASSIGN_SEQUENCE)){
             //Parse sequences to array
             JSONArray seqJsonAry = new JSONArray(task.getParams());
@@ -687,7 +695,6 @@ public class TaskController {
         }
         return responseBody;
     }
-
 
     @RequestMapping(value = "/done", method = RequestMethod.GET)
     public String taskDone(@RequestParam(value = "refCode", required = false) String refCode, Model model){

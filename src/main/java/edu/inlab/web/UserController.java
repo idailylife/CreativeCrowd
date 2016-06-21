@@ -1,5 +1,6 @@
 package edu.inlab.web;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import edu.inlab.models.Task;
 import edu.inlab.models.UserTask;
@@ -274,13 +275,26 @@ public class UserController {
     @Transactional
     @RequestMapping(value = "task/claimed", method = RequestMethod.GET)
     public String claimedTasks(HttpServletRequest request, Model model){
+        //TODO: 分页
         User user = userService.getUserFromSession(request);
         List<UserTask> userTasks = userTaskService.getByUserId(user.getId(), Constants.USER_LIST_TASK_LENGTH);
         Map<Integer, Task> mappedTasks = taskService.findMapByIds(userTaskService.getTaskIds(userTasks));
         //tasks可能会比userTasks多，因为可以重复申领
         model.addAttribute("userTasks", userTasks);
         model.addAttribute("mappedTasks", mappedTasks);
+        model.addAttribute("sel_claim", true);
         return "user/task/claimed";
+    }
+
+    @Transactional
+    @RequestMapping(value = "task/published", method = RequestMethod.GET)
+    public String publishedTasks(HttpServletRequest request, Model model){
+        //TODO: 分页
+        User user = userService.getUserFromSession(request);
+        List<Task> taskList = taskService.findByOwnerId(user.getId());
+        model.addAttribute("taskList", taskList);
+        model.addAttribute("sel_request", true);
+        return "user/task/published";
     }
 
 }
