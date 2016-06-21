@@ -68,6 +68,10 @@
                             <form action="<c:url value="/file/batchUpload"/>" id="formFileBatch" enctype="multipart/form-data" class="dropzone">
                                 <input type="hidden" id="hiddenUploadToken" name="batchUploadToken" value="${uploadToken}">
                             </form>
+                            <p>已有图片：</p>
+                            [<c:forEach items="${files}" var="fileName">
+                                <a href="<c:url value="/static/img/upload/task/${task.id}/${fileName}"/>" target="_blank">${fileName}</a>&nbsp;
+                            </c:forEach>]
                         </div>
                         <c:if test="${task.mode eq 2}">
                             <div class="col-sm-12">
@@ -113,6 +117,9 @@
                                     <a id="btnInsertNext_${microtask.id}" class="btn btn-default btnInsertNext" role="button"><span class="glyphicon glyphicon-plus"> </span>在下一页新建</a>
                                 </p>
                                 <p>
+                                    <a id="btnCopyNext_${microtask.id}" class="btn btn-default btnCopyNext" role="button"><span class="glyphicon glyphicon-expand"> </span>拷贝并新建</a>
+                                </p>
+                                <p>
                                     <a id="btnSave_${microtask.id}" class="btn btn-primary btnSave" href="#"role="button"><span class="glyphicon glyphicon-floppy-disk"> </span>保存微任务</a>
                                 </p>
                                 <p>
@@ -156,6 +163,7 @@
                             <p><a id="btnMoveBackward_template" class="btn btn-default btnMoveBackward" role="button"><span class="glyphicon glyphicon-backward"> </span>向前移动</a></p>
                             <p><a id="btnMoveForward_template" class="btn btn-default btnMoveForward" role="button"><span class="glyphicon glyphicon-forward"> </span>向后移动</a></p>
                             <p><a id="btnInsertNext_template" class="btn btn-default btnInsertNext" role="button"><span class="glyphicon glyphicon-plus"> </span>在下一页新建</a></p>
+                            <p><a id="btnCopyNext_template" class="btn btn-default btnCopyNext" role="button"><span class="glyphicon glyphicon-expand"> </span>拷贝并新建</a></p>
                             <p><a id="btnSave_template" class="btn btn-primary btnSave" href="#"role="button"><span class="glyphicon glyphicon-floppy-disk"> </span>保存微任务</a></p>
                             <p><a id="btnDelete_template" class="btn btn-danger btnDelete" href="#" role="button"><span class="glyphicon glyphicon-remove"> </span>删除微任务</a></p>
                             <p>

@@ -5,13 +5,14 @@
  * Input: the templateStr is a `stringified` jsonArray, which contains multiple lines of jsonObjects
  *     each jsonObject has a key indicates its type, which can be a (lower-cased, * means optional):
  *     [
- *      {label,     {id: ID, text: CONTENT, *for: FOR_ID}} :=> labels (for some input FOR_ID)
- *      {text,      {id: ID, multiline: true/false, *placeholder: TEXT}}           :=> text input
+ *      {label,     {id: ID, text: CONTENT, *for: FOR_ID}}                          // labels (for some input FOR_ID)
+ *      {text,      {id: ID, multiline: true/false, *placeholder: TEXT}}            // text input
  *      {choice,    {id: ID, type: single/multiple, ary_items:[ITEM_1, ITEM_2, ...]}
- *              :=> single(default)/multiple choice box
- *      {image,     {src: internal_url}}    :=> image
- *      {file,      {accept: ALLOWED_TYPES, *text: TEXT_DESCRIPTION}}      :=> file
+ *                                                                                  // single(default)/multiple choice box
+ *      {image,     {src: internal_url}}                                            // image
+ *      {file,      {accept: ALLOWED_TYPES, *text: TEXT_DESCRIPTION}}               // file
  *     ]
+ *
   User: hebowei
   Date: 16/5/21
   Time: 下午2:25
@@ -22,8 +23,6 @@
 
 <c:forEach items="${handlerContent}" var="item">
     <div class="row row-with-gap col-md-12">
-
-
             <c:choose>
                 <c:when test="${item.tag eq 'label'}">
                     <label id="ud_${item.contents['id']}" class="control-label"
@@ -35,7 +34,7 @@
                 </c:when>
                 <c:when test="${item.tag eq 'image'}">
                     <img id="ud_${item.contents['id']}" class="img-responsive center-block img-thumbnail"
-                         src="<c:url value="/static/img/upload/"/>${item.contents['src']} ">
+                         src="<c:url value="/static/img/upload/task/${task.id}/${item.contents['src']}"/> ">
                 </c:when>
                 <c:when test="${item.tag eq 'choice'}">
                     <c:forEach items="${item.contents['ary_items']}" var="choiceItem">
@@ -104,7 +103,7 @@
                                 </button>
                                 <label id="label_upload_state">
                                     <c:if test="${not empty file}">
-                                        <a href="<c:url value="/static/img/upload/${file}"/>" target="_blank">
+                                        <a href="<c:url value="/static/img/upload/user_gen/${task.id}/${file}"/>" target="_blank">
                                         ${isMTurkTask ? 'An image was uploaded before':'之前已上传过一张图'}
                                         </a>
                                     </c:if>

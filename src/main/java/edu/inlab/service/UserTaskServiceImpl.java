@@ -72,7 +72,7 @@ public class UserTaskServiceImpl implements UserTaskService {
     }
 
     private UserTask getValidatedUserTask(UserTask userTask, Task task){
-        if(task.getTimeLimit() == null)
+        if(task.getTimeLimit() == null || userTask == null)
             return userTask;
         if(EchoController.getRemainingTime(task, userTask) <= 0){
             userTask.setState(UserTask.STATE_EXPIRED);

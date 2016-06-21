@@ -27,7 +27,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -115,7 +114,7 @@ public class TaskController {
         }
 
         if(jsonDesc.has(Constants.KEY_TASK_REL_INFO)){
-            JSONObject infoObj = jsonDesc.getJSONObject(Constants.KEY_TASK_REL_INFO);
+            JSONObject infoObj = new JSONObject(jsonDesc.getString(Constants.KEY_TASK_REL_INFO));
             Map<String, String> infoMap = JSON2Map.convertJSONObjectToMap(infoObj);
             model.addAttribute("infoMap", infoMap);
         }
@@ -484,7 +483,7 @@ public class TaskController {
             return responseBody;
         }
         if(task.getCaptcha() == null ||
-                !task.getCaptcha().equals(request.getSession().getAttribute(Constants.KEY_CAPTCHA_SESSION))){
+                !CaptchaController.testCaptcha(task.getCaptcha(), request)){
             //Wrong captcha
             responseBody.setState(402);
             responseBody.setMessage("Wrong or empty captcha");
@@ -497,17 +496,25 @@ public class TaskController {
             responseBody.setMessage("Owner id does not match.");
             return responseBody;
         }
+        taskService.saveTask(task);
         if(fileBucket.getFile() != null && !fileBucket.getFile().isEmpty()){
             //Save file
             Random random = new Random();
-            String fileName = String.valueOf(random.nextInt(1000)) +
-                    fileBucket.getFile().getOriginalFilename();
+//            String fileName = String.valueOf(random.nextInt(1000)) +
+//                    fileBucket.getFile().getOriginalFilename();
+            String fileName = "/task/" + task.getId() + "/DESCIMG_" + fileBucket.getFile().getOriginalFilename();
+            File existingFile = new File(Constants.UPLOAD_FILE_STORE_LOCATION + fileName);
+            if(!existingFile.getParentFile().exists()){
+                if(!existingFile.getParentFile().mkdirs())
+                    throw new IOException("Cannot make directories");
+            }
             FileCopyUtils.copy(fileBucket.getFile().getBytes(),
                     new File(Constants.UPLOAD_FILE_STORE_LOCATION + fileName));
             task.setImage(fileName);
         }
+        task.setImage("/DESCIMG_" + fileBucket.getFile().getOriginalFilename());
+        taskService.updateTask(task);
 
-        taskService.saveTask(task);
         responseBody.setState(200);
         responseBody.setContent(task.getId().toString());
         return responseBody;
@@ -536,7 +543,7 @@ public class TaskController {
         String uploadToken = EncodeFactory.getRandomUUID();
 //        request.getSession().setAttribute(Constants.KEY_UPLOAD_TOKEN, uploadToken);
         model.addAttribute("uploadToken", uploadToken);
-        SessionDataHelper.putTaskIdFormToken(request, uploadToken, task.getId());
+        SessionDataHelper.putTaskIdToken(request, uploadToken, task.getId());
 
         if(task.getMode().equals(MicroTaskAssigner.TASK_ASSIGN_SEQUENCE)){
             //Parse sequences to array
@@ -549,7 +556,21 @@ public class TaskController {
             }
             model.addAttribute("microtaskSeq", microtaskSeq);
         }
-        return "task/create_micro";
+
+        //List all uploaded files
+        File file = new File(Constants.UPLOAD_FILE_STORE_LOCATION + "/task/" + task.getId() + "/");
+        File[] files = file.listFiles();
+        List<String> existingFiles = new ArrayList<>();
+        if(files != null){
+            for(File f:files){
+                if(!f.isDirectory()){
+                    existingFiles.add(f.getName());
+                }
+            }
+        }
+        model.addAttribute("files", existingFiles);
+
+        return "task/edit";
     }
 
     @ResponseBody

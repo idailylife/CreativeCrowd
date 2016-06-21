@@ -65,7 +65,7 @@
                         <span class="helper"></span>
                     <c:choose>
                         <c:when test="${not empty task.image}">
-                            <img src="<c:url value="/static/img/upload/${task.image}"/> " alt="${task.title}">
+                            <img src="<c:url value="/static/img/upload/task/${task.id}/${task.image}"/> " alt="${task.title}">
                         </c:when>
                         <c:otherwise>
                             <img src="<c:url value="/static/img/task-no-img.png"/> " alt="no-image">

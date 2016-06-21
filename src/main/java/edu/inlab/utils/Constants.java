@@ -2,12 +2,20 @@ package edu.inlab.utils;
 
 /**
  * Created by inlab-dell on 2016/5/9.
+ *
+ * 文件上传位置说明(TASK_ID是任务ID):
+ * - Task描述图片:               ../upload/task/TASK_ID/        图片文件名前缀是DESCIMG
+ * - Task中Microtask相关图片     ../upload/task/TASK_ID/
+ * - 用户做任务时上传的图片       ../upload/user_gen/TASK_ID/
  */
 public class Constants {
     public static final boolean DEBUG = false;
 
+    //图片上传目录
     public static final String UPLOAD_FILE_STORE_LOCATION = //"/Users/hebowei/IdeaProjects/CreativeCrowd/src/main/webapp/static/img/upload/";
     "D:/Code/Java/CreativeCrowd/src/main/webapp/static/img/upload/";
+
+
     public static final long MAX_FILE_SIZE = 5242880;  //5MB
     public static final long MAX_REQUEST_SIZE = 20971520;  //20MB
     public static final int FILE_SIZE_THRESHOLD = 0; // Size threshold after which files will be written to disk

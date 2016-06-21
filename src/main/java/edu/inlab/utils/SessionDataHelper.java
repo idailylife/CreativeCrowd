@@ -19,14 +19,14 @@ public class SessionDataHelper {
         return retVal;
     }
 
-    public static void putTaskIdFormToken(HttpServletRequest request, String token, Integer id){
+    public static void putTaskIdToken(HttpServletRequest request, String token, Integer id){
         Map tokenMap;
         if(request.getSession().getAttribute(Constants.KEY_UPLOAD_TOKEN_MAP) instanceof Map){
             tokenMap = (Map<String, Integer>) request.getSession().getAttribute(Constants.KEY_UPLOAD_TOKEN_MAP);
-            tokenMap.put(token, id);
         } else {
             tokenMap = new HashMap();
         }
+        tokenMap.put(token, id);
         request.getSession().setAttribute(Constants.KEY_UPLOAD_TOKEN_MAP, tokenMap);
     }
 

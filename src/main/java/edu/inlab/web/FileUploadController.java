@@ -51,6 +51,13 @@ public class FileUploadController {
     }
 
 
+    /**
+     * Batch upload for microtask content images
+     * @param request
+     * @param token
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = "/batchUpload", method = RequestMethod.POST)
     public ResponseEntity batchUploadFile(MultipartHttpServletRequest request,
                                           @RequestHeader(name = "token") String token) throws IOException{
@@ -82,6 +89,14 @@ public class FileUploadController {
         return new ResponseEntity<>("{}", HttpStatus.OK);
     }
 
+    /**
+     * Worker-uploaded files
+     * @param fileBucket
+     * @param bindingResult
+     * @param request
+     * @return
+     * @throws IOException
+     */
     @ResponseBody
     @RequestMapping(value = "/upload", method = RequestMethod.POST,
     produces = MediaType.APPLICATION_JSON_VALUE)
@@ -113,28 +128,35 @@ public class FileUploadController {
             ajaxResponseBody.setMessage("Error in request body");
         } else {
             MultipartFile multipartFile = fileBucket.getFile();
-            String fileName = umtId + "__" + multipartFile.getOriginalFilename();
+            String fileName = "/user_gen/" + taskId + "/" + umtId + "__" + multipartFile.getOriginalFilename();
 
             //If the user have already uploaded something for this usermicrotask
             //Remove the old file record and copy the new one, then change the database record
             TempFile tempFile = tempFileService.getByUsermicrotaskId(umtId);
+            File fileDir = new File(Constants.UPLOAD_FILE_STORE_LOCATION + fileName).getParentFile();
+            if(!fileDir.exists()){
+                if(!fileDir.mkdirs()){
+                    throw new IOException("Cannot create directories");
+                }
+            }
             if(tempFile == null){
+
                 FileCopyUtils.copy(fileBucket.getFile().getBytes(),
                         new File(Constants.UPLOAD_FILE_STORE_LOCATION + fileName));
                 tempFile = new TempFile();
-                tempFile.setFilename(fileName);
+                tempFile.setFilename(umtId + "__" +multipartFile.getOriginalFilename());
                 tempFile.setUsermicrotaskId(umtId);
                 tempFileService.save(tempFile);
             } else {
-                File oldFile = new File(Constants.UPLOAD_FILE_STORE_LOCATION + tempFile.getFilename());
-                if(oldFile.exists()){
-                    if(!oldFile.delete()) {
-                        throw new IOException("Cannot delete origin file " + tempFile.getFilename());
-                    }
-                }
+//                File oldFile = new File(Constants.UPLOAD_FILE_STORE_LOCATION + tempFile.getFilename());
+//                if(oldFile.exists()){
+//                    if(!oldFile.delete()) {
+//                        throw new IOException("Cannot delete origin file " + tempFile.getFilename());
+//                    }
+//                }
                 FileCopyUtils.copy(fileBucket.getFile().getBytes(),
                         new File(Constants.UPLOAD_FILE_STORE_LOCATION + fileName));
-                tempFile.setFilename(fileName);
+                tempFile.setFilename(umtId + "__" +multipartFile.getOriginalFilename());
                 tempFileService.update(tempFile);
             }
 

@@ -44,7 +44,8 @@ public class RandomMicroTaskAssigner implements MicroTaskAssigner {
         if(randomParams.finishedCount < relatedMicrotasks.size()){
             //如果还有尚未分配的任务，可选的Id里去除已分配的
             Set<Integer> assignedMTaskIds = randomParams.getFinishedMTaskIds();
-            microTaskIdsToAssign.removeAll(assignedMTaskIds);
+            if(assignedMTaskIds != null)
+                microTaskIdsToAssign.removeAll(assignedMTaskIds);
         }
 
         if(microTaskIdsToAssign.isEmpty()){
@@ -62,7 +63,8 @@ public class RandomMicroTaskAssigner implements MicroTaskAssigner {
                 return null; //Task finished
             }
             Set<Integer> existingMTaskIds = getFinishedMicrotaskIds(userMicroTasks);
-            microTaskIdsToAssign.removeAll(existingMTaskIds);
+            if(existingMTaskIds != null)
+                microTaskIdsToAssign.removeAll(existingMTaskIds);
             if(microTaskIdsToAssign.isEmpty()){
                 throw new TaskAssignException("Microtask resource exhausted for task #" + task.getId() + "& UserTask #"
                         + userTask.getId());

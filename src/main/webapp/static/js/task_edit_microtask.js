@@ -33,6 +33,10 @@ $(document).ready(function () {
         setInsertNext(this);
     });
 
+    $(".btnCopyNext").each(function () {
+        setCopyNext(this);
+    });
+
     $(".btnMoveBackward").each(function () {
         setMoveBackward(this)
     });
@@ -59,11 +63,7 @@ $(document).ready(function () {
     });
 
     $("#btnRandConfigSave").click(function () {
-        var randParam = JSON.parse($("#hiddenRandTaskParams").val());
-        randParam.randSize = $("#inputTaskParams").val();
-        randParam = JSON.stringify(randParam);
-        $("#hiddenRandTaskParams").val(randParam);
-        setTaskParams(randParam);
+        updateRandomTaskParams();
     });
 
     $('#btnSaveAll').click(function () {
@@ -186,6 +186,15 @@ function setInsertNext(element) {
     });
 }
 
+function setCopyNext(element) {
+    $(element).click(function () {
+        var currTabId = $(this).currentBSTabID();
+        insertActionCount++;
+        var newId = "新建_"+insertActionCount;
+        appendMicroTask(currTabId, newId, true);
+    });
+}
+
 /**
  * 对于新加入/变更的json文字的hidden input元素，生成可以显示的JSON Editor
  * For JSON Editor, see
@@ -213,9 +222,11 @@ function parseJsonEditor(inputDOM) {
 
 /**
  * 在appendAfterId后插入一页
- * @param appendAfterId 如果为null,则在最末插入
+ * @param appendAfterId 如果为null,则在最末插入(tab的id, 后缀有-li)
+ * @param newId 新建tab的id
+ * @param copySourceContent 是否复制数据到新页
  */
-function appendMicroTask(appendAfterId, newId){
+function appendMicroTask(appendAfterId, newId, copySourceContent){
     var templateHtml = $("#panelTemplate").html();
     templateHtml = templateHtml.replace(/template/g, newId);
     if(appendAfterId == null){
@@ -226,12 +237,19 @@ function appendMicroTask(appendAfterId, newId){
     var tabs = $("ul.nav-tabs");
     var appendAfterItem = $("#"+appendAfterId);
     tabs.addBSTab(newId, "#"+newId, templateHtml, appendAfterItem);
+    var originId = appendAfterId.match(/\S+(?=-li)/);
+    if(originId.length>0 && copySourceContent){
+        if($('#'+originId).length > 0){
+            $('#textTemplate_'+newId).val($('#textTemplate_'+originId).val());
+        }
+    }
     registerButtonActions(newId);
 }
 
 function registerButtonActions(newId){
     parseJsonEditor(document.getElementById("textTemplate_"+newId));
     setInsertNext(document.getElementById("btnInsertNext_"+newId));
+    setCopyNext(document.getElementById("btnCopyNext_"+newId));
     setMoveBackward(document.getElementById("btnMoveBackward_"+newId));
     setMoveForward(document.getElementById("btnMoveForward_"+newId));
     setSave(document.getElementById("btnSave_"+newId));
@@ -314,7 +332,11 @@ function updateSequenceTaskParams(informFunc) {
 
 function updateRandomTaskParams(informFunc) {
     if($('#btnRandConfigSave').length > 0){
-        setTaskParams($("#inputTaskParams").val(), informFunc);
+        var randParam = JSON.parse($("#hiddenRandTaskParams").val());
+        randParam.randSize = $("#inputTaskParams").val();
+        randParam = JSON.stringify(randParam);
+        $("#hiddenRandTaskParams").val(randParam);
+        setTaskParams($("#hiddenRandTaskParams").val(), informFunc);
     }
 }
 

@@ -92,7 +92,8 @@ public class UserController {
             @RequestParam(value = "next", required = false) String nextStr,
             @RequestParam(value = "state", required = false) String stateStr,
                          HttpServletRequest request){
-        if(request.getSession().getAttribute(Constants.KEY_USER_UID) != null){
+        Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
+        if(uid != null && !uid.equals(Constants.VAL_USER_UID_MTURK)){
             return "redirect:/";
         }
 

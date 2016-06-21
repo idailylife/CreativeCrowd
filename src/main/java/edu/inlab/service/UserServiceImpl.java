@@ -205,9 +205,9 @@ public class UserServiceImpl implements UserService {
     public User getUserFromSession(HttpServletRequest request){
         Integer uid = (Integer)request.getSession().getAttribute(Constants.KEY_USER_UID);
         User user =  findById(uid);
-        if(user == null){
-            throw new ResourceNotFoundException("Cannot find such user with uid=" + uid);
-        }
+//        if(user == null){
+//            throw new ResourceNotFoundException("Cannot find such user with uid=" + uid);
+//        }
         return user;
     }
 }

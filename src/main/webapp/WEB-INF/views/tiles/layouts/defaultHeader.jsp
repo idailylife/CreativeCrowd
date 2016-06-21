@@ -17,6 +17,7 @@
                 <c:choose>
                     <c:when test="${loginState}">
                         <li><a id="li_user_center" href="<c:url value="/user"/>">${displayName}</a></li>
+                        <li><a href="<c:url value="/task/create"/> ">发布任务</a> </li>
                         <li><a id="logout" href="<c:url value="/user/logout"/> ">注销</a></li>
                     </c:when>
                     <c:when test="${isMTurkTask}">

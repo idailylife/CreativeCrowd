@@ -23,7 +23,9 @@
     <c:forEach items="${taskList}" var="task">
         <tr>
             <td>${task.id}</td>
-            <td>${task.title}</td>
+            <td>
+                <a href="<c:url value="/task/tid${task.id}"/>" target="_blank">${task.title}</a>
+            </td>
             <td>${task.typeName}</td>
             <td>${task.quota}</td>
             <td>申领:${task.claimedCount},完成${task.finishedCount}</td>

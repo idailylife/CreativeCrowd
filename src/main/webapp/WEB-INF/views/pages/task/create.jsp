@@ -135,7 +135,7 @@
                                         <p>将微任务随机分配给参与者，用户完成指定个数的微任务方可提交。</p>
                                         <div class="form-inline">
                                             <div class="form-group">
-                                                <label for="inputRandomParam">每个任务分配的微任务个数(不超过微任务总数)</label>
+                                                <label for="inputRandomParam">每个参与者分配到的微任务个数(不超过微任务总数)</label>
                                                 <input type="number" class="form-control" id="inputRandomParam">
                                             </div>
                                         </div>
@@ -155,7 +155,7 @@
                             </ul>
                         </div>
                         <div class="form-group col-sm-6">
-                            <label for="inputWage">任务酬金</label>
+                            <label for="inputWage">任务酬金(MTurk任务不填写)</label>
                             <div class="input-group">
                                 <span class="input-group-addon" >￥</span>
                                 <input type="number" class="form-control" name="wage" id="inputWage">

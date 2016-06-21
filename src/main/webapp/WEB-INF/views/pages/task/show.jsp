@@ -16,7 +16,7 @@
             <h2>${title}</h2>
             <p>${desc}</p>
             <c:if test="${not empty image}">
-                <img class="desc-img" src="<s:url value="/static/img/upload/${image}"/>">
+                <img class="desc-img" src="<s:url value="/static/img/upload/task/${task.id}/${image}"/>">
             </c:if>
             <p>${descDetail}</p>
             <c:choose>

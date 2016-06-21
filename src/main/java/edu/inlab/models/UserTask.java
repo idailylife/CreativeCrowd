@@ -27,6 +27,7 @@ public class UserTask {
         this.taskId = taskId;
         this.state = STATE_CLAIMED;
         this.userType = USERTYPE_NORMAL;
+        this.remuneration = 0.0;
     }
 
     public UserTask(String mturkId, int taskId){
@@ -34,6 +35,7 @@ public class UserTask {
         this.taskId = taskId;
         this.state = STATE_CLAIMED;
         this.userType = USERTYPE_MTURK;
+        this.remuneration = 0.0;
     }
 
     @Id

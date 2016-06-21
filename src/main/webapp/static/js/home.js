@@ -76,7 +76,7 @@ function appendPage(jsonAryResult) {
         imgContainer.innerHTML = '<span class="helper"></span>';
         var imgObj = document.createElement("img");
         if(jsonTaskObj.image != null && jsonTaskObj.image.length > 0){
-            imgObj.setAttribute("src", homeUrl+"static/img/upload/"+ jsonTaskObj.image);
+            imgObj.setAttribute("src", homeUrl+"static/img/upload/task/" + jsonTaskObj.id + '/' + jsonTaskObj.image);
         } else {
             imgObj.setAttribute("src", homeUrl+"static/img/task-no-img.png");
         }

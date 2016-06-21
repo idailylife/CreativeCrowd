@@ -33,8 +33,9 @@ public class CreCrowdAppInitializer extends AbstractAnnotationConfigDispatcherSe
     @Override
     protected Filter[] getServletFilters() {
         CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
+        XssFilter xssFilter = new XssFilter();
         encodingFilter.setEncoding("UTF-8");
-        return new Filter[]{encodingFilter};
+        return new Filter[]{encodingFilter, xssFilter};
     }
 
     private MultipartConfigElement getMultipartConfigElement(){
