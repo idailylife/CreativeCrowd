@@ -523,7 +523,6 @@ public class TaskController {
         }
         task.setImage("/DESCIMG_" + fileBucket.getFile().getOriginalFilename());
         taskService.updateTask(task);
-
         responseBody.setState(200);
         responseBody.setContent(task.getId().toString());
         return responseBody;

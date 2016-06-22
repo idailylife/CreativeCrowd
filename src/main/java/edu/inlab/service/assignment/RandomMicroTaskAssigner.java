@@ -100,15 +100,7 @@ public class RandomMicroTaskAssigner implements MicroTaskAssigner {
         return map;
     }
 
-    @Override
-    public void onMicrotaskDelete(Microtask microtask) {
 
-    }
-
-    @Override
-    public void onMicrotaskCreate(Microtask microtask) {
-
-    }
 
     /**
      * Update task params when some user finishes some microtask

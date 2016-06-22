@@ -20,6 +20,6 @@ public interface TaskService {
     void saveTask(Task task);
     void updateTask(Task task);
     void deleteTaskById(int id);
-    void onMicrotaskDelete(Microtask microtask, Task task);
-    void onMicrotaskCreate(Microtask microtask, Task task);
+    //void onMicrotaskDelete(Microtask microtask, Task task);
+    //void onMicrotaskCreate(Microtask microtask, Task task);
 }

@@ -86,20 +86,20 @@ public class TaskServiceImpl implements TaskService {
         }
         return map;
     }
-
-    /**
-     * Inform microtask assigners the deletion of microtask
-     * @param microtask
-     */
-    @Override
-    public void onMicrotaskDelete(Microtask microtask, Task task) {
-        MicroTaskAssigner assigner = microTaskAssignerFactory.getAssigner(task.getMode());
-        assigner.onMicrotaskDelete(microtask);
-    }
-
-    @Override
-    public void onMicrotaskCreate(Microtask microtask, Task task) {
-        MicroTaskAssigner assigner = microTaskAssignerFactory.getAssigner(task.getMode());
-
-    }
+//
+//    /**
+//     * Inform microtask assigners the deletion of microtask
+//     * @param microtask
+//     */
+//    @Override
+//    public void onMicrotaskDelete(Microtask microtask, Task task) {
+//        MicroTaskAssigner assigner = microTaskAssignerFactory.getAssigner(task.getMode());
+//        assigner.onMicrotaskDelete(microtask);
+//    }
+//
+//    @Override
+//    public void onMicrotaskCreate(Microtask microtask, Task task) {
+//        MicroTaskAssigner assigner = microTaskAssignerFactory.getAssigner(task.getMode());
+//        assigner.onMicrotaskCreate(microtask);
+//    }
 }

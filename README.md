@@ -12,8 +12,10 @@ Designed to be a flexible crowdsourcing platform, which will support customized 
 - Apache Tiles 3
 
 ## Features
-- Microtask Assignment: Sequenced, Randomized (More options under developing)
+- Microtask Assignment: Single-paged, Sequenced, Randomized (More options under development)
 - Auto-generated reference code for basic support of MTurk
 - Customizable microtask page rendering from JSON definition (Currently we support Label, Text, File, Image input types)
+
+
 
 * * *

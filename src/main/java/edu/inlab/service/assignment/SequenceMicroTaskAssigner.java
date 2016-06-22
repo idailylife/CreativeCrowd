@@ -47,30 +47,7 @@ public class SequenceMicroTaskAssigner implements MicroTaskAssigner {
         return null;
     }
 
-    @Override
-    public void onMicrotaskDelete(Microtask microtask) {
-        //删除params里面相关的id
-//        Task task = microtask.getTask();
-//        JSONArray paramJsonAry = new JSONArray(task.getParams());
-//        String strMTaskId = String.valueOf(microtask.getId());
-//        int i = -1;
-//        for(i=0; i<paramJsonAry.length(); i++){
-//            if(paramJsonAry.get(i) instanceof String){
-//                if(paramJsonAry.getString(i).equals(strMTaskId)){
-//                    break;
-//                }
-//            }
-//        }
-//        if(i > 0)
-//            paramJsonAry.remove(i);
-//        task.setParams(paramJsonAry.toString());
-//        taskService.updateTask(task);
-    }
 
-    @Override
-    public void onMicrotaskCreate(Microtask microtask) {
-
-    }
 
     @Override
     public void onUserMicrotaskSubmit(UserMicroTask userMicroTask, Task task) {

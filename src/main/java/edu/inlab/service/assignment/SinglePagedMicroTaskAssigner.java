@@ -39,19 +39,6 @@ public class SinglePagedMicroTaskAssigner implements MicroTaskAssigner {
         return null;
     }
 
-    public void parseParamsString(String params) {
-
-    }
-
-    @Override
-    public void onMicrotaskDelete(Microtask microtask) {
-
-    }
-
-    @Override
-    public void onMicrotaskCreate(Microtask microtask) {
-
-    }
 
     @Override
     public void onUserMicrotaskSubmit(UserMicroTask userMicroTask, Task task) {
