@@ -34,8 +34,8 @@ public class Microtask {
      * Should be rendered by handler that declared in `handler` column
      */
     @Column(name = "template", nullable = false)
-    @Type(type = "customJsonArray")
-    private JSONArray template;
+    //@Type(type = "customJsonArray")
+    private String template;
 
     /**
      * Defines the type of handler to render the template
@@ -66,11 +66,11 @@ public class Microtask {
 //        this.taskId = taskId;
 //    }
 
-    public JSONArray getTemplate() {
+    public String getTemplate() {
         return template;
     }
 
-    public void setTemplate(JSONArray template) {
+    public void setTemplate(String template) {
         this.template = template;
     }
 

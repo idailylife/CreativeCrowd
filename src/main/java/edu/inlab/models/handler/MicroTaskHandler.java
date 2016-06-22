@@ -5,6 +5,7 @@ package edu.inlab.models.handler;
  * Created by inlab-dell on 2016/5/12.
  * 解决MicroTask中HTML渲染及结果回收的问题
  */
+@Deprecated
 public interface MicroTaskHandler {
     /**
      * Parses template string contents to html string

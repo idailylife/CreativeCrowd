@@ -1,19 +1,21 @@
 package edu.inlab.models.handler;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by hebowei on 16/5/14.
+ * Created by inlab-dell on 2016/6/22.
  */
-public class TaskHandlerFactory {
+public class SimplePageRenderer implements MicrotaskPageRenderer {
+    @Override
+    public Object parseTemplateText(String templateStr) {
+        JSONArray handlerContent = new JSONArray(templateStr);
+        return parseMicrotaskToItemLists(handlerContent);
+    }
 
-    public static List<JstlCompatibleModel> parseMicrotaskToItemLists(JSONArray jsonArray){
+    private List<JstlCompatibleModel> parseMicrotaskToItemLists(JSONArray jsonArray){
         List<JstlCompatibleModel> compatibleModels = new ArrayList<JstlCompatibleModel>();
         int length = jsonArray.length();
         for(int i=0; i<length; i++){

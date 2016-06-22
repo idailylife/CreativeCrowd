@@ -18,17 +18,17 @@ public class MicroTaskAssignerFactory {
     @Autowired
     private MicroTaskAssigner sequenceMicroTaskAssigner;
 
-    public MicroTaskAssigner getAssigner(String type){
-        MicroTaskAssigner assigner = null;
-        if(type.equals("single")){
-            assigner = singlePagedMicroTaskAssigner;
-        } else if(type.equals("random")){
-            assigner = randomMicroTaskAssigner;
-        } else if(type.equals("sequence")){
-            assigner = sequenceMicroTaskAssigner;
-        }
-        return assigner;
-    }
+//    public MicroTaskAssigner getAssigner(String type){
+//        MicroTaskAssigner assigner = null;
+//        if(type.equals("single")){
+//            assigner = singlePagedMicroTaskAssigner;
+//        } else if(type.equals("random")){
+//            assigner = randomMicroTaskAssigner;
+//        } else if(type.equals("sequence")){
+//            assigner = sequenceMicroTaskAssigner;
+//        }
+//        return assigner;
+//    }
 
     public MicroTaskAssigner getAssigner(int code){
         MicroTaskAssigner assigner = null;

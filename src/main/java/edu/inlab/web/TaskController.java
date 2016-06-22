@@ -1,7 +1,8 @@
 package edu.inlab.web;
 
 import edu.inlab.models.*;
-import edu.inlab.models.handler.TaskHandlerFactory;
+import edu.inlab.models.handler.MicrotaskPageRenderer;
+import edu.inlab.models.handler.MicrotaskHandlerFactory;
 import edu.inlab.models.json.AjaxResponseBody;
 import edu.inlab.models.json.MTurkIdValidationRequestBody;
 import edu.inlab.models.json.TaskClaimRequestBody;
@@ -299,9 +300,10 @@ public class TaskController {
         UserMicroTask userMicroTask = userMicrotaskService.getById(userTask.getCurrUserMicrotaskId());
         Microtask microtask = microTaskService.getById(userMicroTask.getMicrotaskId());
         String handlerType = microtask.getHandlerType();
-        JSONArray handlerContent = microtask.getTemplate();
+        //JSONArray handlerContent = microtask.getTemplate();
+        MicrotaskPageRenderer pageRenderer = MicrotaskHandlerFactory.getRenderer(handlerType);
         model.addAttribute("handlerType", handlerType);
-        model.addAttribute("handlerContent", TaskHandlerFactory.parseMicrotaskToItemLists(handlerContent));
+        model.addAttribute("handlerContent", pageRenderer.parseTemplateText(microtask.getTemplate()));
 
         //Find related file that was uploaded by user
         TempFile oldFile = tempFileService.getByUsermicrotaskId(userMicroTask.getId());
