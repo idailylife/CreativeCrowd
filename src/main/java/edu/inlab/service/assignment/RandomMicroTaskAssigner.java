@@ -74,29 +74,6 @@ public class RandomMicroTaskAssigner implements MicroTaskAssigner {
             return mTaskIdMap.get(candidateId);
         }
 
-
-//        if(userTask.getCurrUserMicrotaskId() == null){
-//            //New task assignment
-//            return relatedMicrotasks.get(index);
-//        } else {
-//            List<UserMicroTask> userMicroTasks = userTask.getRelatedUserMicrotasks();
-//            if(userMicroTasks.size() >= microtaskSize){
-//                return null; //Task finished
-//            }
-//
-//            Set<Integer> existingMTaskIds = getFinishedMicrotaskIds(userMicroTasks);
-//            Set<Integer> allMTaskIds = getMicrotaskIdsFromList(relatedMicrotasks);
-//            allMTaskIds.removeAll(existingMTaskIds);    //Set A - B
-//            index -= existingMTaskIds.size();
-//            if(allMTaskIds.isEmpty()){
-//                throw new TaskAssignException("Microtask resource exhausted for task #" + task.getId() + "& UserTask #"
-//                + userTask.getId());
-//            }
-//            //return (Microtask) allMTaskIds.toArray()[index];
-//            Integer candidateMTaskId = (Integer) allMTaskIds.toArray()[index];
-//            return microTaskService.getById(candidateMTaskId);
-//        }
-
     }
 
     private Set<Integer> getFinishedMicrotaskIds(List<UserMicroTask> userMicroTasks){
@@ -133,6 +110,20 @@ public class RandomMicroTaskAssigner implements MicroTaskAssigner {
 
     }
 
+    /**
+     * Update task params when some user finishes some microtask
+     * @param userMicroTask
+     * @param task
+     */
+    @Override
+    public void onUserMicrotaskSubmit(UserMicroTask userMicroTask, Task task) {
+        RandomParams randomParams = new RandomParams(task.getParams());
+        randomParams.finishedCount++;
+        randomParams.finishedMTaskIds.add(userMicroTask.getMicrotaskId());
+        task.setParams(randomParams.toString());
+        taskService.updateTask(task);
+    }
+
     public TaskService getTaskService() {
         return taskService;
     }
@@ -142,19 +133,19 @@ public class RandomMicroTaskAssigner implements MicroTaskAssigner {
     }
 
     private class RandomParams{
-        private int randSize;
-        private Set<Integer> finishedMTaskIds;
-        private int finishedCount;
+        int randSize;
+        Set<Integer> finishedMTaskIds;
+        int finishedCount;
 
         public RandomParams(String paramsStr){
             JSONObject paramObj = new JSONObject(paramsStr);
             randSize = paramObj.getInt("randSize");
             finishedCount = paramObj.getInt("finishedCount");
+            finishedMTaskIds = new HashSet<>();
             if(finishedCount > 0){
                 JSONArray finishedAry = paramObj.getJSONArray("finishedMTaskId");
-                finishedMTaskIds = new HashSet<>();
                 for(int i=0; i<finishedAry.length(); i++){
-                    finishedAry.put(finishedAry.getInt(i));
+                    finishedMTaskIds.add(finishedAry.getInt(i));
                 }
             }
         }
@@ -171,6 +162,7 @@ public class RandomMicroTaskAssigner implements MicroTaskAssigner {
             jsonObject.put("finishedMTaskId", itemAry);
             return jsonObject.toString();
         }
+
 
         public int getRandSize() {
             return randSize;

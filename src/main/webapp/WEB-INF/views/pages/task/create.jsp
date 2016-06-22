@@ -20,7 +20,7 @@
                     <div class="panel-body">
                         <div class="form-group col-sm-12">
                             <label for="inputTitle">标题</label>
-                            <input type="text" class="form-control" id="inputTitle" name="title" placeholder="输入标题">
+                            <input type="text" class="form-control" id="inputTitle" name="title" placeholder="标题长度在10字符以上，100字以下">
                         </div>
                         <div class="form-group col-sm-6">
                             <label class="">任务类型</label>

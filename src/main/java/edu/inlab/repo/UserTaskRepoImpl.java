@@ -107,4 +107,10 @@ public class UserTaskRepoImpl extends AbstractDao<Integer, UserTask> implements 
                 .list();
         return userTasks;
     }
+
+    @Override
+    public List<UserTask> getAllUnfinished() {
+        return createEntityCriteria().add(Restrictions.eq("state", UserTask.STATE_CLAIMED))
+                .list();
+    }
 }

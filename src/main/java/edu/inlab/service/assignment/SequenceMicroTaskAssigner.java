@@ -2,6 +2,7 @@ package edu.inlab.service.assignment;
 
 import edu.inlab.models.Microtask;
 import edu.inlab.models.Task;
+import edu.inlab.models.UserMicroTask;
 import edu.inlab.models.UserTask;
 import edu.inlab.service.MicroTaskService;
 import edu.inlab.service.TaskService;
@@ -49,25 +50,30 @@ public class SequenceMicroTaskAssigner implements MicroTaskAssigner {
     @Override
     public void onMicrotaskDelete(Microtask microtask) {
         //删除params里面相关的id
-        Task task = microtask.getTask();
-        JSONArray paramJsonAry = new JSONArray(task.getParams());
-        String strMTaskId = String.valueOf(microtask.getId());
-        int i = -1;
-        for(i=0; i<paramJsonAry.length(); i++){
-            if(paramJsonAry.get(i) instanceof String){
-                if(paramJsonAry.getString(i).equals(strMTaskId)){
-                    break;
-                }
-            }
-        }
-        if(i > 0)
-            paramJsonAry.remove(i);
-        task.setParams(paramJsonAry.toString());
-        taskService.updateTask(task);
+//        Task task = microtask.getTask();
+//        JSONArray paramJsonAry = new JSONArray(task.getParams());
+//        String strMTaskId = String.valueOf(microtask.getId());
+//        int i = -1;
+//        for(i=0; i<paramJsonAry.length(); i++){
+//            if(paramJsonAry.get(i) instanceof String){
+//                if(paramJsonAry.getString(i).equals(strMTaskId)){
+//                    break;
+//                }
+//            }
+//        }
+//        if(i > 0)
+//            paramJsonAry.remove(i);
+//        task.setParams(paramJsonAry.toString());
+//        taskService.updateTask(task);
     }
 
     @Override
     public void onMicrotaskCreate(Microtask microtask) {
+
+    }
+
+    @Override
+    public void onUserMicrotaskSubmit(UserMicroTask userMicroTask, Task task) {
 
     }
 }

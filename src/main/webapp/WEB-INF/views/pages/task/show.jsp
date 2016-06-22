@@ -92,7 +92,8 @@
                         <h4>Related information:</h4>
                         <ul>
                             <li>Valid on: ${startEndTime}</li>
-                            <li>Claimed: ${task.finishedCount}/${task.quota}</li>
+                            <li>Claimed: ${task.claimedCount}/${task.quota}</li>
+                            <li>Finished: ${task.finishedCount}/${task.quota}</li>
                             <li>${(task.repeatable == 1)?'Can be joined more than once':'Claimable for only once'}</li>
                             <c:if test="${not empty estTime}">
                                 <li>Est. duration: ${estTime}</li>

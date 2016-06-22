@@ -2,6 +2,8 @@ package edu.inlab.service.assignment;
 
 import edu.inlab.models.Microtask;
 
+import edu.inlab.models.Task;
+import edu.inlab.models.UserMicroTask;
 import edu.inlab.models.UserTask;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ public interface MicroTaskAssigner {
     Microtask assignNext(UserTask userTask) throws RuntimeException;
     void onMicrotaskDelete(Microtask microtask);
     void onMicrotaskCreate(Microtask microtask);
+    void onUserMicrotaskSubmit(UserMicroTask userMicroTask, Task task);
 
     int TASK_ASSIGN_SINGLE = 0;
     int TASK_ASSIGN_RANDOM = 1;

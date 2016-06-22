@@ -23,4 +23,5 @@ public interface UserTaskService {
     List<Integer> getTaskIds(List<UserTask> userTasks);
     List<UserTask> getByMturkIdAndTaskId(String mturkId, int taskId);
     List<UserTask> getFinishedOrExpired(String mturkId, int taskId);
+    List<UserTask> getAllUnfinished();
 }

@@ -10,10 +10,7 @@ import edu.inlab.service.assignment.MicroTaskAssigner;
 import edu.inlab.service.assignment.MicroTaskAssignerFactory;
 import edu.inlab.service.wage.WageAssigner;
 import edu.inlab.service.wage.WageFactory;
-import edu.inlab.utils.Constants;
-import edu.inlab.utils.EncodeFactory;
-import edu.inlab.utils.JSON2Map;
-import edu.inlab.utils.SessionDataHelper;
+import edu.inlab.utils.*;
 import edu.inlab.web.exception.ResourceNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -410,6 +407,7 @@ public class TaskController {
         } else {
             UserMicroTask userMicroTask = userMicrotaskService.getById(umtId);
             if(userMicroTask.getResults() == null){
+                // Method `saveTask` should be called before submitting
                 responseBody.setState(405);
                 responseBody.setMessage("MicroTask not finished");
             } else {
@@ -426,9 +424,13 @@ public class TaskController {
                     return responseBody;
                 }
 
-                Microtask microtask = microTaskAssignerFactory.getAssigner(task.getMode())
-                        .assignNext(userTask);
+                MicroTaskAssigner taskAssigner = microTaskAssignerFactory.getAssigner(task.getMode());
+                taskAssigner.onUserMicrotaskSubmit(userMicroTask, task);     //Update task params if need
+                Microtask microtask = taskAssigner.assignNext(userTask);     //Assign next microtask
+
                 if(microtask == null){
+                    //Null return value indicates the end of usertask
+
                     //Calculate wage for normal tasks
                     if(task.getType() == Task.TYPE_NORMAL){
                         WageAssigner wageAssigner = WageFactory.getAssigner(task.getWageType());
@@ -442,6 +444,13 @@ public class TaskController {
                     userTaskService.updateUserTask(userTask);
                     task.setFinishedCount(task.getFinishedCount() + 1);
                     taskService.updateTask(task);
+
+                    //If it is MTurk task, clear session content
+                    if(task.getType().equals(Task.TYPE_MTURK)){
+                        request.getSession().removeAttribute(Constants.KEY_USER_UID);
+                        request.getSession().removeAttribute(Constants.KEY_MTURK_ID);
+                    }
+
                     responseBody.setState(200);
                     responseBody.setMessage("Task finished.");
                     responseBody.setContent(userTask.getRefCode());
@@ -479,7 +488,8 @@ public class TaskController {
         if(bindingResult.hasErrors()){
             responseBody.setState(400);
             responseBody.setMessage("Request fields contain errors.");
-            //responseBody.setContent("");
+            JsonValidationParser validationParser = new JsonValidationParser(bindingResult);
+            responseBody.setContent(validationParser.getFieldErrorJson().toString());
             return responseBody;
         }
         if(task.getCaptcha() == null ||
@@ -499,7 +509,6 @@ public class TaskController {
         taskService.saveTask(task);
         if(fileBucket.getFile() != null && !fileBucket.getFile().isEmpty()){
             //Save file
-            Random random = new Random();
 //            String fileName = String.valueOf(random.nextInt(1000)) +
 //                    fileBucket.getFile().getOriginalFilename();
             String fileName = "/task/" + task.getId() + "/DESCIMG_" + fileBucket.getFile().getOriginalFilename();

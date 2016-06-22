@@ -19,4 +19,5 @@ public interface UserTaskRepository {
     UserTask getUnfinished(int userId, int taskId);
     UserTask getUnfinished(String mturkId, int taskId);
     List<UserTask> getFinishedOrExpired(String mturkId, int taskId);
+    List<UserTask> getAllUnfinished();
 }

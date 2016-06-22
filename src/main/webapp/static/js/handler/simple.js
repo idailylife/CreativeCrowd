@@ -33,51 +33,59 @@ function readyFunction() {
 }
 
 function submitClick() {
-    var errCount = saveClick();
-    if(document.getElementById("btn_upload") != null && $("#btn_file").attr("required")){
-        if($("#file_upd_state").val() == 0){
-            errCount++;
-            alert(messageResources.UPLOAD_FILE_NOT_READY);
-        }
-    }
-    if(errCount == 0){
-        setSubmitButtonState("submitting");
-        $.ajax({
-            type: "post",
-            url: homeUrl + "task/submit",
-            success: function (data) {
-                switch(data.state){
-                    case 200:
-                        var redirUrl = homeUrl + "task/done";
-                        if(taskType == 1){
-                            redirUrl += "?refCode=" + data.content;
-                        }
-                        window.location.href = redirUrl;
-                        break;
-                    case 201:
-                        window.location.reload();
-                        break;
-                    case 405:
-                        alert(messageResources.SUBMIT_405);
-                        setSubmitButtonState("fail");
-                        break;
-                    case 401:
-                        alert(messageResources.SUBMIT_401);
-                        setSubmitButtonState("fail");
-                        break;
-                }
 
-            },
-            error: function (err) {
-                alert(messageResources.AJAX_CONN_FAIL + err);
-                setSubmitButtonState("normal");
+    var saveCallbackFunc = function (isMTaskSaved) {
+        if(document.getElementById("btn_upload") != null && $("#btn_file").attr("required")){
+            if($("#file_upd_state").val() == 0){
+                alert(messageResources.UPLOAD_FILE_NOT_READY);
+                return;
             }
-        });
-    }
+        }
+        if(isMTaskSaved){
+            setSubmitButtonState("submitting");
+            $.ajax({
+                type: "post",
+                url: homeUrl + "task/submit",
+                success: function (data) {
+                    switch(data.state){
+                        case 200:
+                            var redirUrl = homeUrl + "task/done";
+                            if(taskType == 1){
+                                redirUrl += "?refCode=" + data.content;
+                            }
+                            window.location.href = redirUrl;
+                            break;
+                        case 201:
+                            window.location.reload();
+                            break;
+                        case 405:
+                            alert(messageResources.SUBMIT_405);
+                            setSubmitButtonState("fail");
+                            break;
+                        case 401:
+                            alert(messageResources.SUBMIT_401);
+                            setSubmitButtonState("fail");
+                            break;
+                    }
+
+                },
+                error: function (err) {
+                    alert(messageResources.AJAX_CONN_FAIL + err);
+                    setSubmitButtonState("normal");
+                }
+            });
+        } else{
+            setSubmitButtonState("normal");
+        }
+    };
+
+    saveClick(saveCallbackFunc);
 }
 
 
-function saveClick() {
+function saveClick(callbackFunc) {
+    var numargs = arguments.length;
+
     var data = {
         tid: $("#tid").val()
     };
@@ -111,19 +119,30 @@ function saveClick() {
                     case 200:
                         //$("#btn_save").addClass("btn-success");
                         setSaveButtonState("saved");
+                        if(numargs > 0){
+                            callbackFunc(true);
+                        }
                         break;
                     case 401: case 402:
                         alert(messageResources.SAVE_401_402);
                         //$("#btn_save").addClass("btn-danger");
                         setSaveButtonState("fail");
+                        if(numargs > 0){
+                            callbackFunc(false);
+                        }
                         break;
                 }
             },
             error: function (err) {
                 console.log(err);
                 alert(messageResources.AJAX_CONN_FAIL);
+                if(numargs > 0){
+                    callbackFunc(false);
+                }
             }
         });
+    } else {
+        alert(messageResources.SAVE_FORM_IMCOMPLETE);
     }
     return errCount;
 }
@@ -207,6 +226,7 @@ var messageResources = function () {
                 UPLOAD_TIMEOUT: "上传失败:页面等待超时",
                 UPLOAD_FILE_ERROR: "上传失败:文件大小或格式异常",
                 SAVE_401_402: "无法获得用户校验结果. 无法保存当前结果,请刷新页面重试.",
+                SAVE_FORM_IMCOMPLETE: "表单尚未填写完整，无法保存",
                 BTN_STATE_SAVING: "正在保存",
                 BTN_STATE_SAVE: "保存",
                 BTN_STATE_RETRY: "重试",
@@ -225,6 +245,7 @@ var messageResources = function () {
                 UPLOAD_TIMEOUT: "Fail to upload, request time out.",
                 UPLOAD_FILE_ERROR: "Fail to upload: Illegal file size or format.",
                 SAVE_401_402: "Cannot verify current user, please try again.",
+                SAVE_FORM_IMCOMPLETE: "Please complete all the required fields before submitting",
                 BTN_STATE_SAVING: "Saving",
                 BTN_STATE_SAVE: "Save",
                 BTN_STATE_RETRY: "Retry ",

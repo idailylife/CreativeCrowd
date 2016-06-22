@@ -2,6 +2,7 @@ package edu.inlab.utils;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.json.JSONObject;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
@@ -29,5 +30,10 @@ public class JsonValidationParser {
 
     public Map<String, String> getFieldErrors() {
         return fieldErrors;
+    }
+
+    public JSONObject getFieldErrorJson(){
+        JSONObject jsonObject = new JSONObject(fieldErrors);
+        return jsonObject;
     }
 }

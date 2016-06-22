@@ -13,7 +13,7 @@ public class Constants {
 
     //图片上传目录
     public static final String UPLOAD_FILE_STORE_LOCATION = //"/Users/hebowei/IdeaProjects/CreativeCrowd/src/main/webapp/static/img/upload/";
-    "D:/Code/Java/CreativeCrowd/src/main/webapp/static/img/upload/";
+    "D:/www/CreCrowd/static/img/upload/";
 
 
     public static final long MAX_FILE_SIZE = 5242880;  //5MB

@@ -9,3 +9,7 @@ kaptcha.image.width = 200
 kaptcha.image.height = 50
 kaptcha.textproducer.char.string = 1234567890
 kaptcha.textproducer.char.length = 6
+upload.location = FILE_UPLOAD_DIRECTORY
+upload.max_size = 5242880
+upload.max_request_size = 20971520
+upload.file_size_threshold = 0

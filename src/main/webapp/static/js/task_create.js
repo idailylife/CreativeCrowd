@@ -54,6 +54,7 @@ $(document).ready(function () {
                     window.location.href = homeUrl + "task/edit/" + data.content;
                 } else if(data.state == 400){
                     alert("表单输入不完整，请重试");
+                    showErrorMsg(data.content);
                     refreshCaptchaImage();
                 } else if(data.state == 402){
                     alert("验证码错误，请重试");
@@ -69,9 +70,30 @@ $(document).ready(function () {
         });
     };
     $("#btnNext").click(function () {
-       ajaxSubmit();
+        clearErrorMsg();
+        ajaxSubmit();
     });
 });
+
+function showErrorMsg(content) {
+    var jsonContent = JSON.parse(content);
+    var prop, formGroupObj;
+    for(prop in jsonContent){
+        formGroupObj = $('div>input[name="' + prop + '"]');
+        if(formGroupObj.length > 0){
+            formGroupObj = formGroupObj.parent()[0];
+            $(formGroupObj).addClass('has-error');
+        }
+    }
+}
+
+function clearErrorMsg() {
+    var errorGroups = $('.form-group.has-error');
+    var i;
+    for(i=0; i<errorGroups.length; i++){
+        $(errorGroups[i]).removeClass("has-error");
+    }
+}
 
 function getUnixTimestamp(str){
     if(!str){

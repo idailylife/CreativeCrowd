@@ -52,4 +52,9 @@ public class SinglePagedMicroTaskAssigner implements MicroTaskAssigner {
     public void onMicrotaskCreate(Microtask microtask) {
 
     }
+
+    @Override
+    public void onUserMicrotaskSubmit(UserMicroTask userMicroTask, Task task) {
+
+    }
 }

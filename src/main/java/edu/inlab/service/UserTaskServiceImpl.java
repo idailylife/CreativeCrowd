@@ -111,4 +111,9 @@ public class UserTaskServiceImpl implements UserTaskService {
     public List<UserTask> getFinishedOrExpired(String mturkId, int taskId) {
         return userTaskRepository.getFinishedOrExpired(mturkId, taskId);
     }
+
+    @Override
+    public List<UserTask> getAllUnfinished() {
+        return userTaskRepository.getAllUnfinished();
+    }
 }
