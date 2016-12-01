@@ -7,6 +7,7 @@ import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,7 +58,9 @@ public class TaskRepoImpl extends AbstractDao<Integer, Task> implements TaskRepo
     }
 
     public List<Task> getByIds(List<Integer> ids) {
-        Query query = getSession().createQuery("FROM Task WHERE id IN (:ids)");
+        if(ids.isEmpty())
+            return new ArrayList<>();
+        Query query = getSession().createQuery("FROM Task WHERE id IN ( :ids )");
         query.setParameterList("ids", ids);
         return query.list();
     }
