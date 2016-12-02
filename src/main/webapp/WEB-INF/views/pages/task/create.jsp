@@ -119,6 +119,9 @@
                                     <a href="#tabSequence" aria-controls="sequence" role="tab" data-toggle="tab" data-mode="2">顺序</a>
                                 </li>
                                 <li role="presentation">
+                                    <a href="#tabSinglePagedRandom" aria-controls="singlePagedRandom" role="tab" data-toggle="tab" data-mode="3">GridSimilarity</a>
+                                </li>
+                                <li role="presentation">
                                     <a href="#tabDevelop" aria-controls="develop" role="tab" data-toggle="tab" data-mode="-1">Dev!</a>
                                 </li>
                             </ul>
@@ -145,6 +148,32 @@
                                     <div class="row">
                                         <br>
                                         <p>按照指定顺序推送Microtask</p>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="tabSinglePagedRandom">
+                                    <div class="row">
+                                        <br>
+                                        <p>每次从N个备选项中选择K个与参考项最接近的。</p>
+                                        <div class="form">
+                                            <div class="form-group">
+                                                <label for="inputSinglePagedRand_N">N=</label>
+                                                <input type="number" class="form-control" id="inputSinglePagedRand_N">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputSinglePagedRand_K">K=</label>
+                                                <input type="number" class="form-control" id="inputSinglePagedRand_K">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputSinglePagedRand_nRows">显示行数</label>
+                                                <input type="number" class="form-control" id="inputSinglePagedRand_nRows">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputSinglePagedRand_config">关联文件上传</label>
+                                                <input type="file" class="form-control" id="inputSinglePagedRand_config">
+                                                <p class="help-block">上传文字描述与方案图片关联的Excel文件.</p>
+                                                <p class="help-block" id="pSinglePagedRand_confState">尚未上传</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane fade" id="tabDevelop">

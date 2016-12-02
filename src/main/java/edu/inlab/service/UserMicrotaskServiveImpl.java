@@ -31,4 +31,9 @@ public class UserMicrotaskServiveImpl implements UserMicrotaskService {
             entity.setResults(userMicroTask.getResults());
         }
     }
+
+    @Override
+    public Long getCountByUserTaskId(int usertaskId) {
+        return (Long)userMicrotaskRepository.getCountByUserTaskId(usertaskId);
+    }
 }

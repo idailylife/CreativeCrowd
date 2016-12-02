@@ -8,4 +8,5 @@ import edu.inlab.models.UserMicroTask;
 public interface UserMicrotaskRepository {
     UserMicroTask getById(int id);
     void save(UserMicroTask userMicroTask);
+    Number getCountByUserTaskId(int usertaskId);
 }

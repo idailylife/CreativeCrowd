@@ -9,4 +9,5 @@ public interface UserMicrotaskService {
     UserMicroTask getById(int id);
     void save(UserMicroTask userMicroTask);
     void update(UserMicroTask userMicroTask);
+    Long getCountByUserTaskId(int usertaskId);
 }

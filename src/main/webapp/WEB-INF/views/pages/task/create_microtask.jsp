@@ -99,6 +99,13 @@
                                 <span class="paramSaveState"></span>
                             </div>
                         </c:if>
+                        <c:if test="${task.mode eq 3}">
+                            <%-- 单页随机任务 --%>
+                            <div class="col-sm-12">
+                                <h4>单页随机任务配置(Grid-Similarity)</h4>
+
+                            </div>
+                        </c:if>
                     </div>
                 </div>
                 <!-- workspace -->

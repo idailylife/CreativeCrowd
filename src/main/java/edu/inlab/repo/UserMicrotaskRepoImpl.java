@@ -1,6 +1,8 @@
 package edu.inlab.repo;
 
 import edu.inlab.models.UserMicroTask;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,5 +17,14 @@ public class UserMicrotaskRepoImpl extends AbstractDao<Integer, UserMicroTask>
 
     public void save(UserMicroTask userMicroTask) {
         persist(userMicroTask);
+    }
+
+    @Override
+    public Number getCountByUserTaskId(int usertaskId) {
+        Number cnt = (Number) getSession().createCriteria(UserMicroTask.class)
+                .add(Restrictions.eq("usertaskId", usertaskId))
+                .setProjection(Projections.rowCount())
+                .uniqueResult();
+        return cnt;
     }
 }

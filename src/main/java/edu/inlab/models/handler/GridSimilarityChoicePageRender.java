@@ -13,12 +13,19 @@ import java.util.Map;
  * Parse similarity judging microtask page which is a "choose K objects from N candidates" question.
  * Each object consists one text description and one image, all items and parameters are passed in as a JSON list string written as:
  * [
- *  {"N":N }, {"K":K},
+ *
+ *  ///NOTICE: The following items are NOT part of user-defined file,
+ *  /// they will be covered automatically by TaskAssigner
+ *  /// according to parameters defined above !!
+ *  {"N":N },
+ *  {"K":K},
  *  {"nRows": num_of_rows},  // #columns = N / num_of_rows
  *  {"ref_item": {"image":internal_url, "text":text_description}},
  *  //following N elements
  *  {"item": {"image":internal_url, "text":text_description} },
  *  ...
+ *
+ *  ///
  * ]
  */
 public class GridSimilarityChoicePageRender implements MicrotaskPageRenderer {
