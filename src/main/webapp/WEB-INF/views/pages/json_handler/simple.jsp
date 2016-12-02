@@ -11,6 +11,7 @@
  *                                                                                  // single(default)/multiple choice box
  *      {image,     {src: internal_url}}                                            // image
  *      {file,      {accept: ALLOWED_TYPES, *text: TEXT_DESCRIPTION}}               // file
+ *      {timer,     {}                                                              // a timer that records the duration between page load and answer submission
  *     ]
  *
   User: hebowei
@@ -112,6 +113,15 @@
                             </div>
                         </form>
                     </div>
+                </c:when>
+                <c:when test="${item.tag eq 'timer'}">
+                    <input type="hidden" class="form-ud-input" id="timer_start_time">
+                    <input type="hidden" class="form-ud-input" id="timer_end_time">
+                    <script type="text/javascript">
+                        $(document).load(function () {
+                            $('#timer_start_time').val((new Date()).valueOf());
+                        })
+                    </script>
                 </c:when>
             </c:choose>
 

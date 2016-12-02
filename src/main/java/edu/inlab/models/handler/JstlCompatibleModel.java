@@ -10,6 +10,7 @@ import java.util.Map;
 public class JstlCompatibleModel {
     private String tag; //label,text,... See SimpleMicroTaskHandler
     private Map<String, Object> contents;
+    private Object singleValue;
 
     public String getTag() {
         return tag;
@@ -22,6 +23,19 @@ public class JstlCompatibleModel {
     public Map<String, Object> getContents() {
         return contents;
     }
+
+    public Object getSingleValue() {
+        return singleValue;
+    }
+
+    public int getSingleValueInt(){
+        return (int)singleValue;
+    }
+
+    public void setSingleValue(Object singleValue) {
+        this.singleValue = singleValue;
+    }
+
 
     public void setContents(Map<String, Object> contents) {
         this.contents = contents;

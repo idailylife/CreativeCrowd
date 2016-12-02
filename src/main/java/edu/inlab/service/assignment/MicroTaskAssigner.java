@@ -26,4 +26,5 @@ public interface MicroTaskAssigner {
     int TASK_ASSIGN_SINGLE = 0;
     int TASK_ASSIGN_RANDOM = 1;
     int TASK_ASSIGN_SEQUENCE = 2;
+
 }

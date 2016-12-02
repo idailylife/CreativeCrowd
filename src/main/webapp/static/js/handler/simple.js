@@ -84,6 +84,11 @@ function submitClick() {
 
 
 function saveClick(callbackFunc) {
+    if( ('#timer_end_time').length ){
+        // if timer exists, record finish time
+        $('#timer_end_time').val((new Date()).valueOf());
+    }
+
     var numargs = arguments.length;
 
     var data = {
