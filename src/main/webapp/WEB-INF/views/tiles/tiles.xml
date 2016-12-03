@@ -121,6 +121,7 @@
         </put-list-attribute>
         <put-list-attribute name="javascripts" inherit="true">
             <add-attribute value="/static/js/util/jquery.datetimepicker.full.min.js"/>
+            <add-attribute value="/static/js/util/xlsx.core.min.js"/>
             <add-attribute value="/static/js/task_create.js"/>
         </put-list-attribute>
     </definition>

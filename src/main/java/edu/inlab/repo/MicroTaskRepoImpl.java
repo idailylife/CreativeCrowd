@@ -1,6 +1,7 @@
 package edu.inlab.repo;
 
 import edu.inlab.models.Microtask;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,7 @@ public class MicroTaskRepoImpl extends AbstractDao<Integer, Microtask> implement
         persist(microtask);
     }
 
-    public List<Microtask> getByTaskId(int taskId) {
+    public List<Microtask> getByTaskId(int taskId){
         List<Microtask> microtasks = getSession().createCriteria(Microtask.class)
                 .add(Restrictions.eq("taskId", taskId))
                 .list();

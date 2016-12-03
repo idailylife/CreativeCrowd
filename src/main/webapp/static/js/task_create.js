@@ -10,6 +10,11 @@ $(document).ready(function () {
         refreshCaptchaImage();
     });
 
+    var singlePagedRand_candidates = [];
+    $("#inputSinglePagedRand_config").change(function(e){
+        handleXlsFile(e, singlePagedRand_candidates);
+    });
+
     var ajaxSubmit = function () {
         $("input[name=startTime]").val(
             getUnixTimestamp($("#inputStartTime").val()));
@@ -28,6 +33,14 @@ $(document).ready(function () {
         } else if(mode == 2){
             //Sequence
             params = [];
+        } else if(mode == 3){
+            params = {
+                mtask_size: $("#inputSinglePagedRand_mtaskSize").val(),
+                N : $("#inputSinglePagedRand_N").val(),
+                K : $("#inputSinglePagedRand_K").val(),
+                nRows: $("#inputSinglePagedRand_nRows").val(),
+                candidates: singlePagedRand_candidates
+            }
         }
         params = JSON.stringify(params);
 
@@ -106,4 +119,42 @@ function getUnixTimestamp(str){
 function refreshCaptchaImage() {
     $("#img-captcha").attr("src", homeUrl+"captcha?rand=" + Math.random());
     $("#inputCaptcha").val("");
+}
+
+function handleXlsFile(e, dataAry) {
+    //处理需要导入的Excel文件
+    //多个文件导入支持，数据统一保存在一个列表里
+    var files = e.target.files;
+    var i, f;
+    for(i=0, f=files[i]; i!=files.length; ++i) {
+        var reader = new FileReader();
+        //var name = f.name;
+        reader.onload = function (e) {
+            var data = e.target.result;
+            var workbook = XLSX.read(data, {type: 'binary'});
+            var first_sheet_name = workbook.SheetNames[0];  //只读取第一个工作表
+            var worksheet = workbook.Sheets[first_sheet_name];
+            var row_array = XLSX.utils.sheet_to_row_object_array(worksheet);
+            row_array.forEach(function(rowItem){
+                var tempItem = {};
+                if('image' in rowItem){
+                    tempItem.image = rowItem.image;
+                }
+                if('text' in rowItem){
+                    tempItem.text = rowItem.text;
+                }
+                if(!isEmpty(tempItem)){
+                    dataAry.push(tempItem);
+                }
+            });
+            console.log("Excel file: read " + dataAry.length + " valid objects");
+            $("#pSinglePagedRand_confState").text("共计已导入"+ dataAry.length + "条目.");
+        };
+        reader.readAsBinaryString(f);
+    }
+}
+
+function isEmpty(obj){
+    for (var x in obj) { return false; }
+    return true;
 }

@@ -1,6 +1,7 @@
 package edu.inlab.models;
 
 import edu.inlab.repo.usertype.JSONObjectUserType;
+import edu.inlab.service.assignment.MicroTaskAssigner;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.validator.constraints.Length;
@@ -253,6 +254,9 @@ public class Task extends CaptchaCapableModel{
     }
 
     public String getParams() {
+//        if(mode== MicroTaskAssigner.TASK_ASSIGN_SINGLE_RANDOM && params.contains("\'")){
+//            params = params.replace('\'', '`');
+//        }
         return params;
     }
 

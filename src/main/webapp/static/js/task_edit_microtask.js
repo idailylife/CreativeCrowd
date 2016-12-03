@@ -73,7 +73,7 @@ $(document).ready(function () {
         //Save all tabs
         var li, li_id, tab_id, i;
         var liArray = $("ul.nav-tabs>li");
-        var saveCount = 0, maxSaveCount = liArray.length-2+1;
+        var saveCount = 0, maxSaveCount = liArray.length-2;
         var incrSaveCount = function () {
             saveCount++;
             var prog = 100*saveCount/maxSaveCount;
@@ -98,6 +98,7 @@ $(document).ready(function () {
             }
         };
 
+
         for(i=0; i<liArray.length; i++){
             li_id = liArray[i].id;
             tab_id = li_id.match(/\S+(?=-li)/);
@@ -112,6 +113,9 @@ $(document).ready(function () {
                 incrSaveCount();
             }
         }
+        if(liArray.length <= 2)
+            incrSaveCount();
+
         //task params
         updatePossibleParams(incrSaveCount);
     });

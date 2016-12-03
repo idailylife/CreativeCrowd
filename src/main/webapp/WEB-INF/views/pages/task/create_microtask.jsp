@@ -103,7 +103,25 @@
                             <%-- 单页随机任务 --%>
                             <div class="col-sm-12">
                                 <h4>单页随机任务配置(Grid-Similarity)</h4>
-
+                                <div class="form">
+                                    <div class="form-group">
+                                        <label for="inputSinglePagedRand_mtaskSize">一次任务的问题量</label>
+                                        <input type="number" class="form-control" id="inputSinglePagedRand_mtaskSize" value="${param_mtask_size}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSinglePagedRand_N">N=</label>
+                                        <input type="number" class="form-control" id="inputSinglePagedRand_N" value="${param_N}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSinglePagedRand_K">K=</label>
+                                        <input type="number" class="form-control" id="inputSinglePagedRand_K" value="${param_K}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputSinglePagedRand_nRows">显示行数</label>
+                                        <input type="number" class="form-control" id="inputSinglePagedRand_nRows" value="${param_nRows}">
+                                    </div>
+                                </div>
+                                <p>暂时无法修改图片、文字描述</p>
                             </div>
                         </c:if>
                     </div>

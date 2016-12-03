@@ -1,5 +1,6 @@
 package edu.inlab.models.handler;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -61,7 +62,7 @@ public class GridSimilarityChoicePageRender implements MicrotaskPageRenderer {
                     if(contentObj.has("image"))
                         contentMap.put("image", contentObj.getString("image"));
                     if(contentObj.has("text"))
-                        contentMap.put("text", contentObj.getString("text"));
+                        contentMap.put("text", StringEscapeUtils.escapeJavaScript(contentObj.getString("text")));
                     model.setContents(contentMap);
                     compactibleModels.add(model);
                 }

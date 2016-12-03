@@ -565,6 +565,12 @@ public class TaskController {
                 }
             }
             model.addAttribute("microtaskSeq", microtaskSeq);
+        } else if(task.getMode().equals(MicroTaskAssigner.TASK_ASSIGN_SINGLE_RANDOM)){
+            JSONObject paramObj = new JSONObject(task.getParams());
+            model.addAttribute("param_mtask_size", paramObj.getInt("mtask_size"));
+            model.addAttribute("param_N", paramObj.getInt("N"));
+            model.addAttribute("param_K", paramObj.getInt("K"));
+            model.addAttribute("param_nRows", paramObj.getInt("nRows"));
         }
 
         //List all uploaded files

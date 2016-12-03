@@ -27,14 +27,14 @@
         </c:when>
         <c:when test="${model.tag eq 'ref_item'}">
             var ref_item = {
-                "image": ${model.contents['image']},
-                "text" : ${model.contents['text']}
+                "image": '${model.contents['image']}',
+                "text" : '${model.contents['text']}'
             };
         </c:when>
         <c:when test="${model.tag eq 'item'}">
             candidate_items.push({
-                "image": ${model.contents['image']},
-                "text" : ${model.contents['text']}
+                "image": '${model.contents['image']}',
+                "text" : '${model.contents['text']}'
             });
         </c:when>
     </c:choose>

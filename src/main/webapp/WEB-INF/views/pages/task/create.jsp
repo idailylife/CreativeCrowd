@@ -156,6 +156,10 @@
                                         <p>每次从N个备选项中选择K个与参考项最接近的。</p>
                                         <div class="form">
                                             <div class="form-group">
+                                                <label for="inputSinglePagedRand_mtaskSize">一次任务的问题量</label>
+                                                <input type="number" class="form-control" id="inputSinglePagedRand_mtaskSize">
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="inputSinglePagedRand_N">N=</label>
                                                 <input type="number" class="form-control" id="inputSinglePagedRand_N">
                                             </div>

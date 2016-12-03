@@ -5,6 +5,8 @@ import edu.inlab.repo.MicroTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by inlab-dell on 2016/5/16.
  */
@@ -29,5 +31,10 @@ public class MicroTaskServiceImpl implements MicroTaskService {
     @Override
     public void saveOrUpdate(Microtask microtask) {
         microTaskRepository.update(microtask);
+    }
+
+    @Override
+    public List<Microtask> getByTaskId(int taskId) {
+        return microTaskRepository.getByTaskId(taskId);
     }
 }

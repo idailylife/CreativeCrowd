@@ -121,4 +121,15 @@ public class Microtask {
         }
         return super.hashCode();
     }
+
+    public static Microtask tempClone(Microtask origin, boolean noTemplate){
+        Microtask microtask = new Microtask();
+        if(!noTemplate)
+            microtask.setTemplate(origin.template);
+        microtask.setHandlerType(origin.handlerType);
+        microtask.setNextId(origin.nextId);
+        microtask.setPrevId(origin.prevId);
+        microtask.setTask(origin.task);
+        return microtask;
+    }
 }

@@ -4,13 +4,13 @@ import edu.inlab.models.Microtask;
 import edu.inlab.models.Task;
 import edu.inlab.models.UserMicroTask;
 import edu.inlab.models.UserTask;
+import edu.inlab.service.MicroTaskService;
 import edu.inlab.service.TaskService;
 import edu.inlab.service.UserMicrotaskService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -44,6 +44,9 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
     TaskService taskService;
 
     @Autowired
+    MicroTaskService microTaskService;
+
+    @Autowired
     UserMicrotaskService userMicrotaskService;
 
     @Override
@@ -56,7 +59,9 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
         if(finishedCount >= microtaskSizeLimit)
             return null;
 
-        Microtask microtaskToRender = task.getRelatedMictorasks().get(0);
+        Microtask microtaskToRender = Microtask.tempClone(microTaskService.getByTaskId(task.getId()).get(0), true);
+        //task.getRelatedMictorasks().get(0);
+
         /*
         * Push items into task template
         * */
@@ -66,11 +71,29 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
                 , taskParams.getInt("N")+1);    // 1 reference + N candidates
         Collections.shuffle(selectedIndices);
 
-        JSONObject templateJson = new JSONObject(taskParams);
-        templateJson.remove("candidates");
-        templateJson.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
+        JSONArray templateJson = new JSONArray();
+        JSONObject tempObj = new JSONObject();
+        tempObj.put("mtask_size", taskParams.getInt("mtask_size"));
+        templateJson.put(tempObj);
+        tempObj = new JSONObject();
+        tempObj.put("N", taskParams.getInt("N"));
+        templateJson.put(tempObj);
+        tempObj = new JSONObject();
+        tempObj.put("K", taskParams.getInt("K"));
+        templateJson.put(tempObj);
+        tempObj = new JSONObject();
+        tempObj.put("nRows", taskParams.getInt("nRows"));
+        templateJson.put(tempObj);
+
+        tempObj = new JSONObject();
+        tempObj.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
+        templateJson.put(tempObj);
+
+        //templateJson.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
         for(int i=1; i<selectedIndices.size(); i++){
-            templateJson.put("item", candidates.getJSONObject(selectedIndices.get(i)));
+            tempObj = new JSONObject();
+            tempObj.put("item", candidates.getJSONObject(selectedIndices.get(i)));
+            templateJson.put(tempObj);
         }
         microtaskToRender.setTemplate(templateJson.toString());
         return microtaskToRender;
@@ -81,7 +104,7 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
         Random random = new Random();
         for(int i=0; i<N; i++){
             if(i < k)
-                results.set(i, i);
+                results.add(i);
             else {
                 int next = random.nextInt(i+1);
                 if(next < k)
