@@ -1,6 +1,7 @@
 package edu.inlab.service;
 
 import edu.inlab.models.Microtask;
+import edu.inlab.models.Task;
 import edu.inlab.repo.MicroTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class MicroTaskServiceImpl implements MicroTaskService {
     }
 
     @Override
-    public List<Microtask> getByTaskId(int taskId) {
-        return microTaskRepository.getByTaskId(taskId);
+    public Microtask getUniqueByTask(Task task) {
+        return microTaskRepository.getFirstMtaskByTask(task);
     }
 }

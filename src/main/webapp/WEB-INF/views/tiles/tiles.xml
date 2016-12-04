@@ -100,8 +100,10 @@
         <put-attribute name="body" value="/WEB-INF/views/pages/task/do.jsp"/>
         <put-list-attribute name="stylesheets" inherit="true">
             <add-attribute value="/static/css/task_do_styles.css"/>
+            <add-attribute value="/static/css/util/magnific-popup.css"/>
         </put-list-attribute>
         <put-list-attribute name="javascripts" inherit="true">
+            <add-attribute value="/static/js/util/jquery.magnific-popup.min.js"/>
             <add-attribute value="/static/js/task_do.js"/>
         </put-list-attribute>
     </definition>

@@ -1,6 +1,7 @@
 package edu.inlab.service;
 
 import edu.inlab.models.Microtask;
+import edu.inlab.models.Task;
 
 import java.util.List;
 
@@ -12,5 +13,5 @@ public interface MicroTaskService {
     void save(Microtask microtask);
     void delete(Microtask microtask);
     void saveOrUpdate(Microtask microtask);
-    List<Microtask> getByTaskId(int taskId);
+    Microtask getUniqueByTask(Task task);
 }

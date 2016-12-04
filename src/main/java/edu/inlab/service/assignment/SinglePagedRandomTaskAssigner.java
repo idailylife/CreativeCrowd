@@ -50,6 +50,11 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
     UserMicrotaskService userMicrotaskService;
 
     @Override
+    public boolean isTransient() {
+        return true;
+    }
+
+    @Override
     public Microtask assignNext(UserTask userTask) throws RuntimeException {
         Task task = taskService.findById(userTask.getTaskId());
         JSONObject taskParams = new JSONObject(task.getParams());
@@ -59,7 +64,8 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
         if(finishedCount >= microtaskSizeLimit)
             return null;
 
-        Microtask microtaskToRender = Microtask.tempClone(microTaskService.getByTaskId(task.getId()).get(0), true);
+        int taskId = task.getId();
+        Microtask microtaskToRender = microTaskService.getUniqueByTask(task);
         //task.getRelatedMictorasks().get(0);
 
         /*
@@ -96,6 +102,9 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
             templateJson.put(tempObj);
         }
         microtaskToRender.setTemplate(templateJson.toString());
+
+        if(finishedCount <= microtaskSizeLimit - 1)
+            microtaskToRender.setNextId(-1); //fake id
         return microtaskToRender;
     }
 

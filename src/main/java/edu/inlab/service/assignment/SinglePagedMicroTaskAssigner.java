@@ -23,6 +23,11 @@ public class SinglePagedMicroTaskAssigner implements MicroTaskAssigner {
     TaskService taskService;
 
 
+    @Override
+    public boolean isTransient() {
+        return false;
+    }
+
     @Transactional
     public Microtask assignNext(UserTask userTask) {
         if(userTask.getState() == UserTask.STATE_CLAIMED

@@ -1,6 +1,7 @@
 package edu.inlab.repo;
 
 import edu.inlab.models.Microtask;
+import edu.inlab.models.Task;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -22,13 +23,6 @@ public class MicroTaskRepoImpl extends AbstractDao<Integer, Microtask> implement
         persist(microtask);
     }
 
-    public List<Microtask> getByTaskId(int taskId){
-        List<Microtask> microtasks = getSession().createCriteria(Microtask.class)
-                .add(Restrictions.eq("taskId", taskId))
-                .list();
-        return microtasks;
-    }
-
     @Override
     public void update(Microtask microtask) {
         saveOrUpdate(microtask);
@@ -37,5 +31,12 @@ public class MicroTaskRepoImpl extends AbstractDao<Integer, Microtask> implement
     @Override
     public void remove(Microtask microtask) {
         delete(microtask);
+    }
+
+    @Override
+    public Microtask getFirstMtaskByTask(Task task) {
+        return  (Microtask) getSession().createCriteria(Microtask.class)
+                .add(Restrictions.eq("task", task))
+                .uniqueResult();
     }
 }

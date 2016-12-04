@@ -26,11 +26,18 @@ import java.util.function.Consumer;
 @ComponentScan(basePackages = "edu.inlab")
 public class RandomMicroTaskAssigner implements MicroTaskAssigner {
 
+
+
     @Autowired
     TaskService taskService;
 
     @Autowired
     MicroTaskService microTaskService;
+
+    @Override
+    public boolean isTransient() {
+        return false;
+    }
 
     @Transactional
     public Microtask assignNext(UserTask userTask) {

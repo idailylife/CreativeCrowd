@@ -125,11 +125,12 @@ public class Microtask {
     public static Microtask tempClone(Microtask origin, boolean noTemplate){
         Microtask microtask = new Microtask();
         if(!noTemplate)
-            microtask.setTemplate(origin.template);
-        microtask.setHandlerType(origin.handlerType);
-        microtask.setNextId(origin.nextId);
-        microtask.setPrevId(origin.prevId);
+            microtask.setTemplate(origin.getTemplate());
+        microtask.setHandlerType(origin.getHandlerType());
+        microtask.setNextId(origin.getNextId());
+        microtask.setPrevId(origin.getPrevId());
         microtask.setTask(origin.task);
+        microtask.setId(origin.getId());
         return microtask;
     }
 }

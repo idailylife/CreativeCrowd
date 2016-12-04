@@ -81,14 +81,14 @@ $(document).ready(function () {
                     }
                 },
                 error : function (jqXHR, textStatus, errorThrown) {
-                    alert("Cannot connect to server: "+ textStatus);
+                    //alert("Cannot connect to server: "+ textStatus);
                     console.error(errorThrown);
                     console.error(jqXHR);
                 }
             });
         };
         echoService();
-        var echoInterval = setInterval(echoService, 10000); //10 seconds beat
+        var echoInterval = setInterval(echoService, 20000); //10 seconds beat
         var timeDispInterval = setInterval(function () {
             timeRemaining = timeRemaining - 1;
             if(timeRemaining < 0){

@@ -283,22 +283,28 @@ public class TaskController {
             //找不到符合条件的任务
             return "redirect:/task/tid" + taskId;
         }
+
+        UserMicroTask userMicroTask = null;
+        Microtask microtask = null;
         if(userTask.getCurrUserMicrotaskId() == null){
             //没有正在进行中的microtask，根据设定的Microtask Coordinator来分配新任务
             Task task = taskService.findById(userTask.getTaskId());
 
             MicroTaskAssigner taskAssigner = microTaskAssignerFactory.getAssigner(task.getMode());
-            Microtask nextMt = taskAssigner.assignNext(userTask);
-            if(nextMt == null){
+            microtask = taskAssigner.assignNext(userTask);
+            if(microtask == null){
                 return "redirect:/task/tid" + taskId;
             }
-            UserMicroTask userMicroTask = new UserMicroTask(userTask.getId(), nextMt.getId());
+            userMicroTask = new UserMicroTask(userTask.getId(), microtask.getId());
             userMicrotaskService.save(userMicroTask);
+
             userTask.setCurrUserMicrotaskId(userMicroTask.getId());
             userTaskService.updateUserTask(userTask);
         }
-        UserMicroTask userMicroTask = userMicrotaskService.getById(userTask.getCurrUserMicrotaskId());
-        Microtask microtask = microTaskService.getById(userMicroTask.getMicrotaskId());
+        if(userMicroTask == null)
+            userMicroTask = userMicrotaskService.getById(userTask.getCurrUserMicrotaskId());
+        if(microtask == null)
+            microtask = microTaskService.getById(userMicroTask.getMicrotaskId());
         String handlerType = microtask.getHandlerType();
         //JSONArray handlerContent = microtask.getTemplate();
         MicrotaskPageRenderer pageRenderer = MicrotaskHandlerFactory.getRenderer(handlerType);

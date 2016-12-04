@@ -2,6 +2,7 @@ package edu.inlab.repo;
 
 
 import edu.inlab.models.Microtask;
+import edu.inlab.models.Task;
 
 import java.util.List;
 
@@ -13,5 +14,5 @@ public interface MicroTaskRepository{
     void save(Microtask microtask);
     void update(Microtask microtask);
     void remove(Microtask microtask);
-    List<Microtask> getByTaskId(int taskId);
+    Microtask getFirstMtaskByTask(Task task);
 }

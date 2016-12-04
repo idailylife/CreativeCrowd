@@ -3,6 +3,7 @@ package edu.inlab.repo;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.StatelessSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
@@ -27,6 +28,10 @@ public abstract class AbstractDao <PK extends Serializable, T> {
     private SessionFactory sessionFactory;
     protected Session getSession(){
         return sessionFactory.getCurrentSession();
+    }
+
+    protected StatelessSession getStatelessSession(){
+        return sessionFactory.openStatelessSession();
     }
 
     @SuppressWarnings("unchecked")

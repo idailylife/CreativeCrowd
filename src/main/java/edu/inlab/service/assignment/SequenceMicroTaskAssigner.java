@@ -26,6 +26,11 @@ public class SequenceMicroTaskAssigner implements MicroTaskAssigner {
     TaskService taskService;
 
     @Override
+    public boolean isTransient() {
+        return false;
+    }
+
+    @Override
     public Microtask assignNext(UserTask userTask) throws RuntimeException {
         Integer currMTaskId = userTask.getCurrUserMicrotaskId();
         Task task = taskService.findById(userTask.getTaskId());

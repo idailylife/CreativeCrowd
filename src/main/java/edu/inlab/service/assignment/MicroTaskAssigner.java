@@ -14,6 +14,14 @@ import org.springframework.stereotype.Service;
 
 
 public interface MicroTaskAssigner {
+
+    /**
+     *
+     * @return Set to true if the microtask template will be filled upon user request (not stored constantly)
+     */
+    boolean isTransient();
+
+
     /**
      * 分配下一个microtask
      * @param userTask
