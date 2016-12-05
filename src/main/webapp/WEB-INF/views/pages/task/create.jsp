@@ -167,9 +167,9 @@
                                                 <label for="inputSinglePagedRand_K">K=</label>
                                                 <input type="number" class="form-control" id="inputSinglePagedRand_K">
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group" style="display: none">
                                                 <label for="inputSinglePagedRand_nRows">显示行数</label>
-                                                <input type="number" class="form-control" id="inputSinglePagedRand_nRows">
+                                                <input type="number" class="form-control" id="inputSinglePagedRand_nRows" value="1">
                                             </div>
                                             <div class="form-group">
                                                 <label for="inputSinglePagedRand_config">关联文件上传</label>

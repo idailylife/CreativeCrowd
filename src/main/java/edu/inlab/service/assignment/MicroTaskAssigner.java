@@ -29,6 +29,15 @@ public interface MicroTaskAssigner {
      */
     Microtask assignNext(UserTask userTask) throws RuntimeException;
 
+    /**
+     * FOR TRANSIENT TASK ONLY
+     * 分配当前的microtask (给随机任务用)
+     * @param userTask
+     * @return
+     * @throws RuntimeException
+     */
+    Microtask assignCurrent(UserTask userTask) throws RuntimeException;
+
     void onUserMicrotaskSubmit(UserMicroTask userMicroTask, Task task);
 
     int TASK_ASSIGN_SINGLE = 0;

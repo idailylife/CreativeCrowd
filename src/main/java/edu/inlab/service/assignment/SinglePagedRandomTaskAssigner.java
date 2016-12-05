@@ -55,56 +55,69 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
     }
 
     @Override
+    public Microtask assignCurrent(UserTask userTask) throws RuntimeException {
+        return assign(userTask, false);
+    }
+
+    @Override
     public Microtask assignNext(UserTask userTask) throws RuntimeException {
+        return assign(userTask, true);
+    }
+
+    private Microtask assign(UserTask userTask, boolean assignNext){
         Task task = taskService.findById(userTask.getTaskId());
         JSONObject taskParams = new JSONObject(task.getParams());
         Long microtaskSizeLimit = taskParams.getLong("mtask_size");
-        Long finishedCount = userMicrotaskService.getCountByUserTaskId(userTask.getId());
+        Long userMtaskCount = userMicrotaskService.getCountByUserTaskId(userTask.getId());
 
-        if(finishedCount >= microtaskSizeLimit)
+        if(assignNext && (userMtaskCount >= microtaskSizeLimit))
             return null;
 
-        int taskId = task.getId();
         Microtask microtaskToRender = microTaskService.getUniqueByTask(task);
         //task.getRelatedMictorasks().get(0);
 
-        /*
+        if(!assignNext){
+            JSONArray candidates = taskParams.getJSONArray("candidates");
+
+            List<Integer> selectedIndices = reserviorSample(candidates.length()
+                    , taskParams.getInt("N")+1);    // 1 reference + N candidates
+            Collections.shuffle(selectedIndices);
+
+            JSONArray templateJson = new JSONArray();
+            JSONObject tempObj = new JSONObject();
+            tempObj.put("mtask_size", taskParams.getInt("mtask_size"));
+            templateJson.put(tempObj);
+            tempObj = new JSONObject();
+            tempObj.put("N", taskParams.getInt("N"));
+            templateJson.put(tempObj);
+            tempObj = new JSONObject();
+            tempObj.put("K", taskParams.getInt("K"));
+            templateJson.put(tempObj);
+            tempObj = new JSONObject();
+            tempObj.put("nRows", taskParams.getInt("nRows"));
+            templateJson.put(tempObj);
+
+            tempObj = new JSONObject();
+            tempObj.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
+            templateJson.put(tempObj);
+
+            //templateJson.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
+            for(int i=1; i<selectedIndices.size(); i++){
+                tempObj = new JSONObject();
+                tempObj.put("item", candidates.getJSONObject(selectedIndices.get(i)));
+                templateJson.put(tempObj);
+            }
+            /*
         * Push items into task template
         * */
-        JSONArray candidates = taskParams.getJSONArray("candidates");
-
-        List<Integer> selectedIndices = reserviorSample(candidates.length()
-                , taskParams.getInt("N")+1);    // 1 reference + N candidates
-        Collections.shuffle(selectedIndices);
-
-        JSONArray templateJson = new JSONArray();
-        JSONObject tempObj = new JSONObject();
-        tempObj.put("mtask_size", taskParams.getInt("mtask_size"));
-        templateJson.put(tempObj);
-        tempObj = new JSONObject();
-        tempObj.put("N", taskParams.getInt("N"));
-        templateJson.put(tempObj);
-        tempObj = new JSONObject();
-        tempObj.put("K", taskParams.getInt("K"));
-        templateJson.put(tempObj);
-        tempObj = new JSONObject();
-        tempObj.put("nRows", taskParams.getInt("nRows"));
-        templateJson.put(tempObj);
-
-        tempObj = new JSONObject();
-        tempObj.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
-        templateJson.put(tempObj);
-
-        //templateJson.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
-        for(int i=1; i<selectedIndices.size(); i++){
-            tempObj = new JSONObject();
-            tempObj.put("item", candidates.getJSONObject(selectedIndices.get(i)));
-            templateJson.put(tempObj);
+            microtaskToRender.setTemplate(templateJson.toString());
         }
-        microtaskToRender.setTemplate(templateJson.toString());
 
-        if(finishedCount <= microtaskSizeLimit - 1)
+
+        if(assignNext && (userMtaskCount < microtaskSizeLimit - 1))
             microtaskToRender.setNextId(-1); //fake id
+        else if((!assignNext) && (userMtaskCount < microtaskSizeLimit))
+            microtaskToRender.setNextId(-1);
         return microtaskToRender;
     }
 

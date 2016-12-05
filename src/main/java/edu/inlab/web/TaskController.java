@@ -286,12 +286,15 @@ public class TaskController {
 
         UserMicroTask userMicroTask = null;
         Microtask microtask = null;
+        Task task = taskService.findById(userTask.getTaskId());
+        MicroTaskAssigner taskAssigner = microTaskAssignerFactory.getAssigner(task.getMode());
         if(userTask.getCurrUserMicrotaskId() == null){
             //没有正在进行中的microtask，根据设定的Microtask Coordinator来分配新任务
-            Task task = taskService.findById(userTask.getTaskId());
 
-            MicroTaskAssigner taskAssigner = microTaskAssignerFactory.getAssigner(task.getMode());
-            microtask = taskAssigner.assignNext(userTask);
+            if(taskAssigner.isTransient())
+                microtask = taskAssigner.assignCurrent(userTask);
+            else
+                microtask = taskAssigner.assignNext(userTask);
             if(microtask == null){
                 return "redirect:/task/tid" + taskId;
             }
@@ -300,11 +303,14 @@ public class TaskController {
 
             userTask.setCurrUserMicrotaskId(userMicroTask.getId());
             userTaskService.updateUserTask(userTask);
-        }
-        if(userMicroTask == null)
+        } else {
             userMicroTask = userMicrotaskService.getById(userTask.getCurrUserMicrotaskId());
-        if(microtask == null)
-            microtask = microTaskService.getById(userMicroTask.getMicrotaskId());
+            if(taskAssigner.isTransient())
+                microtask = taskAssigner.assignCurrent(userTask);
+            else
+                microtask = microTaskService.getById(userMicroTask.getMicrotaskId());
+        }
+
         String handlerType = microtask.getHandlerType();
         //JSONArray handlerContent = microtask.getTemplate();
         MicrotaskPageRenderer pageRenderer = MicrotaskHandlerFactory.getRenderer(handlerType);
@@ -331,7 +337,7 @@ public class TaskController {
         }
         model.addAttribute("savedResults", resultMap);
 
-        Task task = taskService.findById(userTask.getTaskId());
+        //Task task = taskService.findById(userTask.getTaskId());
         model.addAttribute("task", task);
 
         model.addAttribute("prev", microtask.getPrevId());
@@ -377,7 +383,6 @@ public class TaskController {
             responseBody.setState(402);
             responseBody.setMessage("Auth failure. umt_id is not valid.");
         } else {
-
             TempFile tempFile = tempFileService.getByUsermicrotaskId(umtId);
             UserMicroTask userMicroTask = userMicrotaskService.getById(umtId);
             if(userMicroTask.getResults() != null && userMicroTask.getResults().has("file")){
@@ -434,6 +439,7 @@ public class TaskController {
 
                 MicroTaskAssigner taskAssigner = microTaskAssignerFactory.getAssigner(task.getMode());
                 taskAssigner.onUserMicrotaskSubmit(userMicroTask, task);     //Update task params if need
+
                 Microtask microtask = taskAssigner.assignNext(userTask);     //Assign next microtask
 
                 if(microtask == null){
@@ -517,8 +523,6 @@ public class TaskController {
         taskService.saveTask(task);
         if(fileBucket.getFile() != null && !fileBucket.getFile().isEmpty()){
             //Save file
-//            String fileName = String.valueOf(random.nextInt(1000)) +
-//                    fileBucket.getFile().getOriginalFilename();
             String fileName = "/task/" + task.getId() + "/DESCIMG_" + fileBucket.getFile().getOriginalFilename();
             File existingFile = new File(Constants.UPLOAD_FILE_STORE_LOCATION + fileName);
             if(!existingFile.getParentFile().exists()){
@@ -527,9 +531,8 @@ public class TaskController {
             }
             FileCopyUtils.copy(fileBucket.getFile().getBytes(),
                     new File(Constants.UPLOAD_FILE_STORE_LOCATION + fileName));
-            task.setImage(fileName);
+            task.setImage("DESCIMG_" + fileBucket.getFile().getOriginalFilename());
         }
-        task.setImage("/DESCIMG_" + fileBucket.getFile().getOriginalFilename());
         taskService.updateTask(task);
         responseBody.setState(200);
         responseBody.setContent(task.getId().toString());
@@ -742,6 +745,9 @@ public class TaskController {
     @RequestMapping(value = "/done", method = RequestMethod.GET)
     public String taskDone(@RequestParam(value = "refCode", required = false) String refCode, Model model){
         model.addAttribute("refCode", refCode);
+        if(refCode != null){
+            model.addAttribute("isMTurkTask", true);
+        }
         return "task/done";
     }
 }

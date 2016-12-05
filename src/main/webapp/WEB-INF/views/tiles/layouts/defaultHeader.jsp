@@ -10,7 +10,7 @@
 <nav class="navbar navbar-inverse">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="<c:url value="/"/> ">${isMTurkTask? 'CreativeCrowd for MTurk':'创意众包平台'}</a>
+            <a class="navbar-brand" href="<c:url value="/"/> ">${isMTurkTask? 'CreativeCrowd for MTurk':'CreativeCrowd'}</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">

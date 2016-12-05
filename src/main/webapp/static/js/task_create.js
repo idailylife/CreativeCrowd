@@ -141,7 +141,7 @@ function handleXlsFile(e, dataAry) {
                     tempItem.image = rowItem.image;
                 }
                 if('text' in rowItem){
-                    tempItem.text = rowItem.text;
+                    tempItem.text = rowItem.text.replace(/<\/?[^>]+(>|$)/g, "");    //strip html tags
                 }
                 if(!isEmpty(tempItem)){
                     dataAry.push(tempItem);

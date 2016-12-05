@@ -31,6 +31,11 @@ public class SequenceMicroTaskAssigner implements MicroTaskAssigner {
     }
 
     @Override
+    public Microtask assignCurrent(UserTask userTask) throws RuntimeException {
+        return null;
+    }
+
+    @Override
     public Microtask assignNext(UserTask userTask) throws RuntimeException {
         Integer currMTaskId = userTask.getCurrUserMicrotaskId();
         Task task = taskService.findById(userTask.getTaskId());

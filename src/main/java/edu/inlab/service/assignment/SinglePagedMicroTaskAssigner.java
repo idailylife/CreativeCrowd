@@ -28,6 +28,11 @@ public class SinglePagedMicroTaskAssigner implements MicroTaskAssigner {
         return false;
     }
 
+    @Override
+    public Microtask assignCurrent(UserTask userTask) throws RuntimeException {
+        return null;
+    }
+
     @Transactional
     public Microtask assignNext(UserTask userTask) {
         if(userTask.getState() == UserTask.STATE_CLAIMED

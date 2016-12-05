@@ -3,6 +3,7 @@ package edu.inlab.repo;
 import edu.inlab.models.Microtask;
 import edu.inlab.models.Task;
 import org.hibernate.SessionFactory;
+import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,8 +36,14 @@ public class MicroTaskRepoImpl extends AbstractDao<Integer, Microtask> implement
 
     @Override
     public Microtask getFirstMtaskByTask(Task task) {
-        return  (Microtask) getSession().createCriteria(Microtask.class)
+        StatelessSession session = getStatelessSession();
+
+        Microtask retVal = (Microtask) session.createCriteria(Microtask.class)
                 .add(Restrictions.eq("task", task))
                 .uniqueResult();
+
+        session.close();
+
+        return retVal;
     }
 }
