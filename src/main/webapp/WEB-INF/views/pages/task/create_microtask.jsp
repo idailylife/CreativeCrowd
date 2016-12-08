@@ -205,7 +205,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="inputHandlerType_template">HandlerType</label>
-                                    <input type="text" class="form-control" name="handlerType" id="inputHandlerType_template" placeholder="渲染模块类型" value="simple">
+                                    <input type="text" class="form-control" name="handlerType" id="inputHandlerType_template" placeholder="渲染模块类型" value="${(task.mode eq 3)? 'grid_choice' : 'simple'}">
                                 </div>
                                 <div class="form-group">
                                     <label for="textTemplate_template">Template</label>

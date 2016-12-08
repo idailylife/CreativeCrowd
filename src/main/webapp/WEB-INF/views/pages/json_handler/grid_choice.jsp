@@ -18,7 +18,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-11">
-            <div class="alert alert-info" role="alert">Please select <kbd id="num_K">{{K}}</kbd> design solutions (in sequence) from the candidates on the right, which is more similar than other candidates to the reference solution shown left.</div>
+            <div class="alert alert-info" role="alert">Select <kbd id="num_K">{{K}}</kbd> design solutions from the candidates on the right, which is more similar than other candidates to the reference solution shown left. Click an image to zoom up.</div>
         </div>
         <div class="col-md-1">
             <button type="button" v-on:click="clickFunc" class="btn btn-success" id="btn-next" v-bind:disabled="next_btn_disabled">${(empty next)? 'Finish':'Next Q'}</button>
@@ -26,7 +26,7 @@
     </div>
     <div class="row">
 
-        <div class="col-md-3">
+        <div class="col-md-2">
             <!--Reference item-->
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -34,37 +34,41 @@
                 </div>
                 <div class="panel-body">
                     <div class="col-md-12" id="div-ref">
-                        <a v-bind:href="image" class="single-popup-link">
-                            <img v-bind:src="image" class="img-responsive center-block img-thumbnail">
-                        </a>
-                        <p id="ref-image-title">
-                            {{text}}
-                        </p>
+                        <div class="row">
+                            <a v-bind:href="image" class="single-popup-link">
+                                <img v-bind:src="image" class="img-responsive center-block img-thumbnail" title="Click to see detail">
+                            </a>
+                        </div>
+                        <div class="row">
+                            <p id="ref-image-title" class="">
+                                {{text}}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-9" id="div-candidate">
+        <div class="col-md-10" id="div-candidate">
             <!--Candidate item-->
             <%--<div class="row" id="div-candidate">--%>
 
                 <template v-for="(item, index) in items">
                     <div class="col-md-6">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <!-- img -->
                                 <a v-bind:href="item.image" class="group-popup-link">
-                                    <img v-bind:src="item.image" class="img-responsive center-block img-thumbnail">
+                                    <img v-bind:src="item.image" class="img-responsive center-block img-rounded" title="Click to see detail">
                                 </a>
                                 <div class="text-center">
                                     <button type="button" v-on:click="selectToggle(item.id, index)" class="btn cand-select" :class="item.selected ? 'btn-danger' : 'btn-primary'">
-                                        <span v-if="item.selected">Un-</span>Select
+                                        <span v-if="item.selected">De-</span>Select
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-md-8 text-min-ht">
+                            <div class="col-md-9 text-min-ht">
                                 <!-- text -->
-                                <p class="cand-img-titles">
+                                <p class="cand-img-titles pre-scrollable">
                                     {{ item.text }}
                                 </p>
                             </div>

@@ -696,7 +696,13 @@ public class TaskController {
                 } else if(task.getRepeatable() == 0){
                     //Cannot do more...
                     responseBody.setState(402);
-                    responseBody.setMessage("Task has already been finished or is expired.");
+                    String refCode = claimedUserTasks.get(0).getRefCode();
+                    String retStr;
+                    if(refCode == null)
+                        retStr = "Task has already been finished or is expired.";
+                    else
+                        retStr = "Task has been finished. Your reference code is " + refCode;
+                    responseBody.setMessage(retStr);
                 } else {
 
                     responseBody.setState(200);

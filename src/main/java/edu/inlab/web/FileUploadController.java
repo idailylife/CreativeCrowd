@@ -73,18 +73,20 @@ public class FileUploadController {
             String uploadedFile = iterator.next();
             MultipartFile file = request.getFile(uploadedFile);
             String fileName = "/task/" + taskId + '/' + file.getOriginalFilename();
-            File oldFile = new File(Constants.UPLOAD_FILE_STORE_LOCATION + fileName);
+            String wholeFileName = Constants.UPLOAD_FILE_STORE_LOCATION + fileName;
+            File oldFile = new File(wholeFileName);
+
             if(oldFile.exists()){
                 if(!oldFile.delete()){
-                    throw new IOException("Cannot delete origin file " + fileName);
+                    throw new IOException("Cannot delete origin file " + wholeFileName);
                 }
             } else if(!oldFile.getParentFile().exists()) {
                 if(!oldFile.getParentFile().mkdirs()){
-                    throw new IOException("Cannot create directories for file " + fileName);
+                    throw new IOException("Cannot create directories for file " + wholeFileName);
                 }
             }
             FileCopyUtils.copy(file.getBytes(),
-                    new File(Constants.UPLOAD_FILE_STORE_LOCATION + fileName));
+                    new File(wholeFileName));
         }
         return new ResponseEntity<>("{}", HttpStatus.OK);
     }

@@ -52,10 +52,11 @@ public class UserController {
     TaskService taskService;
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public String newUser(HttpServletRequest request){
+    public String newUser(HttpServletRequest request, Model model){
         if(request.getSession().getAttribute(Constants.KEY_USER_UID) != null){
             return "redirect:/";
         }
+        model.addAttribute("allowRegister", Constants.ALLOW_REGISTER);
         return "user/register";
     }
 

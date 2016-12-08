@@ -81,7 +81,7 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
 
             List<Integer> selectedIndices = reserviorSample(candidates.length()
                     , taskParams.getInt("N")+1);    // 1 reference + N candidates
-            Collections.shuffle(selectedIndices);
+            //Collections.shuffle(selectedIndices);
 
             JSONArray templateJson = new JSONArray();
             JSONObject tempObj = new JSONObject();

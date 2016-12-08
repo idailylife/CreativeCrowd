@@ -74,6 +74,8 @@ $(document).ready(function(){
                     });
                 }
                 upd_data.candidates = cand_ary;
+                upd_data.enter_time = grid_params.enter_time;
+                upd_data.submit_time = (new Date()).valueOf();
 
                 this.next_btn_disabled = true;
 
@@ -158,6 +160,8 @@ $(document).ready(function(){
             enabled: true
         }
     });
+
+    grid_params['enter_time'] = (new Date()).valueOf();
 });
 
 var messageResources = function () {
