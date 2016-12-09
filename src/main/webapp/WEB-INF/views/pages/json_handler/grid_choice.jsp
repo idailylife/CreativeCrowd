@@ -36,7 +36,7 @@
                     <div class="col-md-12" id="div-ref">
                         <div class="row">
                             <a v-bind:href="image" class="single-popup-link">
-                                <img v-bind:src="image" class="img-responsive center-block img-thumbnail" title="Click to see detail">
+                                <img v-bind:src="image" class="img-responsive center-block" title="Click to see detail">
                             </a>
                         </div>
                         <div class="row">
@@ -69,7 +69,7 @@
                             <div class="col-md-9 text-min-ht">
                                 <!-- text -->
                                 <div class="row" v-show="item.selected">
-                                    <p class="bg-danger"><span class="glyphicon glyphicon-question-sign"></span> In which aspect(s) is this candidates similar to the reference?<br>
+                                    <p class="bg-danger"> In which aspect(s) is this candidates similar to the reference?<br>
                                         <label class="checkbox-inline">
                                             <input type="checkbox" value="f" v-model="item.fbs_checked">Function
                                         </label>
@@ -79,6 +79,8 @@
                                         <label class="checkbox-inline">
                                             <input type="checkbox" value="s" v-model="item.fbs_checked">Structure
                                         </label>
+                                        &nbsp;
+                                        <span class="glyphicon glyphicon-question-sign fbs_tooltip" ></span>
                                     </p>
                                 </div>
                                 <div class="row">

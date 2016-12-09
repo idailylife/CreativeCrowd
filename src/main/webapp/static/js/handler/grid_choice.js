@@ -164,6 +164,19 @@ $(document).ready(function(){
     });
 
     grid_params['enter_time'] = (new Date()).valueOf();
+
+    $('.fbs_tooltip').tooltip({
+        placement: "bottom",
+        html: true,
+        delay: {
+            show: 300,
+            hide: 50
+        },
+        title: '<ul>' +
+        '<li>Function: the teleology (purpose) of the design object. For example, the functions of a turbocharger include increasing the power output of an engine, providing reliability, and providing affordability.</li>' +
+        '<li>Behaviour: the attributes that can be derived from the design object’s structure. For example, the behaviour of a turbocharger includes attributes such as air mass flow, efficiency ratio, thermal strength, and weight.</li>' +
+        '<li>Structure: the components of the design object and their relationships. In the turbocharger example, structure includes the turbocharger components (compressor, turbine, shaft, etc.) and their spatial dimensions, interconnections and materials.</li></ul>'
+    });
 });
 
 var messageResources = function () {
