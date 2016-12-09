@@ -5,3 +5,7 @@
 .text-min-ht{
     min-height: 200px;
 }
+
+.should-hidden{
+    display: none;
+}

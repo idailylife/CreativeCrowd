@@ -61,16 +61,31 @@
                                     <img v-bind:src="item.image" class="img-responsive center-block img-rounded" title="Click to see detail">
                                 </a>
                                 <div class="text-center">
-                                    <button type="button" v-on:click="selectToggle(item.id, index)" class="btn cand-select" :class="item.selected ? 'btn-danger' : 'btn-primary'">
+                                    <button type="button" v-on:click="selectToggle(item.id, index, $event)" class="btn cand-select" :class="item.selected ? 'btn-danger' : 'btn-primary'">
                                         <span v-if="item.selected">De-</span>Select
                                     </button>
                                 </div>
                             </div>
                             <div class="col-md-9 text-min-ht">
                                 <!-- text -->
-                                <p class="cand-img-titles pre-scrollable">
-                                    {{ item.text }}
-                                </p>
+                                <div class="row" v-show="item.selected">
+                                    <p class="bg-danger"><span class="glyphicon glyphicon-question-sign"></span> In which aspect(s) is this candidates similar to the reference?<br>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="f" v-model="item.fbs_checked">Function
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="b" v-model="item.fbs_checked">Behaviour
+                                        </label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" value="s" v-model="item.fbs_checked">Structure
+                                        </label>
+                                    </p>
+                                </div>
+                                <div class="row">
+                                    <p class="cand-img-titles pre-scrollable">
+                                        {{ item.text }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -107,7 +122,8 @@
                 id: '${model.contents['image']}',
                 image: '<c:url value="/"/>/static/img/upload/task/${task.id}/${model.contents['image']}.jpg',
                 text : '${model.contents['text']}',
-                selected: false
+                selected: false,
+                fbs_checked: []
             });
         </c:when>
     </c:choose>

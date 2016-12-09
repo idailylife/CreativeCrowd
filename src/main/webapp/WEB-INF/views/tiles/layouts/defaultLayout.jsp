@@ -20,7 +20,7 @@
     <sec:csrfMetaTags/>
     <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <%--<link rel="stylesheet" href="<c:url value="/static/css/defaultHeader-styles.css"/> ">--%>
     <!-- Auto appended stylesheets -->
     <c:forEach var="css" items="${stylesheets}">
@@ -33,7 +33,7 @@
         <tiles:insertAttribute name="header"/>
     </header>
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
-    <script src="http://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <section id="site-content">
         <tiles:insertAttribute name="body"/>
     </section>

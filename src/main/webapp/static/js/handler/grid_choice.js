@@ -3,6 +3,7 @@
  */
 $(document).ready(function(){
     //Data binding
+
     var bind_ref = new Vue({
         el: '#div-ref',
         data: ref_item
@@ -17,7 +18,7 @@ $(document).ready(function(){
             select_count : 0
         },
         methods: {
-            selectToggle: function (msg, index) {
+            selectToggle: function (msg, index, event) {
                 console.log("item clicked "+ msg + ", index= "+index);
 
                 if(!this.items[index].selected && this.select_count>=grid_params.K){
@@ -54,7 +55,7 @@ $(document).ready(function(){
                 //Generate results and submit
                 //Result format:
                 // {  ref: {id: ID},
-                //    candidates: [{id: ID, selected: IS_SELECTED, timestamp: CLICK_TIMESTAMP},...]
+                //    candidates: [{id: ID, selected: IS_SELECTED, timestamp: CLICK_TIMESTAMP, fbs_checked: [..]},...]
                 // }
                 var upd_data = {
                     tid: $("#tid").val()
@@ -70,7 +71,8 @@ $(document).ready(function(){
                     cand_ary.push({
                         id: candidate_items[i].id,
                         selected : candidate_items[i].selected,
-                        timestamp : candidate_items[i].click_time
+                        timestamp : candidate_items[i].click_time,
+                        fbs_checked : candidate_items[i].fbs_checked
                     });
                 }
                 upd_data.candidates = cand_ary;
