@@ -15,7 +15,8 @@ $(document).ready(function(){
         el: '#div-candidate',
         data: {
             items: candidate_items,
-            select_count : 0
+            select_count : 0,
+            fbs_on: record_fbs
         },
         methods: {
             selectToggle: function (msg, index, event) {
@@ -68,12 +69,20 @@ $(document).ready(function(){
                 var cand_ary = [];
                 var i;
                 for(i=0; i<candidate_items.length; i++){
-                    cand_ary.push({
-                        id: candidate_items[i].id,
-                        selected : candidate_items[i].selected,
-                        timestamp : candidate_items[i].click_time,
-                        fbs_checked : candidate_items[i].fbs_checked
-                    });
+                    if(record_fbs){
+                        cand_ary.push({
+                            id: candidate_items[i].id,
+                            selected : candidate_items[i].selected,
+                            timestamp : candidate_items[i].click_time,
+                            fbs_checked : candidate_items[i].fbs_checked
+                        });
+                    } else {
+                        cand_ary.push({
+                            id: candidate_items[i].id,
+                            selected : candidate_items[i].selected,
+                            timestamp : candidate_items[i].click_time
+                        });
+                    }
                 }
                 upd_data.candidates = cand_ary;
                 upd_data.enter_time = grid_params.enter_time;
@@ -143,6 +152,13 @@ $(document).ready(function(){
         el: '#num_K',
         data: {
            K : grid_params.K
+        }
+    });
+
+    var bind_progress = new Vue({
+        el: '#alert-progress',
+        data: {
+            progress: grid_params.progress
         }
     });
 

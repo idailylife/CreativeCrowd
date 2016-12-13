@@ -17,11 +17,16 @@
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-1">
+            <p role="alert" id="alert-progress" class="text-center"><small>Progress:{{progress}}</small></p>
+        </div>
+
+        <div class="col-md-10">
             <div class="alert alert-info" role="alert">Select <kbd id="num_K">{{K}}</kbd> design solutions from the candidates on the right, which is more similar than other candidates to the reference solution shown left. Click an image to zoom up.</div>
         </div>
+
         <div class="col-md-1">
-            <button type="button" v-on:click="clickFunc" class="btn btn-success" id="btn-next" v-bind:disabled="next_btn_disabled">${(empty next)? 'Finish':'Next Q'}</button>
+            <button type="button" v-on:click="clickFunc" class="btn btn-success" id="btn-next" v-bind:disabled="next_btn_disabled">${(empty next)? 'Finish':'Next'}</button>
         </div>
     </div>
     <div class="row">
@@ -68,8 +73,8 @@
                             </div>
                             <div class="col-md-9 text-min-ht">
                                 <!-- text -->
-                                <div class="row" v-show="item.selected">
-                                    <p class="bg-danger"> In which aspect(s) is this candidates similar to the reference?<br>
+                                <div class="row" v-show="item.selected && fbs_on">
+                                    <p class="bg-danger"> In which aspect(s) is this candidate similar to the reference?<br>
                                         <label class="checkbox-inline">
                                             <input type="checkbox" value="f" v-model="item.fbs_checked">Function
                                         </label>
@@ -101,6 +106,7 @@
 </div>
 
 <script type="text/javascript">
+    var record_fbs = false; //turn on to enable Function-Behavior-Structure questions
     var candidate_items = [];
 <c:forEach items="${handlerContent}" var="model">
     <%-- instance of JstlCompatibleModel --%>
@@ -109,7 +115,8 @@
             var grid_params = {
                 N:${model.contents['N']},
                 K:${model.contents['K']},
-                nRows:${model.contents['nRows']}
+                nRows:${model.contents['nRows']},
+                progress:"${model.contents['progress']}"
             };
         </c:when>
         <c:when test="${model.tag eq 'ref_item'}">

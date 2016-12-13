@@ -53,8 +53,12 @@ public class GridSimilarityChoicePageRender implements MicrotaskPageRenderer {
             if(rowObj.keys().hasNext()){
                 String tag = rowObj.keys().next();
                 if(!tag.equals("item") && !tag.equals("ref_item")){
-                    //model.setSingleValue(rowObj.getInt(tag));
-                    paramContentMap.put(tag, rowObj.getInt(tag));
+                    if(tag.equals("progress")){
+                        paramContentMap.put(tag, rowObj.getString(tag));
+                    } else {
+                        paramContentMap.put(tag, rowObj.getInt(tag));
+                    }
+
                 } else {
                     JstlCompatibleModel model = new JstlCompatibleModel();
                     model.setTag(tag);

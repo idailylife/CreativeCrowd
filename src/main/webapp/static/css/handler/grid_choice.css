@@ -1,5 +1,9 @@
 #btn-next{
-    margin-top: 10px;
+    margin-top: 0.75em;
+}
+
+#alert-progress{
+    margin-top: 1em;
 }
 
 .text-min-ht{

@@ -95,6 +95,10 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
             tempObj = new JSONObject();
             tempObj.put("nRows", taskParams.getInt("nRows"));
             templateJson.put(tempObj);
+            tempObj = new JSONObject();
+            float progress = 100*(userMtaskCount==0?1:userMtaskCount)/(float)microtaskSizeLimit;
+            tempObj.put("progress", String.format("%.1f", progress)+"%");
+            templateJson.put(tempObj);
 
             tempObj = new JSONObject();
             tempObj.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
@@ -117,6 +121,7 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
             microtaskToRender.setNextId(-1); //fake id
         else if((!assignNext) && (userMtaskCount < microtaskSizeLimit))
             microtaskToRender.setNextId(-1);
+
         return microtaskToRender;
     }
 
