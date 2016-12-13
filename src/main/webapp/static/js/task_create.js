@@ -11,8 +11,9 @@ $(document).ready(function () {
     });
 
     var singlePagedRand_candidates = [];
+    var singlePagedRand_goldenStdQuestions = [];
     $("#inputSinglePagedRand_config").change(function(e){
-        handleXlsFile(e, singlePagedRand_candidates);
+        handleXlsFile(e, singlePagedRand_candidates, singlePagedRand_goldenStdQuestions);
     });
 
     var ajaxSubmit = function () {
@@ -39,7 +40,12 @@ $(document).ready(function () {
                 N : $("#inputSinglePagedRand_N").val(),
                 K : $("#inputSinglePagedRand_K").val(),
                 nRows: $("#inputSinglePagedRand_nRows").val(),
-                candidates: singlePagedRand_candidates
+                candidates: singlePagedRand_candidates,
+                use_gold_std: false
+            };
+            if (singlePagedRand_goldenStdQuestions.length > 0){
+                params.gold_std_q = singlePagedRand_goldenStdQuestions;
+                params.use_gold_std = true;
             }
         }
         params = JSON.stringify(params);
@@ -121,19 +127,20 @@ function refreshCaptchaImage() {
     $("#inputCaptcha").val("");
 }
 
-function handleXlsFile(e, dataAry) {
+function handleXlsFile(e, dataAry, goldStdAry) {
     //处理需要导入的Excel文件
     //多个文件导入支持，数据统一保存在一个列表里
     var files = e.target.files;
     var i, f;
+    dataAry.length = 0;
     for(i=0, f=files[i]; i!=files.length; ++i) {
         var reader = new FileReader();
         //var name = f.name;
         reader.onload = function (e) {
             var data = e.target.result;
             var workbook = XLSX.read(data, {type: 'binary'});
-            var first_sheet_name = workbook.SheetNames[0];  //只读取第一个工作表
-            var worksheet = workbook.Sheets[first_sheet_name];
+            var sheet_name = workbook.SheetNames[0];  //只读取第一个工作表
+            var worksheet = workbook.Sheets[sheet_name];
             var row_array = XLSX.utils.sheet_to_row_object_array(worksheet);
             row_array.forEach(function(rowItem){
                 var tempItem = {};
@@ -148,7 +155,31 @@ function handleXlsFile(e, dataAry) {
                 }
             });
             console.log("Excel file: read " + dataAry.length + " valid objects");
-            $("#pSinglePagedRand_confState").text("共计已导入"+ dataAry.length + "条目.");
+            var dispMsg = "共计已导入"+ dataAry.length + "条目.";
+            //Golden standard question read
+            if($("#inputSinglePagedRand_GoldenStd").is(':checked')){
+                goldStdAry.length = 0;
+                var n = $('#inputSinglePagedRand_N').val();
+                var k = $('#inputSinglePagedRand_K').val();
+                sheet_name = workbook.SheetNames[1];    //Read second worksheet
+                worksheet = workbook.Sheets[sheet_name];
+                row_array = XLSX.utils.sheet_to_row_object_array(worksheet);
+                row_array.forEach(function(rowItem){
+                    var gstd_item = {ref: rowItem.ref, cand:[], ans:[]};
+                    var i;
+                    for (i=0; i<n; i++){
+                        gstd_item.cand.push(rowItem['cand'+(i+1)]);
+                    }
+                    for (i=0; i<k; i++){
+                        gstd_item.ans.push(rowItem['ans'+(i+1)]);
+                    }
+                    goldStdAry.push(gstd_item);
+                });
+                console.log("Excel file: read "+ goldStdAry.length + " golden standard questions.");
+                dispMsg += "\n共计已导入" + goldStdAry.length + "黄金标准问题.";
+            }
+            //
+            $("#pSinglePagedRand_confState").text(dispMsg);
         };
         reader.readAsBinaryString(f);
     }

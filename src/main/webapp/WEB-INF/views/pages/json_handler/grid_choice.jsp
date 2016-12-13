@@ -106,7 +106,7 @@
 </div>
 
 <script type="text/javascript">
-    var record_fbs = false; //turn on to enable Function-Behavior-Structure questions
+    var record_fbs = true; //turn on to enable Function-Behavior-Structure questions
     var candidate_items = [];
 <c:forEach items="${handlerContent}" var="model">
     <%-- instance of JstlCompatibleModel --%>

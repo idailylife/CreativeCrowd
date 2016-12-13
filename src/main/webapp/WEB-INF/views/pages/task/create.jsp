@@ -160,12 +160,18 @@
                                                 <input type="number" class="form-control" id="inputSinglePagedRand_mtaskSize">
                                             </div>
                                             <div class="form-group">
-                                                <label for="inputSinglePagedRand_N">N=</label>
+                                                <label for="inputSinglePagedRand_N">Grid 备选项数目N</label>
                                                 <input type="number" class="form-control" id="inputSinglePagedRand_N">
                                             </div>
                                             <div class="form-group">
-                                                <label for="inputSinglePagedRand_K">K=</label>
+                                                <label for="inputSinglePagedRand_K">Grid 选择项数目K</label>
                                                 <input type="number" class="form-control" id="inputSinglePagedRand_K">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="inputSinglePagedRand_GoldenStd">启用黄金标准问题
+                                                    <input type="checkbox" class="form-control" id="inputSinglePagedRand_GoldenStd">
+                                                </label>
+                                                <p class="help-block">在关联Excel文件的第二个Sheet配置</p>
                                             </div>
                                             <div class="form-group" style="display: none">
                                                 <label for="inputSinglePagedRand_nRows">显示行数</label>

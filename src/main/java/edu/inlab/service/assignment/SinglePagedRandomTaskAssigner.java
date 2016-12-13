@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by inlab-dell on 2016/12/2.
@@ -28,9 +26,16 @@ import java.util.Random;
  *     "N": N个候选项,
  *     "K": 选出K个,
  *     "nRows": 显示的行数,
+ *     "use_gold_std": 是否使用黄金标准问题,  //optional, default is false
  *     "candidates":
  *      [
  *          {"image": 内部图片文件名, "text":文字描述}, ...
+ *      ],
+ *      "gold_std_q":   //optional
+ *      [
+ *          ref: ID_REF_ITEM,
+ *          cand: [ID_CANDIDATE,...],
+ *          ans: [ID_ANSWER,...]
  *      ]
  * }
  *
@@ -47,6 +52,8 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
 
     @Autowired
     UserMicrotaskService userMicrotaskService;
+
+    static GoldenStandardQuestionCache gsQuestionCache = null;
 
     @Override
     public boolean isTransient() {
@@ -76,18 +83,14 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
         //task.getRelatedMictorasks().get(0);
 
         if(!assignNext){
-            JSONArray candidates = taskParams.getJSONArray("candidates");
-
-            List<Integer> selectedIndices = reserviorSample(candidates.length()
-                    , taskParams.getInt("N")+1);    // 1 reference + N candidates
-            //Collections.shuffle(selectedIndices);
-
             JSONArray templateJson = new JSONArray();
             JSONObject tempObj = new JSONObject();
             tempObj.put("mtask_size", taskParams.getInt("mtask_size"));
             templateJson.put(tempObj);
             tempObj = new JSONObject();
-            tempObj.put("N", taskParams.getInt("N"));
+            int param_N = taskParams.getInt("N");
+            tempObj.put("N", param_N);
+
             templateJson.put(tempObj);
             tempObj = new JSONObject();
             tempObj.put("K", taskParams.getInt("K"));
@@ -100,16 +103,50 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
             tempObj.put("progress", String.format("%.1f", progress)+"%");
             templateJson.put(tempObj);
 
-            tempObj = new JSONObject();
-            tempObj.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
-            templateJson.put(tempObj);
+            JSONArray candidates = taskParams.getJSONArray("candidates");
+            if(taskParams.has("use_gold_std") && taskParams.getBoolean("use_gold_std")
+                    && userMtaskCount.equals(microtaskSizeLimit)){
+                //The last question should be gold standard question
+                if(gsQuestionCache == null)
+                    gsQuestionCache = new GoldenStandardQuestionCache();
 
-            //templateJson.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
-            for(int i=1; i<selectedIndices.size(); i++){
+                JSONArray goldStdQuestins = taskParams.getJSONArray("gold_std_q");
+                int ind_gs_question = new Random().nextInt(goldStdQuestins.length());
+                JSONObject gs_item = goldStdQuestins.getJSONObject(ind_gs_question);
                 tempObj = new JSONObject();
-                tempObj.put("item", candidates.getJSONObject(selectedIndices.get(i)));
+                tempObj.put("ref_item", gsQuestionCache.getItem(task, gs_item.getString("ref")));
                 templateJson.put(tempObj);
+
+                JSONArray gs_candidates= gs_item.getJSONArray("cand");
+                List<Integer> rand_indices = new ArrayList<>(param_N);
+                for(int i=0; i<param_N; i++)
+                    rand_indices.add(i);
+                Collections.shuffle(rand_indices);
+
+                for(int i=0; i<gs_candidates.length(); i++){
+                    tempObj = new JSONObject();
+                    tempObj.put("item", gsQuestionCache.getItem(task,
+                            gs_candidates.getString(rand_indices.get(i))));
+                    templateJson.put(tempObj);
+                }
+            } else {
+                //Normal question
+                List<Integer> selectedIndices = reserviorSample(candidates.length()
+                        , param_N +1);    // 1 reference + N candidates
+                tempObj = new JSONObject();
+                tempObj.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
+                templateJson.put(tempObj);
+
+                //templateJson.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
+
+                for(int i=1; i<selectedIndices.size(); i++){
+                    tempObj = new JSONObject();
+                    tempObj.put("item", candidates.getJSONObject(selectedIndices.get(i)));
+                    templateJson.put(tempObj);
+                }
             }
+
+
             /*
         * Push items into task template
         * */
@@ -143,5 +180,30 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
     @Override
     public void onUserMicrotaskSubmit(UserMicroTask userMicroTask, Task task) {
 
+    }
+
+    public class GoldenStandardQuestionCache {
+        //Cache for golden standard questions
+        private int taskId;
+        private Map<String, JSONObject> cache;
+
+        public GoldenStandardQuestionCache(){
+            taskId = -1;
+        }
+
+        JSONObject getItem(Task task, String key){
+            if (task.getId() != taskId){
+                //Rebuild cache
+                taskId = task.getId();
+                JSONObject taskParams = new JSONObject(task.getParams());
+                JSONArray items = taskParams.getJSONArray("candidates");
+                cache = new HashMap<>();
+                for(int i=0; i<items.length(); i++){
+                    JSONObject item = items.getJSONObject(i);
+                    cache.put(item.getString("image"), item);
+                }
+            }
+            return cache.get(key);
+        }
     }
 }
