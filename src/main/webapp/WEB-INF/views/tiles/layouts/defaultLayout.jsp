@@ -32,7 +32,7 @@
     <header id="header">
         <tiles:insertAttribute name="header"/>
     </header>
-    <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <section id="site-content">
         <tiles:insertAttribute name="body"/>
