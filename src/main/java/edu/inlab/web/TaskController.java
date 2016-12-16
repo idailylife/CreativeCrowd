@@ -173,7 +173,8 @@ public class TaskController {
     private TaskJoinState getTaskJoinState(Task task, int loginStateOrUserId){
         TaskJoinState taskJoinState = TaskJoinState.EXPIRED;
         boolean isExpiredOrFull = task.isExpired() || task.isFull();
-
+        if(isExpiredOrFull)
+            return taskJoinState;
 
         if(loginStateOrUserId < 0){
             if(!isExpiredOrFull){

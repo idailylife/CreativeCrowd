@@ -57,11 +57,22 @@
                     <div class="form-group">
                         <div id="alert-info" class="alert alert-danger" role="alert"></div>
                     </div>
-                    <div class="form-group">
-                        <button type="button" class="btn btn-default" id="btn-mt-chk-status">Check Validity</button>
-                        <button type="button" class="btn btn-success" id="btn-mt-resume">Resume Task</button>
-                        <button type="button" class="btn btn-success" id="btn-mt-join">Start Task</button>
-                    </div>
+                    <c:choose>
+                        <c:when test="${taskState eq 'EXPIRED'}">
+                            <div class="alert alert-warning" role="alert">Task is expired or fully claimed. You may check your reference code if you finished this task.</div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-default" id="btn-mt-chk-status">Check Reference Code</button>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-default" id="btn-mt-chk-status">Check Validity</button>
+                                <button type="button" class="btn btn-success" id="btn-mt-resume">Resume Task</button>
+                                <button type="button" class="btn btn-success" id="btn-mt-join">Start Task</button>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+
 
                 </c:when>
             </c:choose>
