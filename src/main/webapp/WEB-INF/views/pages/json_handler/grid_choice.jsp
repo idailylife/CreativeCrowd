@@ -22,7 +22,7 @@
         </div>
 
         <div class="col-md-10">
-            <div class="alert alert-info" role="alert">Select <kbd id="num_K">{{K}}</kbd> design solutions from the candidates on the right, which is more similar than other candidates to the reference solution shown left. Click an image to zoom up.</div>
+            <div class="alert alert-info" role="alert" id="metainfo">Select <kbd><span v-if="freeChoice">at least</span> {{K}}</kbd> design solutions from the candidates on the right, which is more similar than other candidates to the reference solution shown left. Click an image to zoom up.</div>
         </div>
 
         <div class="col-md-1">
@@ -116,7 +116,8 @@
                 N:${model.contents['N']},
                 K:${model.contents['K']},
                 nRows:${model.contents['nRows']},
-                progress:"${model.contents['progress']}"
+                progress:"${model.contents['progress']}",
+                freeChoice: ${model.contents['freeChoice']}
             };
         </c:when>
         <c:when test="${model.tag eq 'ref_item'}">

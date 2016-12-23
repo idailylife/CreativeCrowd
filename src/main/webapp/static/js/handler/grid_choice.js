@@ -22,10 +22,12 @@ $(document).ready(function(){
             selectToggle: function (msg, index, event) {
                 console.log("item clicked "+ msg + ", index= "+index);
 
-                if(!this.items[index].selected && this.select_count>=grid_params.K){
-                    //when trying to select more than K items, warn and stop
-                    alert('You are going to choose more than ' + grid_params.K + ' items. Please DE-SELECT one before alternating your choice.');
-                    return;
+                if(!grid_params.freeChoice){
+                    if(!this.items[index].selected && this.select_count>=grid_params.K){
+                        //when trying to select more than K items, warn and stop
+                        alert('You are going to choose more than ' + grid_params.K + ' items. Please DE-SELECT one before alternating your choice.');
+                        return;
+                    }
                 }
 
                 this.items[index].selected = !this.items[index].selected;
@@ -149,9 +151,10 @@ $(document).ready(function(){
     });
 
     var bind_num_K = new Vue({
-        el: '#num_K',
+        el: '#metainfo',
         data: {
-           K : grid_params.K
+            K : grid_params.K,
+            freeChoice: grid_params.freeChoice
         }
     });
 

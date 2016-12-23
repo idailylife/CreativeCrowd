@@ -40,12 +40,16 @@ $(document).ready(function () {
                 N : $("#inputSinglePagedRand_N").val(),
                 K : $("#inputSinglePagedRand_K").val(),
                 nRows: $("#inputSinglePagedRand_nRows").val(),
+                freeChoice: false,
                 candidates: singlePagedRand_candidates,
                 use_gold_std: false
             };
             if (singlePagedRand_goldenStdQuestions.length > 0){
                 params.gold_std_q = singlePagedRand_goldenStdQuestions;
                 params.use_gold_std = true;
+            }
+            if ($('#inputSinglePagedRand_FreeChoice').is(':checked')){
+                params.freeChoice = true;
             }
         }
         params = JSON.stringify(params);

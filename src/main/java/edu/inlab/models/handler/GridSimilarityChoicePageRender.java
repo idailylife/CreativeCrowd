@@ -21,6 +21,7 @@ import java.util.Map;
  *  /// according to parameters defined above !!
  *  {"N":N },
  *  {"K":K},
+ *  {"freeChoice": true/false}
  *  {"nRows": num_of_rows},  // #columns = N / num_of_rows
  *  {"ref_item": {"image":internal_url, "text":text_description}},
  *  //following N elements
@@ -55,7 +56,9 @@ public class GridSimilarityChoicePageRender implements MicrotaskPageRenderer {
                 if(!tag.equals("item") && !tag.equals("ref_item")){
                     if(tag.equals("progress")){
                         paramContentMap.put(tag, rowObj.getString(tag));
-                    } else {
+                    } else if(tag.equals("freeChoice")){
+                        paramContentMap.put(tag, rowObj.getBoolean(tag));
+                    }else {
                         paramContentMap.put(tag, rowObj.getInt(tag));
                     }
 
@@ -79,6 +82,9 @@ public class GridSimilarityChoicePageRender implements MicrotaskPageRenderer {
                 }
             }
 
+        }
+        if(!paramContentMap.containsKey("freeChoice")){
+            paramContentMap.put("freeChoice", false);
         }
 
         paramModel.setContents(paramContentMap);

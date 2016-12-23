@@ -173,6 +173,12 @@
                                                 </label>
                                                 <p class="help-block">在关联Excel文件的第二个Sheet配置</p>
                                             </div>
+                                            <div class="form-group">
+                                                <label for="inputSinglePagedRand_FreeChoice">启用FreeChoice
+                                                    <input type="checkbox" class="form-control" id="inputSinglePagedRand_FreeChoice">
+                                                </label>
+                                                <p class="help-block">参与者可以选择>k个结果</p>
+                                            </div>
                                             <div class="form-group" style="display: none">
                                                 <label for="inputSinglePagedRand_nRows">显示行数</label>
                                                 <input type="number" class="form-control" id="inputSinglePagedRand_nRows" value="1">
