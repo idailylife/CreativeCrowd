@@ -29,6 +29,7 @@ public class UserMicrotaskServiveImpl implements UserMicrotaskService {
             entity.setUsertaskId(userMicroTask.getUsertaskId());
             entity.setMicrotaskId(userMicroTask.getMicrotaskId());
             entity.setResults(userMicroTask.getResults());
+            entity.setMetaInfo(userMicroTask.getMetaInfo());
         }
     }
 

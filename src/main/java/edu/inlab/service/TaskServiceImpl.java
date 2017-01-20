@@ -72,6 +72,7 @@ public class TaskServiceImpl implements TaskService {
             entity.setWage(task.getWage());
             entity.setWageType(task.getWageType());
             entity.setImage(task.getImage());
+            entity.setConfigBlob(task.getConfigBlob());
         }
     }
 

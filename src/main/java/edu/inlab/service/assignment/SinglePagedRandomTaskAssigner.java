@@ -61,6 +61,16 @@ public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
     }
 
     @Override
+    public boolean supportAssignUserMicroTask() {
+        return false;
+    }
+
+    @Override
+    public UserMicroTask assignNextUMT(UserTask userTask) throws RuntimeException {
+        return null;
+    }
+
+    @Override
     public Microtask assignCurrent(UserTask userTask) throws RuntimeException {
         return assign(userTask, false);
     }

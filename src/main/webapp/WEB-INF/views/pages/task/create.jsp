@@ -122,6 +122,9 @@
                                     <a href="#tabSinglePagedRandom" aria-controls="singlePagedRandom" role="tab" data-toggle="tab" data-mode="3">GridSimilarity</a>
                                 </li>
                                 <li role="presentation">
+                                    <a href="#tabIdeationWithRef" aria-controls="ideaWithRef" role="tab" data-toggle="tab" data-mode="4">IdeationWithRef</a>
+                                </li>
+                                <li role="presentation">
                                     <a href="#tabDevelop" aria-controls="develop" role="tab" data-toggle="tab" data-mode="-1">Dev!</a>
                                 </li>
                             </ul>
@@ -190,6 +193,28 @@
                                                 <p class="help-block" id="pSinglePagedRand_confState">尚未上传</p>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="tabIdeationWithRef">
+                                    <div class="row">
+                                        <p>可包含参考项的创意设计任务</p>
+                                        <div class="form">
+                                            <div class="form-group">
+                                                <label for="ideaWithRef_showParent">显示父代方案
+                                                    <input type="checkbox" class="form-control" id="ideaWithRef_showParent">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="ideaWithRef_numRefSize">参考项(组)数量</label>
+                                            <input type="number" class="form-control" id="ideaWithRef_numRefSize">
+                                        </div>
+                                        <%--<div class="form-group">--%>
+                                            <%--<label for="ideaWithRef_configFile">配置文件上传</label>--%>
+                                            <%--<p class="help-block"><a href="#">点击下载配置文件模板</a> </p>--%>
+                                            <%--<input type="file" class="form-control" id="ideaWithRef_configFile">--%>
+                                            <%--<p class="help-block" id="ideaWithRef_configFileState">尚未上传</p>--%>
+                                        <%--</div>--%>
                                     </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane fade" id="tabDevelop">

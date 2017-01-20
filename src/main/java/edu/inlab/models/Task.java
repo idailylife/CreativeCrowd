@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import java.sql.Blob;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -117,6 +118,9 @@ public class Task extends CaptchaCapableModel{
 
     @Column(name = "wage", nullable = false)
     private String wage;
+
+    @Column(name = "config_blob")
+    private Blob configBlob;
 
     @Column(name = "optlock")
     @Version
@@ -298,6 +302,14 @@ public class Task extends CaptchaCapableModel{
 
     public void setWage(String wage) {
         this.wage = wage;
+    }
+
+    public Blob getConfigBlob() {
+        return configBlob;
+    }
+
+    public void setConfigBlob(Blob configBlob) {
+        this.configBlob = configBlob;
     }
 
     @Override

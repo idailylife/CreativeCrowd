@@ -44,6 +44,16 @@ public class RandomMicroTaskAssigner implements MicroTaskAssigner {
         return null;
     }
 
+    @Override
+    public boolean supportAssignUserMicroTask() {
+        return false;
+    }
+
+    @Override
+    public UserMicroTask assignNextUMT(UserTask userTask) throws RuntimeException {
+        return null;
+    }
+
     @Transactional
     public Microtask assignNext(UserTask userTask) {
         Task task = taskService.findById(userTask.getTaskId());

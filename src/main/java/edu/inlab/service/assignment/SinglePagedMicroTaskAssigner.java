@@ -29,7 +29,17 @@ public class SinglePagedMicroTaskAssigner implements MicroTaskAssigner {
     }
 
     @Override
+    public boolean supportAssignUserMicroTask() {
+        return false;
+    }
+
+    @Override
     public Microtask assignCurrent(UserTask userTask) throws RuntimeException {
+        return null;
+    }
+
+    @Override
+    public UserMicroTask assignNextUMT(UserTask userTask) throws RuntimeException {
         return null;
     }
 

@@ -30,6 +30,9 @@ public class UserMicroTask {
     @Type(type = "customJsonObject")
     private JSONObject results;
 
+    @Column(name = "meta_info")
+    private String metaInfo;
+
     @Column(name = "optlock")
     @Version
     private Integer version;
@@ -82,5 +85,13 @@ public class UserMicroTask {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public String getMetaInfo() {
+        return metaInfo;
+    }
+
+    public void setMetaInfo(String metaInfo) {
+        this.metaInfo = metaInfo;
     }
 }

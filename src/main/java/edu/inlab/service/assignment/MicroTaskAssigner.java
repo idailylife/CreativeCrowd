@@ -21,6 +21,21 @@ public interface MicroTaskAssigner {
      */
     boolean isTransient();
 
+    /**
+     *
+     * @return Set to true if assigning UserMicrotask instance directly, instead of assigning Microtask.
+     *
+     */
+    boolean supportAssignUserMicroTask();
+
+    /**
+     * 分配下一个UserMicrotask
+     * supportAssignUserMicroTask()==true时使用本方法
+     * @param userTask
+     * @return
+     * @throws RuntimeException
+     */
+    UserMicroTask assignNextUMT(UserTask userTask) throws RuntimeException;
 
     /**
      * 分配下一个microtask
