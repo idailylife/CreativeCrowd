@@ -13,11 +13,13 @@ import edu.inlab.service.wage.WageAssigner;
 import edu.inlab.service.wage.WageFactory;
 import edu.inlab.utils.*;
 import edu.inlab.web.exception.ResourceNotFoundException;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -28,8 +30,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -61,6 +67,9 @@ public class TaskController {
 
     @Autowired
     MicroTaskAssignerFactory microTaskAssignerFactory;
+
+    @Autowired
+    MicrotaskHandlerFactory microtaskHandlerFactory;
 
     @Autowired
     WageFactory wageFactory;
@@ -291,15 +300,20 @@ public class TaskController {
         MicroTaskAssigner taskAssigner = microTaskAssignerFactory.getAssigner(task.getMode());
         if(userTask.getCurrUserMicrotaskId() == null){
             //没有正在进行中的microtask，根据设定的Microtask Coordinator来分配新任务
-
-            if(taskAssigner.isTransient())
-                microtask = taskAssigner.assignCurrent(userTask);
-            else
-                microtask = taskAssigner.assignNext(userTask);
-            if(microtask == null){
-                return "redirect:/task/tid" + taskId;
+            if(taskAssigner.supportAssignUserMicroTask()){
+                userMicroTask = taskAssigner.assignNextUMT(userTask);
+                microtask = microTaskService.getUniqueByTask(task);
+            } else {
+                if(taskAssigner.isTransient())
+                    microtask = taskAssigner.assignCurrent(userTask);
+                else
+                    microtask = taskAssigner.assignNext(userTask);
+                if(microtask == null){
+                    return "redirect:/task/tid" + taskId;
+                }
+                userMicroTask = new UserMicroTask(userTask.getId(), microtask.getId());
             }
-            userMicroTask = new UserMicroTask(userTask.getId(), microtask.getId());
+
             userMicrotaskService.save(userMicroTask);
 
             userTask.setCurrUserMicrotaskId(userMicroTask.getId());
@@ -311,12 +325,18 @@ public class TaskController {
             else
                 microtask = microTaskService.getById(userMicroTask.getMicrotaskId());
         }
+        userMicroTask.setTaskId(task.getId());
 
         String handlerType = microtask.getHandlerType();
-        //JSONArray handlerContent = microtask.getTemplate();
-        MicrotaskPageRenderer pageRenderer = MicrotaskHandlerFactory.getRenderer(handlerType);
+
+        MicrotaskPageRenderer pageRenderer = microtaskHandlerFactory.getRenderer(handlerType);
         model.addAttribute("handlerType", handlerType);
-        model.addAttribute("handlerContent", pageRenderer.parseTemplateText(microtask.getTemplate()));
+        model.addAttribute("handlerContent",
+                pageRenderer.parseTemplateText(
+                        microtask.getTemplate(),
+                        userMicroTask,
+                        task.getParams()));
+        //model.addAttribute("handlerContent", pageRenderer.parseTemplateText(microtask.getTemplate()));
 
         //Find related file that was uploaded by user
         TempFile oldFile = tempFileService.getByUsermicrotaskId(userMicroTask.getId());
@@ -343,6 +363,7 @@ public class TaskController {
 
         model.addAttribute("prev", microtask.getPrevId());
         model.addAttribute("next", microtask.getNextId());
+        model.addAttribute("umtId", userMicroTask.getId());
 
         //Add session to authorize file upload
         request.getSession().setMaxInactiveInterval(60*60);
@@ -581,6 +602,17 @@ public class TaskController {
             model.addAttribute("param_N", paramObj.getInt("N"));
             model.addAttribute("param_K", paramObj.getInt("K"));
             model.addAttribute("param_nRows", paramObj.getInt("nRows"));
+        } else if(task.getMode().equals(MicroTaskAssigner.TASK_ASSIGN_SINGLE_WITH_REF)){
+            JSONObject paramObj = new JSONObject(task.getParams());
+            model.addAttribute("param_ref_size", paramObj.getInt("refSize"));
+            model.addAttribute("param_show_parent", paramObj.getBoolean("showParent"));
+            if(paramObj.has("refColNames")){
+                model.addAttribute("ref_col_names", paramObj.getString("refColNames"));
+            } else {
+                model.addAttribute("ref_col_names", "");
+            }
+            model.addAttribute("param_noref_claimed_size", paramObj.getInt("nonRefTaskTotalCnt"));
+            model.addAttribute("param_noref_allocated_size", paramObj.getInt("nonRefTaskAllocation"));
         }
 
         //List all uploaded files
@@ -738,14 +770,35 @@ public class TaskController {
             responseBody.setState(403);
             return responseBody;
         }
-        if(reqBody.containsKey("params")){
-            task.setParams(reqBody.get("params"));
+        String updateMode = reqBody.getOrDefault("mode", "legacy");
+        if(updateMode.equals("legacy")){
+            if(reqBody.containsKey("params")){
+                task.setParams(reqBody.get("params"));
+                taskService.updateTask(task);
+                responseBody.setState(200);
+            } else {
+                responseBody.setState(400);
+                responseBody.setMessage("Unknown request format.");
+            }
+        } else if(updateMode.equals("jsonObj")) {
+            JSONObject taskParams = new JSONObject(task.getParams());
+            for(String key:reqBody.keySet()){
+                if(key.equals("mode"))
+                    continue;
+                if(StringUtils.isNumeric(reqBody.get(key))){
+                    taskParams.put(key, Integer.valueOf(reqBody.get(key)));
+                } else {
+                    taskParams.put(key, reqBody.get(key));
+                }
+            }
+            task.setParams(taskParams.toString());
             taskService.updateTask(task);
             responseBody.setState(200);
         } else {
             responseBody.setState(400);
-            responseBody.setMessage("Unknown request format.");
+            responseBody.setMessage("Unknown request mode: " + updateMode + ".");
         }
+
         return responseBody;
     }
 
@@ -756,5 +809,37 @@ public class TaskController {
             model.addAttribute("isMTurkTask", true);
         }
         return "task/done";
+    }
+
+    @RequestMapping(value = "/taskData/{tid}", method = RequestMethod.GET)
+    public void downloadTaskData(HttpServletResponse response, @PathVariable("tid") Integer tid,
+                                 HttpServletRequest request) throws IOException{
+        User user = userService.getUserFromSession(request);
+        Task task = taskService.findById(tid);
+        OutputStream outputStream = response.getOutputStream();
+        MicroTaskAssigner microTaskAssigner = null;
+        if(user == null || task == null || !task.getOwnerId().equals(user.getId())){
+            //Illegal request
+            String errorMsg = "Sorry, this action is forbidden.";
+            outputStream.write(errorMsg.getBytes(Charset.forName("UTF-8")));
+            outputStream.close();
+            return;
+        }
+
+        microTaskAssigner =  microTaskAssignerFactory.getAssigner(task.getMode());
+        if(!microTaskAssigner.supportConfigFile()){
+            String errorMsg = "Sorry, this task does not support data file downloading.";
+            outputStream.write(errorMsg.getBytes(Charset.forName("UTF-8")));
+            outputStream.close();
+            return;
+        }
+
+        //Prepare output stream
+        ByteArrayOutputStream os = microTaskAssigner.exportConfigFile(task);
+
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"task%d_data__%d.csv\"", tid, System.currentTimeMillis()));
+        os.writeTo(response.getOutputStream());
+        os.close();
     }
 }

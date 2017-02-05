@@ -43,7 +43,7 @@ import java.util.*;
  */
 @Component
 @ComponentScan(basePackages = "edu.inlab")
-public class SinglePagedRandomTaskAssigner implements MicroTaskAssigner {
+public class SinglePagedRandomTaskAssigner extends MicroTaskAssigner {
     @Autowired
     TaskService taskService;
 

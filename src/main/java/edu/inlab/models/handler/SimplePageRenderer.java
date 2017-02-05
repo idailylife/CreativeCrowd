@@ -1,14 +1,18 @@
 package edu.inlab.models.handler;
 
+import edu.inlab.models.UserMicroTask;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 /**
  * Created by inlab-dell on 2016/6/22.
  */
-public class SimplePageRenderer implements MicrotaskPageRenderer {
+@Component
+public class SimplePageRenderer extends MicrotaskPageRenderer {
+
     @Override
     public Object parseTemplateText(String templateStr) {
         JSONArray handlerContent = new JSONArray(templateStr);

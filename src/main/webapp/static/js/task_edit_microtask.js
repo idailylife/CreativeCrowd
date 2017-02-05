@@ -129,14 +129,55 @@ $(document).ready(function () {
         } else {
             $(".progress").hide();
         }
-    }
+    };
+
+    /* mode = simpleWithRef (ideation) */
+    $('#btnIdeationIncrNonRefTask').click(function(){
+        var incrSize = parseInt($('#inputIdeationIncrNoRefTask').val());
+        var oldCnt = parseInt($('#pIdeationNoRefTaskCount_notClaimed').text());
+        var params = {
+            mode: 'jsonObj',
+            nonRefTaskAllocation: incrSize + oldCnt
+        };
+        var callbackFunc = function(){
+            alert('配置变更成功.');
+            $('#inputIdeationIncrNoRefTask').val(0);
+            $('#pIdeationNoRefTaskCount_notClaimed').text(oldCnt + incrSize);
+        };
+        setTaskParams(params, callbackFunc);
+    });
+    $('#btnIdeationUpdRefCount').click(function () {
+       var refSize = parseInt($('#inputIdeationRefSize').val());
+       var params = {
+           mode: 'jsonObj',
+           refSize: refSize
+       };
+       setTaskParams(params, function(){
+          alert('更新成功');
+       });
+    });
+    $('#btnIdeationUpdRefColNames').click(function () {
+        var params = {
+            mode: 'jsonObj',
+            refColNames: $('#inputIdeationRefColNames').val()
+        };
+        setTaskParams(params, function(){
+            alert('更新成功');
+        });
+    });
 });
 
 var setTaskParams = function(params, informFunc){
+    var paramObj;
+    if(params.mode == 'jsonObj'){
+        paramObj = params;
+    } else {
+        paramObj = {params: params};
+    }
     $.ajax({
         method: 'post',
         url: homeUrl+'task/updparams/'+taskId,
-        data: JSON.stringify({params: params}),
+        data: JSON.stringify(paramObj),
         contentType : "application/json; charset=utf-8",
         dataType: 'json',
         success: function (data) {
@@ -269,7 +310,8 @@ function prepareJsonString(tabContentId) {
     var editorText = editorList[tabContentId].getText();
     //$("#textTemplate_"+tabContentId).val(editorText);
     var data = {
-        handlerType: $("#inputHandlerType_"+tabContentId).val(),
+        //handlerType: $("#inputHandlerType_"+tabContentId).val(),
+        handlerType: $("input[name=optionHandlerType_" + tabContentId + "]:checked").val(),
         template: editorText,
         id: null,
         prevId: null,

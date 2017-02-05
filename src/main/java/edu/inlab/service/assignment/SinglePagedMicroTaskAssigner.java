@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 最简单的、只有一页的分配器
  */
 @Component
-public class SinglePagedMicroTaskAssigner implements MicroTaskAssigner {
+public class SinglePagedMicroTaskAssigner extends MicroTaskAssigner {
 
     @Autowired
     TaskService taskService;

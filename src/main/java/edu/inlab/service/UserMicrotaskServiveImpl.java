@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Created by hebowei on 16/5/14.
  */
@@ -36,5 +38,10 @@ public class UserMicrotaskServiveImpl implements UserMicrotaskService {
     @Override
     public Long getCountByUserTaskId(int usertaskId) {
         return (Long)userMicrotaskRepository.getCountByUserTaskId(usertaskId);
+    }
+
+    @Override
+    public List<UserMicroTask> getByTaskId(int taskId) {
+        return userMicrotaskRepository.getByTaskId(taskId);
     }
 }

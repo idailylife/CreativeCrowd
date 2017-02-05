@@ -1,6 +1,9 @@
 package edu.inlab.models.handler;
 
+import org.apache.commons.collections.map.HashedMap;
+
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by hebowei on 16/5/21.
@@ -24,6 +27,10 @@ public class JstlCompatibleModel {
         return contents;
     }
 
+    public Set<String> getContentKeys(){
+        return contents.keySet();
+    }
+
     public Object getSingleValue() {
         return singleValue;
     }
@@ -39,5 +46,11 @@ public class JstlCompatibleModel {
 
     public void setContents(Map<String, Object> contents) {
         this.contents = contents;
+    }
+
+    public void addMappedContent(String key, Object value){
+        if(this.contents == null)
+            this.contents = new HashedMap();
+        this.contents.put(key, value);
     }
 }

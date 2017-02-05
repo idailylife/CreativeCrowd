@@ -26,6 +26,9 @@ public class UserMicroTask {
     @Column(name = "microtask_id", nullable = false)
     private Integer microtaskId;
 
+    @Column(name = "task_id")
+    private Integer taskId;
+
     @Column(name = "results")
     @Type(type = "customJsonObject")
     private JSONObject results;
@@ -77,6 +80,14 @@ public class UserMicroTask {
 
     public void setUsertaskId(Integer usertaskId) {
         this.usertaskId = usertaskId;
+    }
+
+    public Integer getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Integer taskId) {
+        this.taskId = taskId;
     }
 
     public Integer getVersion() {

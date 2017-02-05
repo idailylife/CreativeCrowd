@@ -35,6 +35,7 @@ $(document).ready(function () {
             //Sequence
             params = [];
         } else if(mode == 3){
+            //GridChoice
             params = {
                 mtask_size: $("#inputSinglePagedRand_mtaskSize").val(),
                 N : $("#inputSinglePagedRand_N").val(),
@@ -50,6 +51,17 @@ $(document).ready(function () {
             }
             if ($('#inputSinglePagedRand_FreeChoice').is(':checked')){
                 params.freeChoice = true;
+            }
+        } else if(mode == 4){
+            //Ideation With Reference (SimpleWithRef)
+            params = {
+                showParent : false,
+                refSize : $('#ideaWithRef_numRefSize').val(),
+                nonRefTaskAllocation: 0,
+                nonRefTaskTotalCnt: 0
+            };
+            if ($('#ideaWithRef_showParent').is(':checked')){
+                params.showParent = true;
             }
         }
         params = JSON.stringify(params);

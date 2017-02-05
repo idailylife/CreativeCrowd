@@ -5,6 +5,8 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by hebowei on 16/5/14.
  */
@@ -26,5 +28,12 @@ public class UserMicrotaskRepoImpl extends AbstractDao<Integer, UserMicroTask>
                 .setProjection(Projections.rowCount())
                 .uniqueResult();
         return cnt;
+    }
+
+    @Override
+    public List<UserMicroTask> getByTaskId(int taskId) {
+        return getSession().createCriteria(UserMicroTask.class)
+                .add(Restrictions.eq("taskId", taskId))
+                .list();
     }
 }

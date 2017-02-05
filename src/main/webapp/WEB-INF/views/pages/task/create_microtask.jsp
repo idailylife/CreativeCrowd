@@ -124,6 +124,65 @@
                                 <p>暂时无法任何参数。勿忘新建一个空的Microtask并保存。</p>
                             </div>
                         </c:if>
+                        <c:if test="${task.mode eq 4}">
+                            <%--有参考项的创意设计任务--%>
+                            <div class="col-sm-12">
+                                <h4 class="bg-primary">可含参考项的创意众包任务:配置</h4>
+                                <p class="text-primary">当前状态：<span id="pIdeationCurrState">未开始</span></p>
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label for="inputIdeationIncrNoRefTask" class="col-sm-2 control-label">新增无参考项任务</label>
+                                        <div class="col-sm-2">
+                                            <input id="inputIdeationIncrNoRefTask" class="form-control" type="text" placeholder="0">
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <input type="button" class="btn btn-default" id="btnIdeationIncrNonRefTask" value="增加">
+                                            无参考任务数量：未领取<span id="pIdeationNoRefTaskCount_notClaimed">${param_noref_allocated_size}</span>
+                                            ;已领取<span id="pIdeationNoRefTaskCount_Claimed">${param_noref_claimed_size}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputIdeationRefSize" class="col-sm-2 control-label">参考项数目</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" id="inputIdeationRefSize" value="${param_ref_size}">
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <input type="button" class="btn btn-default" id="btnIdeationUpdRefCount" value="更新">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputIdeationRefColNames" class="col-sm-2 control-label">参考项字段名</label>
+                                        <div class="col-sm-5">
+                                            <input id="inputIdeationRefColNames" class="form-control" type="text" placeholder="aaa,bbb,ccc" value="${ref_col_names}">
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <input type="button" class="btn btn-default" id="btnIdeationUpdRefColNames" value="更新">
+                                        </div>
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <p class="help-block">显示在参与者任务中的参考项字段名，字段名为微任务中写入的各个项目（如输入框）的id号。使用半角逗号分隔。</p>
+                                        </div>
+                                        </div>
+                                    <div class="form-group">
+                                        <label for="buttonIdeationDownloadConfFile" class="col-sm-2 control-label">下载任务数据</label>
+                                        <div class="col-sm-10">
+                                            <a class="btn btn-default" href="<c:url value="/task/taskData/${task.id}"></c:url>" target="_blank" id="buttonIdeationDownloadConfFile">下载</a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="buttonIdeationUploadConfFile" class="col-sm-2 control-label">上传任务数据</label>
+                                        <div class="col-sm-3">
+                                            <input type="file" id="buttonIdeationUploadConfFile" class="btn">
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <input type="button" class="btn btn-default" id="buttonIdeationApplyConfig" value="上传">
+                                            <span class="text-success">已上传</span>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
                 <!-- workspace -->
@@ -163,8 +222,18 @@
                                         <label id="labelSaveState_${microtask.id}"></label>
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputHandlerType_${microtask.id}">HandlerType</label>
-                                        <input type="text" name="handlerType" class="form-control" id="inputHandlerType_${microtask.id}" placeholder="渲染模块类型" value="${microtask.handlerType}">
+                                        <label>HandlerType</label>
+                                        <div class="radio">
+                                            <label><input type="radio" name="optionHandlerType_${microtask.id}" value="simple" <c:if test="${microtask.handlerType eq 'simple'}">checked</c:if>>simple</label>
+                                        </div>
+                                        <div class="radio">
+                                            <label><input type="radio" name="optionHandlerType_${microtask.id}" value="simple_ref" <c:if test="${microtask.handlerType eq 'simple_ref'}">checked</c:if>>simple with reference</label>
+                                        </div>
+                                        <div class="radio">
+                                            <label><input type="radio" name="optionHandlerType_${microtask.id}" value="grid_choice" <c:if test="${microtask.handlerType eq 'grid_choice'}">checked</c:if>>相似性判断(网格选择)</label>
+                                        </div>
+
+                                        <%--<input type="text" name="handlerType" class="form-control" id="inputHandlerType_${microtask.id}" placeholder="渲染模块类型" value="${microtask.handlerType}">--%>
                                     </div>
                                     <div class="form-group">
                                         <label for="textTemplate_${microtask.id}">Template</label>
@@ -205,7 +274,19 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="inputHandlerType_template">HandlerType</label>
+                                    <div class="radio">
+                                        <label><input type="radio" name="optionHandlerType_template" value="simple" checked>simple</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="optionHandlerType_template" value="simple_ref">simple with reference</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="optionHandlerType_template" value="grid_choice">相似性判断(网格选择)</label>
+                                    </div>
+
+                                    <label for="inputHandlerType_template">HandlerType</label>
                                     <input type="text" class="form-control" name="handlerType" id="inputHandlerType_template" placeholder="渲染模块类型" value="${(task.mode eq 3)? 'grid_choice' : 'simple'}">
+
                                 </div>
                                 <div class="form-group">
                                     <label for="textTemplate_template">Template</label>

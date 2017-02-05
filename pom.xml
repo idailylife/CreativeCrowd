@@ -190,6 +190,13 @@
             <artifactId>esapi</artifactId>
             <version>2.1.0</version>
         </dependency>
+
+        <!-- csv -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.4</version>
+        </dependency>
     </dependencies>
 
 

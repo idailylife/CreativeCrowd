@@ -21,6 +21,9 @@ public class MicroTaskAssignerFactory {
     @Autowired
     private MicroTaskAssigner singlePagedRandomTaskAssigner;
 
+    @Autowired
+    private MicroTaskAssigner ideationWithReferenceTaskAssigner;
+
 
     public MicroTaskAssigner getAssigner(int code){
         MicroTaskAssigner assigner = null;
@@ -37,6 +40,8 @@ public class MicroTaskAssignerFactory {
             case MicroTaskAssigner.TASK_ASSIGN_SINGLE_RANDOM:
                 assigner = singlePagedRandomTaskAssigner;
                 break;
+            case MicroTaskAssigner.TASK_ASSIGN_SINGLE_WITH_REF:
+                assigner = ideationWithReferenceTaskAssigner;
         }
 
         return assigner;
@@ -56,5 +61,9 @@ public class MicroTaskAssignerFactory {
 
     public void setSinglePagedRandomTaskAssigner(MicroTaskAssigner singlePagedRandomTaskAssigner) {
         this.singlePagedRandomTaskAssigner = singlePagedRandomTaskAssigner;
+    }
+
+    public void setIdeationWithReferenceTaskAssigner(MicroTaskAssigner ideationWithReferenceTaskAssigner) {
+        this.ideationWithReferenceTaskAssigner = ideationWithReferenceTaskAssigner;
     }
 }

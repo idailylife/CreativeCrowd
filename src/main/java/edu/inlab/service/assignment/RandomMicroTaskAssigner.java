@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 
 @Component
 @ComponentScan(basePackages = "edu.inlab")
-public class RandomMicroTaskAssigner implements MicroTaskAssigner {
+public class RandomMicroTaskAssigner extends MicroTaskAssigner {
 
 
 

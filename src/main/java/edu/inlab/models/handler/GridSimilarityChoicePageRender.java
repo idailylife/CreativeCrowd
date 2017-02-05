@@ -4,6 +4,7 @@ import edu.inlab.utils.EncodeFactory;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +32,8 @@ import java.util.Map;
  *  ///
  * ]
  */
-public class GridSimilarityChoicePageRender implements MicrotaskPageRenderer {
+@Component
+public class GridSimilarityChoicePageRender extends MicrotaskPageRenderer {
     private final static String TAG_PARAMS = "params";
 
     @Override

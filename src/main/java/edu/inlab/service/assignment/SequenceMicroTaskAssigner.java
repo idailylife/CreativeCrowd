@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ComponentScan(basePackages = "edu.inlab")
-public class SequenceMicroTaskAssigner implements MicroTaskAssigner {
+public class SequenceMicroTaskAssigner extends MicroTaskAssigner {
     @Autowired
     MicroTaskService microTaskService;
 

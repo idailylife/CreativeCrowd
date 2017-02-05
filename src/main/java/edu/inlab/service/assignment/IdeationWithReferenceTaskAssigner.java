@@ -5,27 +5,35 @@ import edu.inlab.service.MicroTaskService;
 import edu.inlab.service.TaskService;
 import edu.inlab.service.UserMicrotaskService;
 import edu.inlab.utils.BlobObjectConv;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
+import java.io.*;
+import java.lang.reflect.Array;
 import java.sql.Blob;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by hebowei on 2017/1/19.
  * 可附带方案参考的创意设计方案提交任务
  *
  * params = {
- *     "enableRef" : true/false,
- *     "showParent": true/false,                    (valid iff enabRef==true)
- *     "refSize": size of reference item (set),     (valid iff enabRef==true)
- *     "topSize": size of
+ *     "showParent": true/false,                    (valid iff refSize>0)
+ *     "refSize": size of reference item (set),     (valid iff refSize>0)
+ *     "nonRefTaskAllocation": size of remaining non-ref tasks to allocate
+ *              The assigning priority of such tasks are higher than referenced ones!
+ *     "nonRefTaskTotalCnt": count of all non-ref tasks (first round, excluding not-claimed ones in nonRefTaskAllocation)
+ *     "refColNames": "aaa,bbb,ccc"
  * }
  *
  *
- * 如果enableRef==true，则新建的UserMicrotask实例中，results属性会预先填入参考项
+ * 如果refSize > 0，则新建的UserMicrotask实例中，results属性会预先填入参考项
  *
  * results = {
  *     *refItems: [
@@ -34,12 +42,16 @@ import java.util.Map;
  *              *parentUmtId: 参考项父节点的UserMicrotask ID (可选)
  *          }, ...
  *
- *     ]    //可选，如果有参考项
+ *     ],    //可选，如果有参考项
+ *     selectedRefId: SOME_ID or this.id,   //如果没有参考项，则设置为自己的usermicrotask id
+ *     ...
  * }
  *
  * Reference的解析使用渲染器里的方法渲染，此处只负责分发
  */
-public class IdeationWithReferenceTaskAssigner implements MicroTaskAssigner {
+@Component
+@ComponentScan(basePackages = "edu.inlab")
+public class IdeationWithReferenceTaskAssigner extends MicroTaskAssigner {
     @Autowired
     TaskService taskService;
 
@@ -76,20 +88,113 @@ public class IdeationWithReferenceTaskAssigner implements MicroTaskAssigner {
 
         JSONObject taskParams = new JSONObject(task.getParams());
         UserMicroTask userMicroTask = new UserMicroTask(userTask.getId(), microtask.getId());
-        if(taskParams.getBoolean("enableRef")){
+        int refSize = taskParams.getInt("refSize");
+
+        userMicroTask.setMicrotaskId(microTaskService.getUniqueByTask(task).getId());
+
+        int nonRefTaskAllo = taskParams.getInt("nonRefTaskAllocation");
+        if(nonRefTaskAllo > 0){
+            taskParams.put("nonRefTaskAllocation", --nonRefTaskAllo);
+            taskParams.put("nonRefTaskTotalCnt", taskParams.getInt("nonRefTaskTotalCnt")+1);
+            task.setParams(taskParams.toString());
+            taskService.updateTask(task);
+            refSize = 0;
+        }
+
+        if(refSize > 0){
             // Reference enabled
-            int refSize = taskParams.getInt("refSize");
+
             IdeationTaskConfig taskConfig = IdeationTaskConfig.ReadFromBlob(task.getConfigBlob());
-            List<Integer> topRankedUmtIds = taskConfig.getTopRankedItems()
+            Set<Integer> topRankedUmtIds = taskConfig.getTopRankedItems(refSize);
+
+            JSONObject umtResults = new JSONObject();
+            JSONArray refAryJson = new JSONArray();
+            for(Integer refUmtId:topRankedUmtIds){
+                JSONObject refUmtSet = new JSONObject();
+                refUmtSet.put("umtId", refUmtId);
+                if(taskParams.getBoolean("showParent")){
+                    UserMicroTask refUmt = userMicrotaskService.getById(refUmtId);
+                    refUmtSet.put("parentUmtId", Integer.parseInt(refUmt.getMetaInfo()));
+                }
+                refAryJson.put(refUmtSet);
+            }
+            umtResults.put("refItems", refAryJson);
+            userMicroTask.setResults(umtResults);
         }
         return userMicroTask;
     }
 
     @Override
     public void onUserMicrotaskSubmit(UserMicroTask userMicroTask, Task task) {
-
+        //TODO: Update score in config file according to visiting count
+        JSONObject results = userMicroTask.getResults();
+        if(!results.has("selectedRefId")){
+            results.put("selectedRefId", userMicroTask.getId()); //没有选择参考项，则设置参考项为自身
+        }
+        userMicroTask.setResults(results);
+        userMicrotaskService.update(userMicroTask);
     }
 
+    @Override
+    public boolean supportConfigFile() {
+        return true;
+    }
 
+    @Override
+    public Object updateConfigFile(Task task, Object... inputs) {
+        //TODO: 读入csv文档，写入配置文件
+        return null;
+    }
+
+    private JSONObject getTaskParams(Task task){
+        return new JSONObject(task.getParams());
+    }
+
+    @Override
+    public ByteArrayOutputStream exportConfigFile(Task task) {
+
+        JSONObject taskParams = getTaskParams(task);
+        List<String> headers = new ArrayList<>();
+        headers.add("id");
+        headers.add("refId");
+
+        String[] appendHeaders = {"imageDesc", "textDesc"};
+        if(taskParams.has("refColNames")){
+            appendHeaders = taskParams.getString("refColNames").split(",");
+        }
+        Collections.addAll(headers, appendHeaders);
+
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try(Writer out = new BufferedWriter(new OutputStreamWriter(baos));){
+            CSVFormat csvFormat = CSVFormat.EXCEL.withHeader(headers.toArray(new String[headers.size()]));
+            CSVPrinter csvPrinter = new CSVPrinter(out, csvFormat);
+            List<UserMicroTask> userMicroTasks = userMicrotaskService.getByTaskId(task.getId());
+            //http://blog.csdn.net/theonegis/article/details/49912633
+            for(UserMicroTask umt : userMicroTasks){
+                List<String> record = new ArrayList<>();
+                JSONObject umtResults = umt.getResults();
+                if(!umtResults.has("selectedRefId")){
+                    continue;   //unfinished umt
+                }
+                for(String header : headers){
+                    if(header.equals("id")){
+                        record.add(umt.getId().toString());
+                    } else if(header.equals("refId")){
+                        if(umtResults.getString("selectedRefId").equals(String.valueOf(umt.getId())))
+                            record.add("NONE");
+                        else
+                            record.add(umtResults.getString("selectedRefId"));
+                    } else {
+                        record.add(umtResults.getString(header));
+                    }
+                }
+                csvPrinter.printRecord(record);
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        return baos;
+    }
 
 }

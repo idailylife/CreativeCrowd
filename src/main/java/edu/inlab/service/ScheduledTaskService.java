@@ -34,7 +34,7 @@ public class ScheduledTaskService {
     @Scheduled(fixedDelay = 600000)
     @Transactional
     public void clearOvertimedUsertasks(){
-        logger.info("---------------------------->Start cleaning overtimed usertasks...");
+        //logger.info("---------------------------->Start cleaning overtimed usertasks...");
         List<UserTask> unfinishedTasks = userTaskService.getAllUnfinished();
         Map<Integer, Task> taskMap = new HashMap<>();
         long count = 0;
@@ -57,6 +57,7 @@ public class ScheduledTaskService {
                 count++;
             }
         }
-        logger.info("---------------------------->Finished cleaning overtimed usertasks, " + count + " cleared.");
+        if(count > 0)
+            logger.info("---------------------------->Finished cleaning overtimed usertasks, " + count + " cleared.");
     }
 }
