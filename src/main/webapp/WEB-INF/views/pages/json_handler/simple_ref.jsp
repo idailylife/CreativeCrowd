@@ -54,7 +54,7 @@
                     <input type="radio" name="selectedRefId" class="form-ud-input" value="${item.contents['umtId']}">
                 </c:when>
                 <c:when test="${fn:startsWith(contentKey, 'image')}">
-                    <img src="<c:url value="/static/img/upload/task/${task.id}/${item.contents[contentKey]}"/> ">
+                    <img class="img-thumbnail" src="<c:url value="/static/img/upload/task/${task.id}/${item.contents[contentKey]}"/> ">
                 </c:when>
                 <c:otherwise>
                     <p>${item.contents[contentKey]}</p>

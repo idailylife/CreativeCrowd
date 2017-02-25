@@ -16,6 +16,7 @@ $(document).ready(function () {
         handleXlsFile(e, singlePagedRand_candidates, singlePagedRand_goldenStdQuestions);
     });
 
+
     var ajaxSubmit = function () {
         $("input[name=startTime]").val(
             getUnixTimestamp($("#inputStartTime").val()));
@@ -108,6 +109,7 @@ $(document).ready(function () {
         clearErrorMsg();
         ajaxSubmit();
     });
+
 });
 
 function showErrorMsg(content) {

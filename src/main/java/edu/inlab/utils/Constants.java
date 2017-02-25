@@ -10,11 +10,11 @@ package edu.inlab.utils;
  */
 public class Constants {
     public static final boolean DEBUG = false;
-    public static final boolean ALLOW_REGISTER = false; //
+    public static final boolean ALLOW_REGISTER = false; // 允许用户注册
 
     //图片上传目录
-    public static final String UPLOAD_FILE_STORE_LOCATION = //"/Users/hebowei/IdeaProjects/CreativeCrowd/src/main/webapp/static/img/upload/";
-    "/Users/hebowei/IdeaProjects/CreativeCrowd/src/main/webapp/static/img/upload/";
+    public static final String UPLOAD_FILE_STORE_LOCATION = "D:/Code/Java/CreativeCrowd/src/main/webapp/static/img/upload/";
+    //"/Users/hebowei/IdeaProjects/CreativeCrowd/src/main/webapp/static/img/upload/";
 
 
     public static final long MAX_FILE_SIZE = 5242880;  //5MB

@@ -135,6 +135,7 @@
             <add-attribute value="/static/js/util/jsoneditor.min.js"/>
             <add-attribute value="/static/js/util/bootstrap-tabs-dynamic.js"/>
             <add-attribute value="/static/js/util/dropzone.min.js"/>
+            <add-attribute value="/static/js/util/jquery.csv.min.js"/>
             <add-attribute value="/static/js/task_edit_microtask.js"/>
         </put-list-attribute>
         <put-list-attribute name="stylesheets" inherit="true">

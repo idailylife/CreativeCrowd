@@ -12,7 +12,7 @@ import java.util.*;
 public class IdeationTaskConfig {
     final static int LATEST_VERSION = 1;
 
-    public List<ConfigItem> configItems;
+    public List<ConfigItem> configItems;    //TODO: 修改为 Map<umtId, ConfigItem>
     public int version = 1;
 
 
@@ -58,5 +58,13 @@ public class IdeationTaskConfig {
             System.err.println("IdeationTaskConfig: blob config version is lower than LATEST_VERSION");
         }
         return config;
+    }
+
+    public Map<Integer, Double> getScoreMap(){
+        Map<Integer, Double> scoreMap = new HashMap<>();
+        for(ConfigItem configItem : configItems){
+            scoreMap.put(configItem.umtId, configItem.score);
+        }
+        return scoreMap;
     }
 }

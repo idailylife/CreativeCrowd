@@ -165,15 +165,61 @@ $(document).ready(function () {
             alert('更新成功');
         });
     });
+
+    var csvArrayToUpload;   //a JavaScript 2D (two-dimensional) array.
+    $('#btnIdeationUploadConfFile').change(function(e){
+        // Ideation Task: config upload
+        // Read the data at front-end, encode and upload
+        var files = e.target.files;
+        if(files.length > 1){
+            alert("仅能选择1个文件");
+        } else if(files.length == 0){
+            $('#spanIdeationConfUpdStatus').text('请选择一个.csv文件');
+            return;
+        }
+
+        var reader = new FileReader();
+        reader.readAsText(files[0]);
+        reader.onload = function (event) {
+            var csv = event.target.result;
+            csvArrayToUpload = $.csv.toArrays(csv);
+            console.log(csvArrayToUpload);
+            $('#spanIdeationConfUpdStatus').text('文件读取成功，记录共'+ csvArrayToUpload.length-1 + '行.请点击“上传”更新数据');
+        };
+        reader.onerror = function(){
+            alert('Unable to read ' + file.fileName);
+            $('#spanIdeationConfUpdStatus').text('文件读取失败.');
+        };
+    });
+
+    $('btnIdeationApplyConfig').click(function () {
+       // Upload csv data to server
+        if(!csvArrayToUpload){
+            alert("配置信息尚未就绪，请点选文件以读取");
+            return;
+        }
+        var params = {
+            mode : 'configCsvAry',
+            confData: csvArrayToUpload
+        };
+        var ideationInformFunc = function(){
+            $('#spanIdeationConfUpdStatus').text('配置上传成功.');
+        };
+        setTaskParams(params, ideationInformFunc);
+    });
 });
 
-var setTaskParams = function(params, informFunc){
+
+
+function setTaskParams(params, informFunc){
     var paramObj;
-    if(params.mode == 'jsonObj'){
+    if(hasOwnProperty(params, 'mode')){
         paramObj = params;
     } else {
+        //legacy
         paramObj = {params: params};
     }
+
     $.ajax({
         method: 'post',
         url: homeUrl+'task/updparams/'+taskId,
@@ -189,12 +235,14 @@ var setTaskParams = function(params, informFunc){
                 }, 5000);
                 if(informFunc)
                     informFunc();
-            } else if(data.start == 403){
+            } else if(data.state == 403){
                 alert("登录超时");
+            } else {
+                alert('错误' + data.state + ':' + data.message);
             }
         }
     })
-};
+}
 
 function setSave(element) {
     $(element).click(function () {
@@ -455,4 +503,10 @@ function parseMicrotaskSequenceStr() {
         idList.push(currId);
     }
     return JSON.stringify(idList);
+}
+
+function hasOwnProperty(obj, prop) {
+    var proto = obj.__proto__ || obj.constructor.prototype;
+    return (prop in obj) &&
+        (!(prop in proto) || proto[prop] !== obj[prop]);
 }

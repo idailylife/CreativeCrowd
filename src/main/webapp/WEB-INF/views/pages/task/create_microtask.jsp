@@ -171,13 +171,13 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="buttonIdeationUploadConfFile" class="col-sm-2 control-label">上传任务数据</label>
+                                        <label for="btnIdeationUploadConfFile" class="col-sm-2 control-label">上传任务数据</label>
                                         <div class="col-sm-3">
-                                            <input type="file" id="buttonIdeationUploadConfFile" class="btn">
+                                            <input type="file" id="btnIdeationUploadConfFile" class="btn" accept="text/csv">
                                         </div>
                                         <div class="col-sm-7">
-                                            <input type="button" class="btn btn-default" id="buttonIdeationApplyConfig" value="上传">
-                                            <span class="text-success">已上传</span>
+                                            <input type="button" class="btn btn-default" id="btnIdeationApplyConfig" value="上传">
+                                            <span class="text-success" id="spanIdeationConfUpdStatus">上传.csv后缀的任务数据</span>
                                         </div>
                                     </div>
                                 </form>

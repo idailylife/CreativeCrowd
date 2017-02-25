@@ -39,13 +39,13 @@ jQuery.extend({
 });
 
 $(document).ready(function () {
-    $.getScript(homeUrl + "static/js/handler/" + handlerType + ".js", function (data) {
+    $.getScript(homeUrl + "static/js/handler/" + handlerType + ".js?v=161223", function (data) {
        console.log("handler " + handlerType + ".js loaded.");
     });
     $("<link/>", {
         rel: "stylesheet",
         type: "text/css",
-        href: homeUrl + "static/css/handler/" + handlerType + ".css"
+        href: homeUrl + "static/css/handler/" + handlerType + ".css?v=161223"
     }).appendTo("head");
     if(($("#timeRemaining") != null) && (taskType == 1)){
         var timeRemaining = 0;

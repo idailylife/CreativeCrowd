@@ -794,6 +794,17 @@ public class TaskController {
             task.setParams(taskParams.toString());
             taskService.updateTask(task);
             responseBody.setState(200);
+        } else if(updateMode.equals("configCsvAry")){
+            // Configuration upload (task.configBlob)
+            JSONArray jsonArray = new JSONArray(reqBody.get("confData"));
+            MicroTaskAssigner microTaskAssigner = microTaskAssignerFactory.getAssigner(task.getMode());
+            if(!microTaskAssigner.supportConfigFile()){
+                responseBody.setState(402);
+                responseBody.setMessage("Task type " + task.getMode() + " does not support this action.");
+            } else {
+                Boolean updSuccessful =  (Boolean)microTaskAssigner.updateConfigFile(task, jsonArray);
+
+            }
         } else {
             responseBody.setState(400);
             responseBody.setMessage("Unknown request mode: " + updateMode + ".");

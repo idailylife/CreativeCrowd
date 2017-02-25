@@ -191,6 +191,7 @@ public class SinglePagedRandomTaskAssigner extends MicroTaskAssigner {
                     results.set(next, i);
             }
         }
+        Collections.sort(results);
         return results;
     }
 

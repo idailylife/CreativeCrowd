@@ -140,9 +140,36 @@ public class IdeationWithReferenceTaskAssigner extends MicroTaskAssigner {
         return true;
     }
 
+    /**
+     * Update config file
+     * @param task Task object
+     * @param inputs only one item, a JSONArray object
+     * @return Is update successful? : true/false
+     */
     @Override
     public Object updateConfigFile(Task task, Object... inputs) {
-        //TODO: 读入csv文档，写入配置文件
+        // inputs[0] is a JSONArray, the first row contains column info
+        //TODO: Beware of task data sync problem!!!
+        JSONArray data2DAry = (JSONArray)inputs[0];
+        // First line, read column info
+        if(data2DAry.length() < 1)
+            return false;
+        // Read column info
+        JSONArray colRow = data2DAry.getJSONArray(0);
+        int idColIndex = -1, scoreColIndex = -1;
+        for(int col=0; col<colRow.length(); col++){
+            String colName = colRow.getString(col);
+            if(colName.equals("id")){
+                idColIndex = col;
+            } else if(colName.equals("score")){
+                scoreColIndex = col;
+            }
+        }
+        // Read data
+        for(int row=1; row < data2DAry.length(); row++){
+
+        }
+
         return null;
     }
 
@@ -157,12 +184,20 @@ public class IdeationWithReferenceTaskAssigner extends MicroTaskAssigner {
         List<String> headers = new ArrayList<>();
         headers.add("id");
         headers.add("refId");
+        headers.add("score");   // 用来排序的分数
 
         String[] appendHeaders = {"imageDesc", "textDesc"};
         if(taskParams.has("refColNames")){
             appendHeaders = taskParams.getString("refColNames").split(",");
         }
         Collections.addAll(headers, appendHeaders);
+
+        Blob configBlob = task.getConfigBlob();
+        Map<Integer, Double> scoreMap = null;
+        if(configBlob != null){
+            IdeationTaskConfig ideationTaskConfig = IdeationTaskConfig.ReadFromBlob(configBlob);
+            scoreMap = ideationTaskConfig.getScoreMap();
+        }
 
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -177,6 +212,7 @@ public class IdeationWithReferenceTaskAssigner extends MicroTaskAssigner {
                 if(!umtResults.has("selectedRefId")){
                     continue;   //unfinished umt
                 }
+
                 for(String header : headers){
                     if(header.equals("id")){
                         record.add(umt.getId().toString());
@@ -185,6 +221,13 @@ public class IdeationWithReferenceTaskAssigner extends MicroTaskAssigner {
                             record.add("NONE");
                         else
                             record.add(umtResults.getString("selectedRefId"));
+                    } else if(header.equals("score")){
+                        //TODO: 读取配置文件信息
+                        if(configBlob == null){
+                            record.add("NO_CONFIG_FILE");
+                        } else {
+                            record.add(scoreMap.getOrDefault(umt.getId(), -1.0).toString());
+                        }
                     } else {
                         record.add(umtResults.getString(header));
                     }
