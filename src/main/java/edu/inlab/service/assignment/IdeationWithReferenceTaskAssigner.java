@@ -142,18 +142,18 @@ public class IdeationWithReferenceTaskAssigner extends MicroTaskAssigner {
 
     /**
      * Update config file
-     * @param task Task object
+     * @param taskBlob Task.configBlob object
      * @param inputs only one item, a JSONArray object
      * @return Is update successful? : true/false
      */
     @Override
-    public Object updateConfigFile(Task task, Object... inputs) {
+    public Blob updateConfigFile(Blob taskBlob, Object... inputs) {
         // inputs[0] is a JSONArray, the first row contains column info
         //TODO: Beware of task data sync problem!!!
         JSONArray data2DAry = (JSONArray)inputs[0];
         // First line, read column info
         if(data2DAry.length() < 1)
-            return false;
+            return null;
         // Read column info
         JSONArray colRow = data2DAry.getJSONArray(0);
         int idColIndex = -1, scoreColIndex = -1;
@@ -165,12 +165,27 @@ public class IdeationWithReferenceTaskAssigner extends MicroTaskAssigner {
                 scoreColIndex = col;
             }
         }
-        // Read data
-        for(int row=1; row < data2DAry.length(); row++){
-
+        // Touch Blob data
+        IdeationTaskConfig taskConfig = null;
+        if(taskBlob == null){
+            //create new config
+            taskConfig = new IdeationTaskConfig();
+        } else {
+            taskConfig = IdeationTaskConfig.ReadFromBlob(taskBlob);
         }
 
-        return null;
+        // Read data
+        for(int row=1; row < data2DAry.length(); row++){
+            JSONArray dataRow = data2DAry.getJSONArray(row);
+            int umtId = dataRow.getInt(idColIndex);
+            double score = dataRow.getDouble(scoreColIndex);
+            taskConfig.setItem(umtId, score);
+        }
+
+        // Write data
+        taskBlob = BlobObjectConv.ObjectToBlob(taskConfig);
+
+        return taskBlob;
     }
 
     private JSONObject getTaskParams(Task task){

@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.sql.Blob;
 import java.util.*;
 
 /**
@@ -802,7 +803,15 @@ public class TaskController {
                 responseBody.setState(402);
                 responseBody.setMessage("Task type " + task.getMode() + " does not support this action.");
             } else {
-                Boolean updSuccessful =  (Boolean)microTaskAssigner.updateConfigFile(task, jsonArray);
+                Blob updatedConfigBlob =  microTaskAssigner.updateConfigFile(task.getConfigBlob(), jsonArray);
+                if(updatedConfigBlob != null){
+                    task.setConfigBlob(updatedConfigBlob);
+                    taskService.updateTask(task);
+                    responseBody.setState(200);
+                } else {
+                    responseBody.setState(500);
+                    responseBody.setMessage("Internal error: cannot update task config");
+                }
 
             }
         } else {

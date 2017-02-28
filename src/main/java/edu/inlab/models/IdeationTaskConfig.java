@@ -67,4 +67,28 @@ public class IdeationTaskConfig {
         }
         return scoreMap;
     }
+
+    /**
+     * Set score if ConfigItem object
+     * if the umtId does not exist in
+     * WARNING: the time complexity is O(n), but considering this action is not frequently used, it's acceptable
+     * @param umtId
+     * @param score
+     */
+    public void setItem(int umtId, double score){
+        boolean itemFound = false;
+        for(int i=0; i<configItems.size(); i++){
+            ConfigItem item = configItems.get(i);
+            if(item.umtId == umtId){
+                itemFound = true;
+                item.score = score;
+                configItems.set(i, item);
+            }
+        }
+        if(!itemFound){
+            ConfigItem newItem = new ConfigItem(umtId);
+            newItem.score = score;
+            configItems.add(newItem);
+        }
+    }
 }

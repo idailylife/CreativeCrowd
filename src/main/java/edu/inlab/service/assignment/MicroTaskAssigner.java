@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.sql.Blob;
 
 /**
  * Created by inlab-dell on 2016/5/31.
@@ -26,7 +27,7 @@ public abstract class MicroTaskAssigner {
         return false;
     }
 
-    public Object updateConfigFile(Task task, Object... inputs){
+    public Blob updateConfigFile(Blob taskBlob, Object... inputs){
         return null;
     }
 
