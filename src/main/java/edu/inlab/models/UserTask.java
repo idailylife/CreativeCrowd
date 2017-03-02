@@ -80,6 +80,9 @@ public class UserTask {
     @Column(name = "remuneration", nullable = false)
     private Double remuneration;
 
+    @Column(name = "metainfo")
+    private String metainfo;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "usertask_id")
     private List<UserMicroTask> relatedUserMicrotasks;
@@ -187,6 +190,14 @@ public class UserTask {
 
     public void setRelatedUserMicrotasks(List<UserMicroTask> relatedUserMicrotasks) {
         this.relatedUserMicrotasks = relatedUserMicrotasks;
+    }
+
+    public String getMetainfo() {
+        return metainfo;
+    }
+
+    public void setMetainfo(String metainfo) {
+        this.metainfo = metainfo;
     }
 
     /**

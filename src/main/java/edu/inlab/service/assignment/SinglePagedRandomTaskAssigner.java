@@ -7,6 +7,7 @@ import edu.inlab.models.UserTask;
 import edu.inlab.service.MicroTaskService;
 import edu.inlab.service.TaskService;
 import edu.inlab.service.UserMicrotaskService;
+import edu.inlab.utils.GeneralUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,7 +149,7 @@ public class SinglePagedRandomTaskAssigner extends MicroTaskAssigner {
                 }
             } else {
                 //Normal question
-                List<Integer> selectedIndices = reserviorSample(candidates.length()
+                List<Integer> selectedIndices = GeneralUtils.reserviorSample(candidates.length()
                         , param_N +1);    // 1 reference + N candidates
                 tempObj = new JSONObject();
                 tempObj.put("ref_item", candidates.getJSONObject(selectedIndices.get(0)));
@@ -179,21 +180,21 @@ public class SinglePagedRandomTaskAssigner extends MicroTaskAssigner {
         return microtaskToRender;
     }
 
-    private List<Integer> reserviorSample(int N, int k){
-        List<Integer> results = new ArrayList<>(k);
-        Random random = new Random();
-        for(int i=0; i<N; i++){
-            if(i < k)
-                results.add(i);
-            else {
-                int next = random.nextInt(i+1);
-                if(next < k)
-                    results.set(next, i);
-            }
-        }
-        Collections.sort(results);
-        return results;
-    }
+//    private List<Integer> reserviorSample(int N, int k){
+//        List<Integer> results = new ArrayList<>(k);
+//        Random random = new Random();
+//        for(int i=0; i<N; i++){
+//            if(i < k)
+//                results.add(i);
+//            else {
+//                int next = random.nextInt(i+1);
+//                if(next < k)
+//                    results.set(next, i);
+//            }
+//        }
+//        Collections.sort(results);
+//        return results;
+//    }
 
     @Override
     public void onUserMicrotaskSubmit(UserMicroTask userMicroTask, Task task) {
