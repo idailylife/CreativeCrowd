@@ -1,6 +1,8 @@
 /**
  * Created by inlab-dell on 2016/12/3.
  */
+var record_fbs = false; //turn on to enable Function-Behavior-Structure questions
+
 $(document).ready(function(){
     //Data binding
 
